@@ -1,0 +1,29 @@
+# Dependencies and builds
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.turbo/
+.cache/
+
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs and generated local content
+*.log
+*.tsbuildinfo
+tmp/
+temp/
