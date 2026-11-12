@@ -1,0 +1,51 @@
+name: PostgreSQL tenant isolation
+
+on:
+  push:
+    branches:
+      - develop
+      - "feat/**"
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  postgres-rls:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: business_os_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d business_os_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: business_os_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client if unavailable
+        run: |
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Apply SQL schema
+        run: psql -X -v ON_ERROR_STOP=1 -f packages/database/sql/001_core.sql
+      - name: Bootstrap restricted application role
+        run: psql -X -v ON_ERROR_STOP=1 -f packages/database/sql/002_runtime_role.sql
+      - name: Verify tenant isolation
+        run: psql -X -v ON_ERROR_STOP=1 -f packages/database/test/tenant-isolation.sql
