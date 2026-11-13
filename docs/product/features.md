@@ -1,12 +1,12 @@
 # P1.05 — Feature Hierarchy and Prioritized MVP Backlog
 
 **Project:** Zoho Clone (internal working name; public brand undecided)  
-**Version:** 0.1 — owner-review draft  
+**Version:** 1.0 — OWNER-APPROVED INTERNAL FEATURE PRIORITY BASELINE (2026-11-13)  
 **Prepared:** 2026-11-13  
 **Phase:** P1.05 — Feature Hierarchy and Release Gates  
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/18  
 **Prerequisite:** P1.01 PRD, P1.02 Functional SRS, P1.03 NFR design and P1.04 synthetic Personas/Journeys **owner-approved on 2026-11-13**.  
-**Status:** DRAFT; prioritized feature backlog prepared; **no product features are implemented, tested or deployed**.
+**Status:** **P1.05 COMPLETE — product owner approved the feature hierarchy and release priorities as an internal PLANNING baseline on 2026-11-13.** No features have been implemented, tested or deployed.
 
 ## 1. Release vocabulary and priority meaning
 
@@ -164,7 +164,7 @@ The original approved end-to-end vision remains a multi-app, original Business O
 - [x] 36 unique planned features with priority, dependencies, phase owner, bounded acceptance, release and security gate.
 - [x] All 26 P1.01 use cases and 49 P1.02 FR requirements mapped.
 - [x] Separate **internal build exit** from **external pilot and commercial launch** gates.
-- [ ] Product owner approves feature priority and release gates as a **planning baseline**.
-- [ ] Following approval close P1.05 and open **P1.06 Permission and Sharing Matrix**.
+- [x] Product owner approved feature priorities, dependencies and release gates as an **internal planning baseline** on 2026-11-13.
+- [x] P1.05 approved and closed; **P1.06 Permission and Sharing Matrix** opened as issue #19.
 
-**P1.05 status: IN PROGRESS — owner review pending. Nothing implemented or tested.**
+**P1.05 status: COMPLETE — OWNER-APPROVED PLANNING ONLY. Nothing implemented or tested.**
