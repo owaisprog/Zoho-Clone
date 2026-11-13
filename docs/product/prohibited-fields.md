@@ -1,6 +1,6 @@
 # P0.06 — Prohibited and Sensitive Fields Policy (Proposed)
 
-**Status:** Design rule draft; not yet implemented in code.
+**Status:** OWNER-APPROVED DESIGN POLICY (2026-11-13); not implemented, security-tested or legally certified.
 **Scope:** Initial CRM and merchant-operations MVP; later modules require independent review.
 
 ## 1. Reject from initial CRM schema, forms and unstructured attachments
