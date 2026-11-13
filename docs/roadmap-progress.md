@@ -182,8 +182,10 @@ which depends on draft P3.02 PR #27. Neither is merged into `main`.
 
 ## Parallel P3 Batch 02 — five additional subphases (P3.08–P3.12)
 
-**Started 2026-11-14 on separate branch \`feat/p3-batch-02\`; CI/owner review pending.** This early P3 engineering sequence covers fictional lead detail/session events, internal-only MerchantOps queue updates, fixed synthetic tasks API and board, shared sorting/pagination, and negative safety tests. [Implementation handoff](engineering/p3-batch-02.md).
+**Implemented 2026-11-14 on separate branch `feat/p3-batch-02`; CI passed, owner review pending.** This early P3 engineering sequence covers fictional lead detail/session events, internal-only MerchantOps queue updates, fixed synthetic tasks API and board, shared sorting/pagination, and negative safety tests. [Implementation handoff](engineering/p3-batch-02.md).
 
 P3.08–P3.12 are implementation slices in the synthetic preview, not full production-ready CRM functionality or a replacement for any P2 design signoffs. The new \`/app/tasks\` route is provisional pending P2.02 review.
 
 **Still unchanged:** all 14 risks/gaps OPEN; all 12 decisions OPEN; all 727 P1.09 acceptance/security cases NOT RUN; all 40 P2.02 IA review cases NOT RUN; P2.02 #25/P3.01 #26 open; PR #27 and #28 draft. G-EXT/G-COM BLOCKED. No identity, secure tenant DB, customer data, protected CRUD, processor approval, KYC or production release.
+
+**P3 Batch 02 CI evidence:** [run #43502348085](https://github.com/owaisprog/Zoho-Clone/actions/runs/43502348085) completed SUCCESS: 34 frontend + 13 backend + 5 shared = **52 scaffold/demo tests passed**, typechecks, locked npm install and builds passed. [Draft PR #34](https://github.com/owaisprog/Zoho-Clone/pull/34); review issues #35–#39 remain OPEN. This does not affect the 727 original NOT_RUN acceptance cases or 14 open risks / 12 decisions.

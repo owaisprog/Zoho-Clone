@@ -6,7 +6,7 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 
 ## P3 Batch 02: lead details, internal operations and fictional tasks (in review)
 
-P3.08–P3.12 adds browser-only lead detail/activity, internal MerchantOps stage workbench,
+P3.08–P3.12 ([draft PR #34](https://github.com/owaisprog/Zoho-Clone/pull/34), [52/52 tests CI PASS](https://github.com/owaisprog/Zoho-Clone/actions/runs/43502348085)) adds browser-only lead detail/activity, internal MerchantOps stage workbench,
 a strictly fictional read-only Express task endpoint with local task board, stable
 sorting/pagination and additional negative tests. See
 [Batch 02 engineering notes](docs/engineering/p3-batch-02.md).
