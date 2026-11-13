@@ -1,11 +1,11 @@
 # P1.10 — Risk Register and Decision Governance
 
 **Project:** Zoho Clone — internal working name  
-**Version:** 0.1 — owner-review DRAFT  
+**Version:** 1.0 — OWNER-APPROVED INTERNAL TRACKING BASELINE  
 **Prepared:** 2026-11-13  
 **Phase issue:** [P1.10 #23](https://github.com/owaisprog/Zoho-Clone/issues/23)  
 **Prerequisite:** P1.09 explicitly owner-approved as **planning requirements, not executed/passed tests**. All **14 gaps G-001–G-014 must remain OPEN**.  
-**Status:** P1.10 **IN PROGRESS**; this risk ranking/assignment proposal awaits separate owner approval. No mitigation has been implemented by writing this file.
+**Status:** **P1.10 OWNER-APPROVED INTERNAL TRACKING BASELINE (2026-11-13)**. All 14 risks and their source gaps remain **OPEN**. Proposed ratings/owners do not indicate mitigations were performed or actual likelihood measured.
 
 ## 1. Executive risk snapshot
 
@@ -101,7 +101,7 @@ The checkpoints are roadmap dependencies, **not dates or delivery promises**.
 - [x] Nonwaivable tenant isolation, privacy, secret, security and external legal/provider controls explicitly retained.
 - [x] [P1.10 decision register](p1-decision-register.md) separates approved baselines from unresolved choices.
 - [x] [Risk mitigation sequencing plan](p1-risk-mitigation-plan.md) identifies proposed work by actual roadmap phase.
-- [ ] Product owner approves the risk ranking, responsibility roles and open decisions as an **internal planning register**.
-- [ ] Only then close P1.10 and proceed to **P2 user experience and interface design**, with all evidence gaps still open.
+- [x] Product owner expressly approved the P1.10 risk/decision register **as internal planning and tracking only** on 2026-11-13; all 14 risks and 12 pending decisions remain OPEN, not resolved or implemented.
+- [x] P1.10 issue #23 closed as **completed tracking/planning**; P2.01 Brand and Design Tokens opened as issue #24 with synthetic-only design work. All evidence gaps remain OPEN.
 
-**P1.10 remains OPEN for separate owner review. Approval will not implement or validate software.**
+**P1.10 COMPLETE — owner-approved internal risk TRACKING only**. All 14 risks remain OPEN, 12 decisions remain OPEN, no software/security tests validated.
