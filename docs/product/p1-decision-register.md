@@ -1,6 +1,6 @@
 # P1.10 — Design Decision Register (Approved Baselines vs Open Choices)
 
-**Version:** 0.1 · Owner-review DRAFT · 2026-11-13  
+**Version:** 1.0 · OWNER-APPROVED TRACKING DESIGN · 2026-11-13  
 **Linked phase:** [P1.10 #23](https://github.com/owaisprog/Zoho-Clone/issues/23)  
 **Status:** Historical approvals are recorded accurately; **12 new decisions remain OPEN**. P1.10 has *not* received owner signoff. No production/data use authorized.
 
@@ -54,7 +54,7 @@ The machine-readable [open decision log](p1-decision-backlog.csv) contains all 1
 - [x] Ten existing accepted/prohibited design baselines distinguished from unapproved choices.
 - [x] Twelve future decisions with owner/checkpoint and linked gap(s) registered as OPEN.
 - [x] Every P1.09 G-001 through G-014 remains open in the [risk register](p1-risk-register.csv).
-- [ ] Product owner reviews and approves P1.10 risk/decision governance, **not the individual open selections**.
-- [ ] After owner approval, close issue #23 and move to P2 UX design; open choices remain tracked.
+- [x] Product owner explicitly approved P1.10 decision **tracking**, not any of the 12 unresolved selections, on 2026-11-13.
+- [x] P1.10 issue #23 closed and P2.01 Brand and Design Tokens started; 12 decisions stay OPEN.
 
 **No new architectural, legal, commercial or security certification decision is claimed as already signed by the owner.**
