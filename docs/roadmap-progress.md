@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.10 — Risk and Decision Register (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P2.01 — Brand and Design Tokens (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -48,7 +48,7 @@
 | P1.07 Domain Glossary and Sample Records | **COMPLETE — OWNER APPROVED PROVISIONAL DESIGN 2026-11-13**, [Issue #20](https://github.com/owaisprog/Zoho-Clone/issues/20) closed; 31 entities, 230 fields, 68 fictional records; no DB or tests |
 | P1.08 API and Event Contract Spec | **COMPLETE — owner-approved provisional design 2026-11-13**, [Issue #21](https://github.com/owaisprog/Zoho-Clone/issues/21) closed; 67 proposed operations/16 events/164 future cases NOT RUN |
 | P1.09 Acceptance and Traceability Map | **COMPLETE — OWNER APPROVED PLANNING ONLY on 2026-11-13**, [Issue #22](https://github.com/owaisprog/Zoho-Clone/issues/22) closed; 727 future cases NOT RUN and 14 gaps remain OPEN |
-| **P1.10 Risk and Decision Register** | **IN PROGRESS — 14/14 evidence and implementation gaps OPEN, 12 decisions unresolved, mitigation sequence drafted**, [Issue #23](https://github.com/owaisprog/Zoho-Clone/issues/23) open; owner review pending |
+| P1.10 Risk and Decision Register | **COMPLETE — owner-approved TRACKING PLANNING on 2026-11-13**, [Issue #23](https://github.com/owaisprog/Zoho-Clone/issues/23) closed; all 14 evidence risks and 12 open decisions remain OPEN |
 
 ### P1.01 completed and P1.02 drafted
 - [x] [Master PRD](product/prd.md) — problem, users, personas, scope, major use cases, releases, non-goals, success measurement, dependencies and open unknowns.
@@ -114,13 +114,25 @@
 - [x] [Release acceptance gates](qa/release-acceptance-gates.md) and [14-item gap register](qa/coverage-gaps.md).
 - [x] Owner approved P1.09 test and evidence mapping **as internal planning, not executed/passed tests** on 2026-11-13; issue #22 closed. **All 14 evidence gaps remain OPEN.**
 
-### P1.10 artifacts prepared for owner review
+### P1.10 owner-approved risk/decision tracking (not mitigation)
 - [x] [14-item open risk register](product/p1-risk-register.csv) and [risk guidance](product/p1-risk-register.md): all original G-001 through G-014 mapped and **OPEN**.
 - [x] [12 open future decisions](product/p1-decision-backlog.csv) and [decision narrative](product/p1-decision-register.md): no unapproved choice fabricated as decided.
 - [x] [Risk mitigation plan](product/p1-risk-mitigation-plan.md): proposed roles/actions/checkpoints plus external/commercial gates.
-- [ ] Owner approves P1.10 risk/decision tracking as internal design/planning before P2 UX. No risk closes just from approval.
+- [x] Owner explicitly approved P1.10 risk/decision tracking and starting P2 as **internal planning only** on 2026-11-13; issue #23 closed. **No G-001..G-014 or OPEN-001..012 was resolved**.
 
 **0 of 727 tests executed, 0 passed. No executable app/schema/authorization/runtime security evidence exists. G-EXT and G-COM remain blocked.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
+
+## P2 — UX and Interface Design (17 sub-phases)
+
+**Phase entered:** 2026-11-13 after owner-approved P1.10 tracking. The [P2 phase plan](design/p2-phase-plan.md) follows roadmap P2.01–P2.17; all design screens and example data must be **synthetic and original**. P2 planning completion will not imply tested code, market proof or external release approval.
+
+| Sub-phase | Status / evidence |
+|---|---|
+| **P2.01 Brand and Design Tokens** | **IN PROGRESS — owner-review draft**: [brand guidance](design/brand-and-tokens.md), [154-token design JSON](design/design_tokens.json), [27 sampled contrast formula checks](design/color-contrast-review.csv), [component examples](design/component-examples.md), [static theme/density preview](design/token-preview.html). [Issue #24](https://github.com/owaisprog/Zoho-Clone/issues/24) OPEN. No browser a11y/usability tests or running app. |
+| P2.02 Information Architecture | NOT STARTED — after P2.01 owner approval. |
+| P2.03–P2.17 UX/screens/usability | NOT STARTED — tracked individually in phase plan. |
+
+**P2.01 owner gate:** Approve original/non-Zoho commercial trade dress, provisional name not final, light/dark palette, density and accessibility token rules; then start P2.02. The 14 risks, 12 decisions and 727 unexecuted tests remain open/unverified.
 
 ## Technical decisions (unchanged)
 
