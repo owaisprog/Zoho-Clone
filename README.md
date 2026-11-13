@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -87,7 +87,14 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.07 Domain Relationships](docs/product/domain-relationships.md) — 33 tenant-safe relationship design rules.
 - [P1.07 Synthetic Records](docs/product/domain-synthetic-records.json) — 68 fictional records across two demo organizations, not database seeds.
 - [P1.07 Domain Validation Cases](docs/product/domain-validation-cases.csv) — 46 future tests, not executed.
-- [P1.07 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/20) — open for owner review.
+- [P1.07 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/20) — closed after provisional design approval, not a running database.
+- [P1.08 REST API Contracts](docs/api/api-contracts.md) — versioned HTTP, errors, tenant-scoped authorization and synthetic-only restrictions.
+- [P1.08 OpenAPI 3.1 Draft](docs/api/openapi-v1.json) — 67 proposed operations, 44 paths and 72 schemas, NOT IMPLEMENTED.
+- [P1.08 API/Requirement Map](docs/api/api-traceability.csv) — 18/26 PRD use cases and 37/49 FR mapped to direct routes; remaining UI/test/deferred.
+- [P1.08 Internal Event Contracts](docs/api/event-contracts.md) — 16 events and outbox design, NOT RUNNING.
+- [P1.08 Event Catalog](docs/api/event-catalog.csv) and [Envelope JSON Schema](docs/api/event-envelope.schema.json) — safe proposed message definitions.
+- [P1.08 Contract Acceptance Cases](docs/api/api-contract-cases.csv) — 164 planned future tests, none executed.
+- [P1.08 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/21) — open for owner review.
 
 ## Development approach
 
