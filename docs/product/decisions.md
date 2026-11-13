@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.05 Feature Hierarchy and Release Gates OWNER-APPROVED as internal planning; P1.06 Permission and Sharing Matrix active, owner review pending
+**Current roadmap checkpoint:** P1.06 Permission and Sharing Matrix OWNER-APPROVED as design only; P1.07 Domain Glossary and Synthetic Sample Records active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -55,8 +55,11 @@
 | DEC-037 | P1.05 R0 shared platform, R1 sales CRM, R2 merchant operations and deferred full suite feature backlog | **OWNER-APPROVED INTERNAL PLANNING BASELINE 2026-11-13; issue #18 CLOSED** | 36 planned features (24 MUST, 6 SHOULD, 6 DEFERRED), all 26 UC and 49 FR mapped; NOT implemented |
 | DEC-038 | P1.05 distribution gate distinction | **OWNER-APPROVED PLANNING POLICY 2026-11-13** | R0/R1/R2 internal synthetic demo is separate from external pilot/production; G-EXT/G-COM remain BLOCKED and require separate evidence and owner signoff |
 
-| DEC-039 | P1.06 permission/sharing security baseline | **DRAFT IN PROGRESS; owner review pending** | 13 role types, 22 resource families, 286 default-deny rules (217 denied) and 52 future negative tests; issue #19 |
-| DEC-040 | P1.06 admin/owner and system access boundary | **PROPOSED / NOT IMPLEMENTED** | Org owner/admin has no automatic CRM/merchant row access; revoked agent/members lose access on next request; platform support/external actors/workers get no automatic tenant privileges |
+| DEC-039 | P1.06 permission/sharing security baseline | **OWNER-APPROVED DESIGN REQUIREMENTS 2026-11-13, issue #19 CLOSED** | 13 roles, 22 resource families, 286 rule decisions (217 denied), 52 future tests NOT RUN; not an implemented policy engine or security certification |
+| DEC-040 | P1.06 admin/owner and system access boundary | **OWNER-APPROVED POLICY DESIGN, NOT IMPLEMENTED** | Org owner/admin has no automatic CRM/merchant row access; revoked agent/members lose access on next request; platform support/external actors/workers get no automatic tenant privileges |
+
+| DEC-041 | P1.07 domain glossary and provisional entity model | **DRAFT ACTIVE, owner review pending** | 31 candidate entities, 230 classified fields, 33 tenant-safe relationship rules; no Prisma schema or real operator validation; issue #20 |
+| DEC-042 | P1.07 sample record privacy/processor boundary | **SYNTHETIC-ONLY DESIGN** | 68 fictional records across Orchid/Juniper demo orgs; no raw bank/card/identity/KYC/MID/credentials; external demo status unverified |
 
 ## Change control
 
@@ -82,5 +85,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.03 sign-off: Product owner explicitly approved NFR target numbers and mandatory security gates AS DESIGN REQUIREMENTS, not verified outcomes, on 2026-11-13; issue #16 closed
 - P1.04 signoff: Owner explicitly approved 12 personas and 18 journeys as a PROVISIONAL planning baseline on 2026-11-13, not customer-validated evidence; issue #17 closed
 - P1.05 signoff: Owner approved feature hierarchy, priority/dependency and R0/R1/R2 vs external gates as internal planning baseline on 2026-11-13; issue #18 closed
-- Current sub-phase: **P1.06 Permission and Sharing Matrix**; 286 proposed rules and 52 future negative tests await owner approval
+- P1.06 signoff: Owner approved least-privilege, default deny, tenant isolation, row/field sharing rules as DESIGN REQUIREMENTS on 2026-11-13; issue #19 closed; no implemented controls claimed
+- Current sub-phase: **P1.07 Domain Glossary and Synthetic Sample Records**; field/relationship hypotheses require owner review
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
