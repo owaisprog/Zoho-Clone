@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.01 Master PRD OWNER-APPROVED; P1.02 Functional SRS active, owner review pending
+**Current roadmap checkpoint:** P1.02 Functional SRS OWNER-APPROVED; P1.03 Nonfunctional SRS active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -43,8 +43,11 @@
 | DEC-029 | P1.01 Master PRD release baseline | **OWNER-APPROVED 2026-11-13; issue #14 CLOSED** | R0 shared platform, R1 sales CRM and R2 merchant operations approved for synthetic-data-only internal planning; 26 mapped use cases |
 | DEC-030 | Initial development data restrictions | **Owner-APPROVED internal boundary on 2026-11-13** | Synthetic/non-identifying only; real merchant/card/bank/ID/KYC data and production excluded |
 
-| DEC-031 | P1.02 Functional SRS behavior/validation/exception specification | **DRAFT IN PROGRESS; owner review pending** | 49 numbered FRs mapped to 26 PRD use cases, 59 future test cases and proposed state transitions; issue #15 |
+| DEC-031 | P1.02 Functional SRS behavior/validation/exception specification | **OWNER-APPROVED 2026-11-13, issue #15 CLOSED** | 49 numbered FRs mapped to 26 PRD use cases, 59 future unexecuted acceptance cases; provisional state transitions remain editable |
 | DEC-032 | P1.01 approval scope | **Owner-approved as internal release prioritization ONLY** | No payment processor integration, paid production, real customer data, market validation or security certification implied |
+
+| DEC-033 | P1.03 measurable nonfunctional requirements (performance, reliability, security, accessibility) | **DRAFT IN PROGRESS; owner approval pending** | 46 NFRs, 52 future acceptance cases; 25 VU synthetic benchmark proposal, 99.9% uptime and 24h RPO / 4h RTO candidate targets — not achieved or promised |
+| DEC-034 | Production/data safety release gates | **REMAIN MANDATORY despite internal GO** | Verified tenant authorization, forbidden data rejection, legal/processor contracts, accessibility and real backups required before external data; P1.03 does not certify a system |
 
 ## Change control
 
@@ -66,5 +69,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P0.07/P0.08: Owner waived external validation for internal sequencing only (0 value tests / 0 of five pricing buyers); no market proof claimed
 - P0.09: Owner elected continue internal work without two partners (0 commitments); no external pilot
 - P1.01 sign-off: Owner approved PRD and R0/R1/R2 prioritized release baseline on 2026-11-13; issue #14 closed
-- Current sub-phase: **P1.02 Functional SRS**; owner review of behavior/state/validation rules required
+- P1.02 owner sign-off: Owner expressly approved Functional SRS and provisional behavior/state rules on 2026-11-13; issue #15 closed
+- Current sub-phase: **P1.03 Nonfunctional SRS**; 46 proposed targets and 52 unexecuted future tests await owner approval
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
