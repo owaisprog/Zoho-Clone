@@ -1,9 +1,9 @@
 # P1.02 — Functional Software Requirements Specification (SRS)
 
 **Project:** Zoho Clone (internal working name only)
-**Version:** v0.1 — **owner-review draft**
+**Version:** v1.0 — **owner-approved P1.02 functional baseline**
 **Prepared:** 2026-11-13
-**Status:** IN PROGRESS — written specification, **no application functionality implemented or tested**
+**Status:** **P1.02 COMPLETE — owner-approved on 2026-11-13.** Written specification only; no application functionality implemented or tested.
 **GitHub issue:** https://github.com/owaisprog/Zoho-Clone/issues/15
 **Approved input:** [P1.01 Master PRD](prd.md), owner-approved on 2026-11-13.
 **Release order:** R0 Shared SaaS, R1 Sales CRM, R2 Merchant Operations, all later specialist + suite apps separately scoped.
@@ -446,7 +446,7 @@ See [state-transition specification](srs-state-transitions.md) for stage diagram
 - [x] Proposed internal case/CRM state machines and excluded external processor operations documented.
 - [x] Acceptance scenario cases created for future automated tests, **not run**.
 - [x] Deferred specialist/suite app functionality separated from the initial MVP.
-- [ ] **Product owner reviews and approves P1.02 SRS and proposed validation/state rules.**
-- [ ] After approval: mark P1.02 complete and open **P1.03 Nonfunctional SRS**.
+- [x] **Product owner approved P1.02 SRS, R0/R1/R2 functional behaviors and proposed validation/state rules on 2026-11-13.** This is an editable design baseline; unverified real-world merchant states remain provisional.
+- [x] P1.02 completed and P1.03 Nonfunctional SRS started as GitHub issue #16.
 
-**Current state:** P1.02 DRAFT READY FOR OWNER REVIEW. No application code, schemas, API implementation or tests have been created by this phase.
+**Current state:** P1.02 COMPLETE — OWNER-APPROVED; P1.03 active for owner review. No application code, schemas, API implementation or tests have been created by this phase.
