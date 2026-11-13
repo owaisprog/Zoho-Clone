@@ -6,7 +6,7 @@
 **State:** **CONTRACTS PROPOSED; NO API ROUTES, EXPRESS SERVER, PRISMA SCHEMA, OIDC SESSION HANDLER OR EVENT BUS EXIST.**  
 **Authorization:** P0.10 internal **synthetic-data-only** development. No real customer data, live processor onboarding, subscription charges, pilot accounts or public production.
 
-Machine-readable companion: [OpenAPI 3.1 draft](openapi-v1.json), [API-to-requirement map](api-traceability.csv), [event contracts](event-contracts.md), [event catalog](event-catalog.csv) and [future API acceptance cases](api-contract-cases.csv). The OpenAPI specification defines intended request/response shapes, NOT an accessible endpoint or server URL.
+Machine-readable companion: [OpenAPI 3.1 draft](openapi-v1.json) (**67 operations, 44 paths, 72 schemas**), [API-to-requirement map](api-traceability.csv), [event contracts](event-contracts.md), [16-event catalog](event-catalog.csv), [event envelope JSON Schema](event-envelope.schema.json), and [164 future API acceptance cases](api-contract-cases.csv). The OpenAPI specification defines intended request/response shapes, NOT an accessible endpoint or server URL.
 
 ## 1. Major API boundaries
 
@@ -41,11 +41,11 @@ Machine-readable companion: [OpenAPI 3.1 draft](openapi-v1.json), [API-to-requir
 | Auth/session | `GET /v1/session` | Current verified principal context only; no raw token exposure |
 | Organizations | `GET/POST /v1/organizations`; `GET/PATCH /v1/organizations/{orgId}` | List authorized orgs, bootstrap new org, restricted profile |
 | Members | `GET /members`, `PATCH /members/{memberId}` | Active membership and revocation; protect last owner |
-| Invitations and roles | `GET/POST /invitations`, `POST /invitations/{inviteId}/revoke`, `GET /roles` | Allowlisted role grants, verified accept flow still to refine; no invite tokens in responses |
+| Invitations and roles | `GET/POST /invitations`, `POST /invitations/{id}/revoke`, `POST /v1/invitations/{id}/accept` (global verified invitee), `GET /roles`, `GET/POST /members/{id}/role-grants`, `POST /members/{id}/role-grants/{grantId}/revoke` | Allowlisted grants; proof of invitee email/one-time acceptance and credential security to refine in implementation; no invite secret in business response |
 | Plans | `GET /entitlements`, `GET /billing-reference` | Server-authoritative mock entitlements only |
 | Audit | `GET /audit-events` | Sanitized metadata; org owner/security reviewer scope only |
 
-All paths after the organization bootstrap in this table are scoped underneath `/v1/organizations/{orgId}`. **Invitation acceptance, controlled role-grant workflows and non-member invite activation** require dedicated P1.08 final review; a draft path alone does not guarantee full workflow coverage.
+All paths after the organization bootstrap in this table are scoped underneath `/v1/organizations/{orgId}`. **Invitation acceptance, controlled role grants and non-member activation now have provisional OpenAPI routes.** The verified invitee identity binding, one-time acceptance proof, replay protection and permission middleware still need P3/P4 implementation and actual security tests; a draft route is not a completed flow.
 
 ## 4. R1 Sales CRM operations
 
@@ -83,8 +83,8 @@ See [Internal Event Contracts](event-contracts.md). Proposed domain events are *
 
 ## 7. Traceability and acceptance conditions
 
-- [API traceability CSV](api-traceability.csv) maps each documented HTTP operation to R0/R1/R2, PRD UC, Functional SRS FR, feature, permission and request/response schemas.
-- [Contract acceptance matrix](api-contract-cases.csv) contains future positive/negative tests, **NOT RUN**, including cross-tenant IDOR, direct unauthorized endpoints, field allowlist bypass, assignment revocation, state/version conflicts, fake provider approvals and idempotency.
+- [API traceability CSV](api-traceability.csv) maps **67 proposed HTTP operations** to R0/R1/R2, PRD UC, Functional SRS FR, feature, permission and request/response schemas. **18 of 26 PRD UC** and **37 of 49 FR** have direct HTTP operations. `UC-106` (UI states) and `UC-208` (QA fixtures), plus six deferred specialist/suite UCs (`UC-301`–`UC-306`), intentionally have no live MVP endpoint. The remaining 12 FRs are cross-cutting support-denial/UX/QA or deferred provider/specialist concerns; they require explicit P1.09 test/policy traces rather than invented public routes.
+- [Contract acceptance matrix](api-contract-cases.csv) contains **164 future positive/negative tests — NOT RUN** (134 per-operation and 30 cross-cutting/deferred). Tests include cross-tenant IDOR, forbidden field injections, assignment revocation, state/version conflicts, fake provider approvals and idempotency.
 - **P1.09** will unify the requirements/API/events/test traceability. **P3/P4** will implement Express handlers, schema validation, Prisma transactions, permissions and an actual OpenAPI validator in CI, then record genuine run evidence.
 - All performance, uptime, accessibility and security targets from P1.03 remain **design targets only**, with no measured result or certification.
 
