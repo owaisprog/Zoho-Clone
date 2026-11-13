@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.01 — Master PRD (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P1.02 — Functional SRS (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -39,8 +39,8 @@
 
 | P1 sub-phase | Status |
 |---|---|
-| **P1.01 Master PRD** | **IN PROGRESS — draft authored**, [GitHub Issue #14](https://github.com/owaisprog/Zoho-Clone/issues/14); owner review pending |
-| P1.02 Functional SRS | NOT STARTED; P1.01 approval required |
+| P1.01 Master PRD | **COMPLETE — OWNER APPROVED 2026-11-13**, [Issue #14](https://github.com/owaisprog/Zoho-Clone/issues/14) closed |
+| **P1.02 Functional SRS** | **IN PROGRESS — 49 requirements/59 future acceptance cases authored**, [Issue #15](https://github.com/owaisprog/Zoho-Clone/issues/15) open; owner review pending |
 | P1.03 Nonfunctional SRS | NOT STARTED |
 | P1.04 Personas and Journeys | NOT STARTED |
 | P1.05 Feature Hierarchy and Release Gates | NOT STARTED |
@@ -50,15 +50,22 @@
 | P1.09 Acceptance and Traceability Map | NOT STARTED |
 | P1.10 Risk and Decision Register | NOT STARTED |
 
-### P1.01 deliverables prepared
+### P1.01 completed and P1.02 drafted
 - [x] [Master PRD](product/prd.md) — problem, users, personas, scope, major use cases, releases, non-goals, success measurement, dependencies and open unknowns.
 - [x] [26 use-case/release rows](product/prd-release-matrix.csv) — mapped to R0 platform, R1 CRM, R2 MerchantOps and later features.
 - [x] [Fictional demo fixtures](product/prd-synthetic-fixtures.json) — two separate invented orgs, 5 example merchant applications, negative access/data tests.
 - [x] [P1 execution plan](p1-phase-plan.md) — ten requirement sub-phases and gates.
-- [ ] Product owner reviews and approves R0/R1/R2 scope and all release priorities.
-- [ ] After sign-off close P1.01 and begin P1.02.
+- [x] Product owner approved R0/R1/R2 scope and all initial release priorities on 2026-11-13.
+- [x] P1.01 issue #14 closed and P1.02 Functional SRS started in issue #15.
 
-**No executable software or runtime tests were added for this documentation phase.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
+### P1.02 current deliverables
+- [x] [Functional SRS](product/srs.md) — 49 detailed behavioral requirements, policy/validation, error/recovery patterns.
+- [x] [Requirements CSV](product/srs-requirements.csv) — every one of the 26 approved PRD use cases traced.
+- [x] [Provisional state transitions](product/srs-state-transitions.md) — lead, deal, task, membership and internal merchant workflows.
+- [x] [Acceptance cases](product/srs-acceptance-cases.csv) — 59 future test cases, **NOT EXECUTED**.
+- [ ] Owner approves P1.02 functional behaviors before phase closure and P1.03 NFR.
+
+**No executable software or runtime tests were added for these documentation phases.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
 ## Technical decisions (unchanged)
 
