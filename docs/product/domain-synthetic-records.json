@@ -7,7 +7,9 @@
     "Only example.com email addresses",
     "No PAN/CVV/bank/routing/ID/KYC/credentials/MID/provider real data",
     "External DEMO_ONLY_* statuses are synthetic_unverified and cannot authorize anything",
-    "No actual deployed DB/API/tenancy enforcement"
+    "No actual deployed DB/API/tenancy enforcement",
+    "Orchid agent-manager role is separate from organization owner; assigning an agent does not follow from owner title",
+    "Owner/manager record links in fixtures do not themselves grant permissions; server authorization still required"
   ],
   "id_contract": "Human-readable demo IDs are illustrative; production ID encoding not decided",
   "data": {
@@ -55,6 +57,13 @@
         "display_name": "Juniper Demo Owner",
         "email": "owner@juniper.example.com",
         "account_state": "active"
+      },
+      {
+        "id": "user_demo_orchid_agent_manager",
+        "provider_subject_ref": "DEMO_OIDC_SUBJECT_005",
+        "display_name": "Orchid Demo Agent Manager",
+        "email": "agents@orchid.example.com",
+        "account_state": "active"
       }
     ],
     "memberships": [
@@ -93,6 +102,15 @@
         "status": "active",
         "role_key": "ORG_OWNER",
         "joined_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "mem_orch_agent_manager",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "user_id": "user_demo_orchid_agent_manager",
+        "status": "active",
+        "role_key": "AGENT_MANAGER",
+        "joined_at": "2026-11-13T09:00:00Z"
       }
     ],
     "teams": [
@@ -110,6 +128,14 @@
         "created_at": "2026-11-13T09:00:00Z",
         "name": "Demo Onboarding",
         "domain": "onboarding",
+        "state": "active"
+      },
+      {
+        "id": "team_orch_agents",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo Agent Operations",
+        "domain": "agent_ops",
         "state": "active"
       }
     ],
@@ -130,6 +156,15 @@
         "team_id": "team_orch_ops",
         "membership_id": "mem_orch_ops",
         "team_role": "member",
+        "state": "active"
+      },
+      {
+        "id": "team_mem_agents",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "team_id": "team_orch_agents",
+        "membership_id": "mem_orch_agent_manager",
+        "team_role": "manager",
         "state": "active"
       }
     ],
@@ -168,6 +203,15 @@
         "membership_id": "mem_jun_owner",
         "role_key": "ORG_OWNER",
         "assigned_by_membership_id": "mem_jun_owner",
+        "state": "active"
+      },
+      {
+        "id": "grant_orch_agent_manager",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "membership_id": "mem_orch_agent_manager",
+        "role_key": "AGENT_MANAGER",
+        "assigned_by_membership_id": "mem_orch_owner",
         "state": "active"
       }
     ],
@@ -337,7 +381,7 @@
         "created_at": "2026-11-13T09:00:00Z",
         "display_name": "Demo Referral Partner",
         "state": "active",
-        "managed_by_membership_id": "mem_orch_owner",
+        "managed_by_membership_id": "mem_orch_agent_manager",
         "public_agent_reference": "AG-DEMO-01"
       }
     ],
@@ -405,7 +449,7 @@
         "agent_id": "agent_orch_demo",
         "merchant_id": "merchant_orch_1",
         "state": "active",
-        "assigned_by_membership_id": "mem_orch_owner",
+        "assigned_by_membership_id": "mem_orch_agent_manager",
         "assigned_at": "2026-11-13T09:00:00Z"
       }
     ],
