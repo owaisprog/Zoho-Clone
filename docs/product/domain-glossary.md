@@ -1,12 +1,12 @@
 # P1.07 — Domain Glossary and Data-Classified Entity Catalog
 
 **Project:** Zoho Clone (internal-only working name)
-**Version:** 0.1 — owner review draft
+**Version:** 1.0 — OWNER-APPROVED PROVISIONAL DOMAIN DESIGN (2026-11-13)
 **Prepared:** 2026-11-13
 **Phase:** P1.07 Domain Glossary and Synthetic Sample Records
 **GitHub issue:** https://github.com/owaisprog/Zoho-Clone/issues/20
 **Prerequisites:** P1.01–P1.06 owner-approved specification baselines. **P1.06 permission rules are design requirements, NOT implemented security controls.**
-**Status:** DRAFT prepared, **not a database schema, Prisma migration, API, test run, compliance certificate or validated real customer workflow**.
+**Status:** **P1.07 COMPLETE — OWNER-APPROVED PROVISIONAL INTERNAL DESIGN REQUIREMENTS (2026-11-13)**; not a database schema, Prisma migration, API, test run, compliance certificate or validated real customer workflow.
 
 ## 1. Product-domain decisions
 
@@ -148,7 +148,7 @@ All initial workflows are **design hypotheses**: 0 completed customer interviews
 - [x] All 31 candidate domain entities and 230 field definitions classified and traced to current architecture.
 - [x] Tenant/relationship invariants and provisional state terminology documented.
 - [x] Synthetic examples and future validation cases prepared without real private records.
-- [ ] Product owner approves glossary, field allowlists, synthetic record shapes and deferred/forbidden data scope as an internal planning baseline.
-- [ ] Only then close P1.07 and open **P1.08 API and Event Contract Specification**.
+- [x] Product owner approved P1.07 glossary, field allowlists/classification, synthetic record shapes, relationships and excluded sensitive data as **provisional internal design requirements** on 2026-11-13; not implemented database schema.
+- [x] P1.07 issue #20 closed as completed design, P1.08 API and Event Contract Specification opened as issue #21.
 
-**P1.07 remains IN PROGRESS; no executable schema, migrations, real data or running tests exist.**
+**P1.07 COMPLETE — owner-approved provisional domain design; no executable schema, migrations, real data or running tests exist.**
