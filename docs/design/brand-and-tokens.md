@@ -1,10 +1,10 @@
 # P2.01 — Original Brand Direction and Design Tokens
 
 **Project:** Zoho Clone (internal repository working name only)  
-**Version:** 0.1 — P2.01 owner-review design DRAFT · 2026-11-13  
+**Version:** 1.0 — P2.01 OWNER-APPROVED PROVISIONAL ORIGINAL UX DESIGN · 2026-11-13  
 **Source:** Master Roadmap P2.01 Brand and Design Tokens, P1.03 NFR, P1.04 personas/journeys, P1.05 releases and P1.06 permission matrix.  
 **GitHub issue:** [P2.01 #24](https://github.com/owaisprog/Zoho-Clone/issues/24) · [P2 phase plan](p2-phase-plan.md)  
-**Current approval:** **P2 started, NOT P2.01 visual signoff.** Colors, typography, product logo, naming, layout density and dark theme are *proposed options for product-owner review*, not final public branding or verified usable software.
+**Current approval:** **P2.01 owner-approved on 2026-11-13 as a PROVISIONAL ORIGINAL INTERNAL UX BASELINE**. Colors, typography, layout density and light/dark theme are planning/design decisions; commercial product name, domain and logo remain OPEN, and no browser accessibility or usability test has been executed.
 
 ## 1. Visual strategy: functional, original, enterprise-grade
 
@@ -111,7 +111,7 @@ See [component-examples.md](component-examples.md) and [static token-preview.htm
 - [x] 27 proposed token pairs computed against WCAG-related formulas; all formula PASS for stated specific pair.
 - [x] Dense-table/navigation/status/form sample guidance written.
 - [x] Provisional brand identity separated from public legal brand name/domain.
-- [ ] **Product owner approves or revises** visual direction, palette, typography, density, light/dark semantics and original brand positioning as a P2.01 design baseline.
-- [ ] Owner approval then closes P2.01 #24 and opens **P2.02 Information Architecture**. Any actual UI usability/browser a11y evidence remains pending.
+- [x] **Product owner explicitly approved** the provisional original internal visual direction, palette, typography, density and light/dark token semantics on 2026-11-13; not final commercial branding or verified accessibility.
+- [x] P2.01 issue #24 closed and **P2.02 Information Architecture** opened as #25. All actual UI usability/browser accessibility evidence remains pending.
 
-**P2.01 state: IN PROGRESS, owner approval pending. No runtime UI, test pass or external/customer data use is claimed.**
+**P2.01 state: COMPLETE — OWNER-APPROVED PROVISIONAL ORIGINAL DESIGN ONLY.** No runtime UI, accessibility certification, test pass or external/customer data use is claimed.
