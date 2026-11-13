@@ -1,27 +1,25 @@
-# Backend - Zoho Clone
+# Backend — actual P3.01 Express + TypeScript scaffold
 
-**Status:** Directory initialized during P0.01. Application scaffolding is scheduled for P3.
+**Implemented source:** Express 5 server, localhost-only configuration, safe JSON errors,
+Helmet security headers, and \`GET /api/v1/health\` process-only health endpoint.
 
-## Locked technology choices
+**NOT implemented:** PostgreSQL/Prisma schema, authentication/OIDC, tenant/RBAC/ABAC,
+CRM/merchant CRUD, event workers, processors, KYC, payments, real billing or production deployment.
+Do not send real data to this scaffold.
 
-- Node.js + Express.js + TypeScript (not NestJS)
-- PostgreSQL with Prisma migrations and typed database access
-- Modular monolith architecture
-- REST APIs documented with OpenAPI
-- Redis + BullMQ when background work is introduced
-- Secure managed OIDC authentication; centralized RBAC/ABAC
-- Tenant-aware authorization, PostgreSQL RLS where appropriate, audit logs, and background workers
+Run from repository root:
+\`\`\`sh
+npm install
+npm run dev:api
+\`\`\`
 
-## Planned module structure
+Check \`http://127.0.0.1:4000/api/v1/health\`. To run tests:
+\`\`\`sh
+npm run test -w backend
+npm run typecheck -w backend
+npm run build -w backend
+\`\`\`
 
-At the architecture phase, create modules with independent routers, controllers, services, repositories, Zod schemas, policies, and tests.
-
-Initial platform modules: identity, organizations, memberships, permissions, app registry, subscriptions, entitlements, audit, files, notifications, integrations.
-
-Initial business modules: CRM leads, contacts, accounts, pipelines, deals and activities; merchant agents, merchant records and onboarding applications.
-
-Later modules: marketing, finance, HR, projects, support, inventory, analytics, AI, automation, and each additional product from the master roadmap.
-
-**Not yet created:** package.json, src/, Prisma schema, database, environment secrets, server runtime.
-
-Every business query must be organization-scoped. Never trust tenant IDs or permissions supplied by the browser.
+The health endpoint only establishes **process health**, not database readiness or security
+compliance. CI/local execution evidence must be recorded separately; unexecuted tests must
+not be called passing. Default bind is 127.0.0.1 (not internet-exposed).

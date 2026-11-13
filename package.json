@@ -1,0 +1,20 @@
+{
+  "name": "zoho-clone-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Original synthetic-only Business OS scaffold; not a production service",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev:web": "npm run dev -w frontend",
+    "dev:api": "npm run dev -w backend",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  }
+}
