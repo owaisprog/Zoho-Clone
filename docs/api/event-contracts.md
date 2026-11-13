@@ -1,8 +1,8 @@
 # P1.08 — Internal Domain Event Contracts and Outbox
 
-**Version:** 0.1 — owner-review draft · 2026-11-13  
+**Version:** 1.0 — OWNER-APPROVED PROVISIONAL EVENT DESIGN · 2026-11-13  
 **Scope:** R0/R1/R2 internal modular monolith domain events; **NO EXTERNAL PROVIDER WEBHOOKS OR PAYMENTS**.  
-**Status:** SPECIFICATION ONLY, not a configured broker/Redis/BullMQ queue, event bus, database transaction, producer, consumer, integration or emitted event.  
+**Status:** P1.08 owner-approved PROVISIONAL DESIGN ONLY; not a configured broker/Redis/BullMQ queue, event bus, database transaction, producer, consumer, integration or emitted event.  
 **Related:** [REST API contract](api-contracts.md), [event catalog CSV](event-catalog.csv), [restrictive event envelope JSON Schema](event-envelope.schema.json), P1.07 domain glossary and P1.06 least-privilege matrix. The JSON Schema is an unexecuted design, not proof of validation.
 
 ## 1. Event envelope (synthetic illustrative JSON)
@@ -107,8 +107,8 @@ A future real processor adapter requires explicit contracts, verification/signat
 - [x] Event taxonomy and safe envelope prepared.
 - [x] Proposed transactional outbox/at-least-once/dedup/order/timeout strategy recorded.
 - [x] Distinction between internal events and unauthorized external provider webhooks documented.
-- [ ] Owner approves event types, envelope and delivery policy as **design only**.
+- [x] Owner approved 16 event types, restrictive envelope and delivery-policy proposal **as design only**, on 2026-11-13.
 - [ ] P1.09 acceptance traceability maps these events to real future automated tests.
 - [ ] P3/P4 later implement and test actual producers, consumers, scoped workers and event schema validation.
 
-**No events emitted, delivered, queued or tested as a result of this document.**
+**P1.08 complete as owner-approved event design. No events emitted, delivered, queued or tested as a result of this document.**
