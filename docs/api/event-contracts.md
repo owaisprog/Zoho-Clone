@@ -3,7 +3,7 @@
 **Version:** 0.1 — owner-review draft · 2026-11-13  
 **Scope:** R0/R1/R2 internal modular monolith domain events; **NO EXTERNAL PROVIDER WEBHOOKS OR PAYMENTS**.  
 **Status:** SPECIFICATION ONLY, not a configured broker/Redis/BullMQ queue, event bus, database transaction, producer, consumer, integration or emitted event.  
-**Related:** [REST API contract](api-contracts.md), [event catalog CSV](event-catalog.csv), P1.07 domain glossary and P1.06 least-privilege matrix.
+**Related:** [REST API contract](api-contracts.md), [event catalog CSV](event-catalog.csv), [restrictive event envelope JSON Schema](event-envelope.schema.json), P1.07 domain glossary and P1.06 least-privilege matrix. The JSON Schema is an unexecuted design, not proof of validation.
 
 ## 1. Event envelope (synthetic illustrative JSON)
 
