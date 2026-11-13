@@ -9,6 +9,8 @@
 export const DEMO_CONTRACT = "internal-fictional-v1";
 
 const leadFields = ["id", "organization", "contact", "email", "stage", "owner"];
+const taskFields = ["id", "title", "status", "owner", "relatedId", "dueLabel"];
+const taskStatuses = new Set(["todo", "in_progress", "done"]);
 const applicationFields = ["id", "name", "category", "stage", "owner", "nextAction", "updatedLabel"];
 const applicationStages = new Set(["draft", "needs_more_info", "waiting_demo", "handoff_pending", "active_internal"]);
 const leadStages = new Set(["new", "contacted", "qualified"]);
@@ -43,6 +45,16 @@ export function isSyntheticApplication(value) {
     value.updatedLabel.includes("(demo)");
 }
 
+export function isSyntheticTask(value) {
+  return hasFields(value, taskFields) &&
+    typeof value.id === "string" && /^TASK-DEMO-\d{3}$/.test(value.id) &&
+    short(value.title) && value.title.startsWith("Demo ") &&
+    taskStatuses.has(value.status) &&
+    (value.owner === "Demo Sales" || value.owner === "Demo Operations") &&
+    typeof value.relatedId === "string" && /^(LEAD|APP)-DEMO-\d{3}$/.test(value.relatedId) &&
+    typeof value.dueLabel === "string" && /^Demo day [1-9]\d?$/.test(value.dueLabel);
+}
+
 /**
  * Fail closed for the public preview: require the *exact* known fixture
  * values, not just a plausible "demo" prefix. If the API is compromised,
@@ -55,7 +67,8 @@ export function parseSyntheticEnvelope(payload, dataset, expected) {
       payload.records.length !== expected.length || expected.length > 25) return null;
 
   const validate = dataset === "leads" ? isSyntheticLead
-    : dataset === "applications" ? isSyntheticApplication : null;
+    : dataset === "applications" ? isSyntheticApplication
+    : dataset === "tasks" ? isSyntheticTask : null;
   if (!validate) return null;
 
   const byId = new Map();

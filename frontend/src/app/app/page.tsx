@@ -1,10 +1,11 @@
 import Link from "next/link";
 import {
-  Activity, ArrowRight, ArrowUpRight, ClipboardCheck, Clock3, Database, Server,
+  Activity, ArrowRight, ArrowUpRight, ClipboardCheck, Clock3, Database, ListTodo, Server,
 } from "lucide-react";
 import { getBackendStatus } from "@/lib/backend-status";
 import { getDemoWorkload, getLeadPipeline } from "@/lib/demo-analytics";
-import { getDemoApplications, getDemoLeads } from "@/lib/demo-api";
+import { getDemoApplications, getDemoLeads, getDemoTasks } from "@/lib/demo-api";
+import { taskSummary } from "@/lib/demo-task-actions";
 import {
   getApplicationSummary,
 } from "@/lib/synthetic-data";
@@ -12,12 +13,13 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function WorkspaceHome() {
-  const [applications, leads, api] = await Promise.all([
-    getDemoApplications(), getDemoLeads(), getBackendStatus(),
+  const [applications, leads, tasks, api] = await Promise.all([
+    getDemoApplications(), getDemoLeads(), getDemoTasks(), getBackendStatus(),
   ]);
   const summary = getApplicationSummary(applications.records);
   const workload = getDemoWorkload(applications.records, leads.records);
   const pipeline = getLeadPipeline(leads.records);
+  const taskStats = taskSummary(tasks.records);
 
   return (
     <>
@@ -90,6 +92,11 @@ export default async function WorkspaceHome() {
             <strong>Merchant Operations</strong>
             <span>Internal queue and demo status labels only</span>
             <Link href="/app/operations/applications" className="text-link">Review applications <ArrowRight size={13} aria-hidden="true" /></Link>
+          </div>
+          <div className="module-card">
+            <strong><ListTodo size={15} aria-hidden="true" style={{ display: "inline", marginRight: 6 }}/> Tasks (demo)</strong>
+            <span>{taskStats.pending} of {taskStats.total} fictional tasks pending, all session-only</span>
+            <Link href="/app/tasks" className="text-link">Review tasks <ArrowRight size={13} aria-hidden="true" /></Link>
           </div>
           <div className="module-card">
             <strong>Future modules</strong>

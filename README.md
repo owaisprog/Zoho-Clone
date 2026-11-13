@@ -4,6 +4,17 @@
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
+## P3 Batch 02: lead details, internal operations and fictional tasks (in review)
+
+P3.08–P3.12 adds browser-only lead detail/activity, internal MerchantOps stage workbench,
+a strictly fictional read-only Express task endpoint with local task board, stable
+sorting/pagination and additional negative tests. See
+[Batch 02 engineering notes](docs/engineering/p3-batch-02.md).
+
+These are **synthetic-only** features; no real customer data, authentication,
+tenant policy, database writes, production tasks or processor statuses. The 727
+original test cases, 14 risks, 12 decisions and all production gates remain open.
+
 ## P3 Batch 01: five related development subphases (in review)
 
 P3.03–P3.07 code (draft PR #28; GitHub CI 36/36 PASS) adds deterministic dependency installation, a shared synthetic-only

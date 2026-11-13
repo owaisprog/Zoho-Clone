@@ -14,3 +14,11 @@ export const demoApplications = [
   { id: "APP-DEMO-104", name: "Demo Birch Bakery", category: "Food", stage: "handoff_pending", owner: "Demo Operations", nextAction: "Review internal handoff", updatedLabel: "2 days ago (demo)" },
   { id: "APP-DEMO-105", name: "Demo Lantern Cafe", category: "Hospitality", stage: "active_internal", owner: "Demo Operations", nextAction: "Complete internal notes", updatedLabel: "3 days ago (demo)" },
 ] as const;
+
+
+export const demoTasks = [
+  { id: "TASK-DEMO-101", title: "Demo lead qualification review", status: "todo", owner: "Demo Sales", relatedId: "LEAD-DEMO-103", dueLabel: "Demo day 1" },
+  { id: "TASK-DEMO-102", title: "Demo checklist follow-up", status: "in_progress", owner: "Demo Operations", relatedId: "APP-DEMO-102", dueLabel: "Demo day 2" },
+  { id: "TASK-DEMO-103", title: "Demo internal handoff notes", status: "done", owner: "Demo Operations", relatedId: "APP-DEMO-104", dueLabel: "Demo day 3" },
+  { id: "TASK-DEMO-104", title: "Demo opportunity sorting", status: "todo", owner: "Demo Sales", relatedId: "LEAD-DEMO-104", dueLabel: "Demo day 4" },
+] as const;

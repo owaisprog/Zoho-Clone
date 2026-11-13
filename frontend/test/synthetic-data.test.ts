@@ -4,6 +4,7 @@ import {
   ATTENTION_STAGES,
   DEMO_APPLICATIONS,
   DEMO_LEADS,
+  DEMO_TASKS,
   DEMO_ORGANIZATION,
   STAGE_LABELS,
   filterApplications,
@@ -75,5 +76,12 @@ describe("P3.01 synthetic-only frontend data", () => {
     );
     assert.equal(filterLeads(DEMO_LEADS, "non-existent").length, 0);
     assert.equal(filterLeads(DEMO_LEADS, " ").length, DEMO_LEADS.length);
+  });
+
+  it("uses fictional task IDs and references only existing fictional records", () => {
+    const ids = new Set([...DEMO_LEADS.map(x=>x.id), ...DEMO_APPLICATIONS.map(x=>x.id)]);
+    assert.equal(new Set(DEMO_TASKS.map(x=>x.id)).size, DEMO_TASKS.length);
+    assert.ok(DEMO_TASKS.every(task => task.title.startsWith("Demo ") && ids.has(task.relatedId)));
+    assert.ok(DEMO_TASKS.every(task => task.dueLabel.startsWith("Demo day ")));
   });
 });
