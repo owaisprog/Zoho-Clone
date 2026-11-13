@@ -2,16 +2,16 @@
 
 **Project:** Zoho Clone
 **Prepared:** 2026-11-13
-**Status:** DECISION PACKAGE COMPLETE; **OWNER SIGN-OFF / VALIDATION GATE NOT SATISFIED**.
+**Status:** **OWNER-SIGNED CONDITIONAL GO for internal/synthetic-only P1/P2/P3 sequencing on 2026-11-13. Commercial/market validation and production safety gates remain NOT MET.**
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/13
 
 ## Executive decision recommendation
 
 **RECOMMEND: CONDITIONAL GO for internal P1 requirements, P2 UX and later P3 sandbox application engineering using synthetic data only.**
 **RECOMMEND: NO-GO for public merchant CRM launch, paid customer pilots, regulated-data handling or claims of proven demand until evidence and security gates pass.**
-**Do not yet call P0 commercially validated or owner-signed.**
+**P0 is OWNER-SIGNED for conditional internal engineering only. It is NOT commercially validated, and external pilot/production remains NO-GO.**
 
-This is a **recommendation**, not a signed product-owner decision. The owner requested that all P0 documents be prepared together; that request did **not** itself establish five buyer interviews, pilot commitments, pricing approval or legal authorization.
+This recommendation was explicitly **accepted by the product owner on 2026-11-13** for internal synthetic-only engineering. That acceptance did **not** establish five buyer interviews, pilot commitments, pricing approval or legal authorization.
 
 ## 1. Source-of-truth P0 audit
 
@@ -23,10 +23,10 @@ This is a **recommendation**, not a signed product-owner decision. The owner req
 | P0.04 Interview playbook | 15–25 interviews **or documented shortfall** | Neutral scripts, blank notes, **0 interviews** documented | **CLOSED WITH SHORTFALL** |
 | P0.05 Merchant process maps | >=3 real-world workflows validated | 3 hypothetical ISO/POS/PayFac flow diagrams | **OWNER-SKIPPED, 0/3 VERIFIED** |
 | P0.06 Data sensitivity inventory | Classify bank/contact/ID/card/credentials | 5 proposed classes, 36 categories, prohibited fields | **OWNER-APPROVED AS DESIGN ONLY** |
-| P0.07 MVP value proposition | One measurable benefit *validated by prospects* | Narrow claim, landing copy, measurement plan | **DRAFT; 0 actual prospect tests** |
-| P0.08 Pricing interviews | >=5 qualified buyers tested | Plan/worksheet, vendor public prices, proposed price anchors | **DRAFT; 0/5 buyer interviews** |
-| P0.09 Pilot/design partner criteria | 2 commitments **or explicit continue-without decision** | Pilot plan, applicant criteria, scorecard | **DRAFT; 0/2 commitments; no alternate owner decision** |
-| P0.10 Build/no-build decision | Scope frozen, open unknowns owned, explicit owner sign | This decision package, open risks and recommendation | **AWAITING OWNER DECISION** |
+| P0.07 MVP value proposition | One measurable benefit *validated by prospects* | Narrow claim, landing copy, measurement plan | **RESEARCH GATE OWNER-WAIVED for internal sequencing; 0 actual prospect tests** |
+| P0.08 Pricing interviews | >=5 qualified buyers tested | Plan/worksheet, vendor public prices, proposed price anchors | **RESEARCH GATE OWNER-WAIVED for internal sequencing; 0/5 buyer interviews** |
+| P0.09 Pilot/design partner criteria | 2 commitments **or explicit continue-without decision** | Pilot plan, applicant criteria, scorecard | **OWNER APPROVED CONTINUE WITHOUT PARTNERS FOR INTERNAL DEVELOPMENT; 0/2 commitments** |
+| P0.10 Build/no-build decision | Scope frozen for internal work, open unknowns owned, explicit owner sign | This decision package, open risks and accepted conditional recommendation | **OWNER SIGNED 2026-11-13; INTERNAL GO ONLY** |
 
 ### P0 umbrella exit criteria
 Master roadmap: **Approved ICP, evidence-backed problem statements, measurable pilot criteria, explicit build/no-build decision**.
@@ -104,23 +104,24 @@ Frontend Next.js/React/TypeScript/Tailwind CSS/shadcn/ui. Backend Node.js/Expres
 | Scope baseline | Product owner | Produce P1 PRD and release backlog | Before P3 implementation |
 | Build/no-build decision | **Product owner** | Recommend based on evidence | P0.10 decision gate |
 
-## 6. Product-owner signoff record — NOT YET SIGNED
+## 6. Product-owner signoff record — SIGNED FOR CONDITIONAL INTERNAL GO (2026-11-13)
 
-- Decision A: GO / NO-GO / REVISE
-- Decision B: NO-GO until verified safeguards / REVISE
-- Decision C: NO-GO until verified market/commercial readiness / REVISE
-- Allowed data types: Synthetic only until controls pass (proposed)
+- Decision A: **CONDITIONAL GO** for P1/P2 and later P3 internal, synthetic-only sandbox development
+- Decision B: **NO-GO** for external pilot/live customer or regulated data pending security/privacy/tenant/contract controls
+- Decision C: **NO-GO** for commercial paid production pending separate evidence and approval
+- Allowed data types: **Synthetic/non-identifying data only** until independent controls and release gates pass
 - Committed scope: Proposed P4–P8 Merchant Operations CRM, all other Zoho-like product tracks remain future
-- P0.08 price interviews waiver (if any): Pending explicit decision
-- P0.09 continue-without-design-partners (if any): Pending explicit decision
-- Owner authorization and date: **PENDING**
-- Status: **P0 DOCUMENT PACKAGE PREPARED — EVIDENCE GATES UNMET**
+- P0.07 value-proposition prospect-test waiver: **APPROVED for internal sequencing only; actual tests 0**
+- P0.08 five-buyer pricing interviews waiver: **APPROVED for internal sequencing only; actual tests 0/5**
+- P0.09 continue-without-design-partners: **APPROVED for internal-only development; actual partners 0/2**
+- Owner authorization and date: **Product owner expressly approved in conversation, 2026-11-13**
+- Status: **P0 INTERNAL GO APPROVED WITH EXPLICIT MARKET EVIDENCE WAIVERS; PRODUCTION / MARKET VALIDATION GATES UNMET**
 
-The owner can explicitly approve a conditional internal build while acknowledging research deficits; this does **not** retroactively validate interviews, measured outcomes or pilot commitments.
+The owner has **explicitly approved** conditional internal development while acknowledging research deficits. This does **not** retroactively validate interviews, measured outcomes or pilot commitments. See [signed waiver record](p0-07-09-research-waivers.md).
 
-## 7. Exit actions and handoff to P1 (after owner authorizes)
-1. Confirm conditional P1 planning / synthetic-only development vs no-build.
-2. Record waiver, if chosen, for the remaining P0.07, P0.08 and P0.09 *market validation gates*, while preserving underlying evidence debt.
+## 7. Exit actions and handoff to P1 (AUTHORIZED FOR INTERNAL WORK)
+1. **CONFIRMED:** conditional P1 requirements / P2 design / synthetic-only later sandbox engineering; P1.01 Master PRD starts in issue #14.
+2. **RECORDED:** owner waived P0.07, P0.08 and P0.09 market validation gates for internal sequencing only; issue #8 retains evidence debt.
 3. Translate scope to P1 product modules with roles, data contracts, performance/reliability and negative security tests.
 4. Keep unresolved risk register and private real research issue #8 open; do not claim validated ICP/product-market fit.
 5. Before P3 scaffolding, check repo/CI and account access; no production environment until independent gates satisfied.
@@ -132,4 +133,4 @@ The owner can explicitly approve a conditional internal build while acknowledgin
 - [Pricing hypotheses](pricing_hypotheses.md), [Pilot plan](pilot_plan.md)
 - [P0 master ledger](../p0-phase-ledger.md)
 
-**Final:** All *preparable* P0 documents exist; **P0 has NOT achieved a validated commercial go**. Await owner decision.
+**Final:** All P0 planning artifacts exist; **OWNER APPROVED CONDITIONAL INTERNAL GO**, P1.01 started. **No validated commercial GO**; production and live data remain blocked.
