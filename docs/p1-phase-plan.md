@@ -1,7 +1,7 @@
 # P1 — Requirements and Acceptance Contracts: Phase Plan
 
 **Initiated:** 2026-11-13
-**Status:** P1 active. P1.01–P1.08 OWNER-APPROVED and closed as provisional design; P1.09 Acceptance and Traceability Map drafted, owner review pending.
+**Status:** P1 active. P1.01–P1.09 OWNER-APPROVED and closed as provisional planning/design only; P1.10 Risk and Decision Register drafted, owner review pending. All 14 P1.09 gaps remain OPEN.
 **Authorization:** P0.10 owner-signed conditional GO for P1/P2 and future P3 **synthetic-data-only** internal development. Real customer data and external launch **not** authorized.
 **P1 exit:** Versioned owner-approved PRD/SRS, a traceability matrix, domain glossary and approved bounded MVP backlog.
 
@@ -17,8 +17,8 @@
 | P1.06 | Permission and sharing matrix | `docs/security/permission-matrix.md`, `permission-matrix.csv`, `permission-policy-rules.md`, `permission-negative-cases.csv` | **COMPLETE — owner-approved DESIGN REQUIREMENTS 2026-11-13; 286 permission rules / 52 future tests, nothing implemented; issue #19 closed** |
 | P1.07 | Domain glossary and synthetic sample records | `docs/product/domain-glossary.md`, `domain-dictionary.csv`, `domain-relationships.md`, `domain-synthetic-records.json`, `domain-validation-cases.csv` | **COMPLETE — OWNER-APPROVED PROVISIONAL DESIGN 2026-11-13; 31 entities / 230 fields / 68 synthetic records / 46 future tests; issue #20 closed** |
 | P1.08 | API and event contract specification | `docs/api/api-contracts.md`, `openapi-v1.json`, `api-traceability.csv`, `event-contracts.md`, `event-catalog.csv`, `event-envelope.schema.json`, `api-contract-cases.csv` | **COMPLETE — owner-approved provisional API/event design 2026-11-13; 67 operations, 16 events, 164 future tests; NOT implemented; issue #21 closed** |
-| **P1.09** | **Acceptance and traceability map** | `docs/qa/acceptance-traceability.md`, `requirements-coverage.csv`, `feature-coverage.csv`, `test-inventory.csv`, `permission-decision-cases.csv`, `event-acceptance-cases.csv`, `release-acceptance-gates.md`, `coverage-gaps.md` | **IN PROGRESS — 121 requirements and 36 features mapped, 727 planned tests, 14 gaps; owner review pending; issue #22 open** |
-| P1.10 | Risk and decision register | `docs/product/p1-risk-register.md` | NOT STARTED |
+| P1.09 | Acceptance and traceability map | `docs/qa/acceptance-traceability.md`, `requirements-coverage.csv`, `feature-coverage.csv`, `test-inventory.csv`, `permission-decision-cases.csv`, `event-acceptance-cases.csv`, `release-acceptance-gates.md`, `coverage-gaps.md` | **COMPLETE — owner-approved PLANNING on 2026-11-13; 121 requirements/36 features mapped; 727 planned tests NOT RUN; all 14 gaps OPEN; issue #22 closed** |
+| **P1.10** | **Risk and decision register** | `docs/product/p1-risk-register.md`, `p1-risk-register.csv`, `p1-decision-register.md`, `p1-decision-backlog.csv`, `p1-risk-mitigation-plan.md` | **IN PROGRESS — 14/14 gaps carried as OPEN risks, 12 unresolved decisions, provisional mitigations and hard gates; owner review pending; issue #23 open** |
 
 ## P1.01 owner approval checklist
 
@@ -90,7 +90,16 @@
 - [x] [286 policy decision cases](qa/permission-decision-cases.csv) and [32 event cases](qa/event-acceptance-cases.csv) registered; NO permission engine or events implemented.
 - [x] [Acceptance gates](qa/release-acceptance-gates.md) separate internal synthetic tests from external/paid launch.
 - [x] [14-item coverage/evidence gap register](qa/coverage-gaps.md) keeps work open until real implementation and research.
-- [ ] Owner reviews and approves P1.09 traceability and evidence rules as planning requirements before P1.10.
+- [x] Owner approved P1.09 traceability/evidence rules as PLANNING ONLY, **not executed/passed tests**, on 2026-11-13; issue #22 closed and 14 gaps remain OPEN.
+
+## P1.09 owner approval / P1.10 risk and decision planning
+
+- [x] P1.09 owner-approved 121 requirements/36 features mapped to 727 future tests; **0 run, 0 passed**.
+- [x] P1.09 issue #22 closed **without resolving any G-001..G-014 gaps**.
+- [x] [14-item OPEN risk register](product/p1-risk-register.csv) and [risk narrative](product/p1-risk-register.md) with provisional priority, owners, mitigation and closure evidence.
+- [x] [12 open decision choices](product/p1-decision-backlog.csv) and [historical/forward decisions](product/p1-decision-register.md); not all options selected.
+- [x] [Mitigation plan](product/p1-risk-mitigation-plan.md) maps risks to P2/P3/P4/P5/P7/P8/P12–P14 and external approval gates.
+- [ ] Product owner approves P1.10 risk/decision *tracking only*, without declaring risks mitigated or authorizing G-EXT/G-COM, before P2 UX Design.
 
 ## Release gating (separate from documentation)
 
@@ -111,7 +120,8 @@ P1.05 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/18
 P1.06 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/19  
 P1.07 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/20  
 P1.08 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/21  
-P1.09 active issue: https://github.com/owaisprog/Zoho-Clone/issues/22
+P1.09 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/22  
+P1.10 active issue: https://github.com/owaisprog/Zoho-Clone/issues/23
 
 **No Next.js or Express application has yet been scaffolded.** The top-level `frontend/` and `backend/` folders contain README placeholders. No P1 code tests were run because the deliverables are specifications.
 
