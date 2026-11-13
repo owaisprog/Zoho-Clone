@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01 - Business Vision Charter drafted; awaiting product-owner approval.
+**Status:** P0.01 approved and closed; P0.02 Customer Segment Map in progress.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -11,6 +11,8 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/vision.md](docs/product/vision.md) - P0.01 Business Vision Charter.
 - [docs/product/decisions.md](docs/product/decisions.md) - Product and technical decisions.
 - [docs/roadmap-progress.md](docs/roadmap-progress.md) - Active roadmap checkpoint.
+
+- [docs/product/icp.md](docs/product/icp.md) - P0.02 Customer Segment Map (draft ranking; owner acceptance pending).
 
 ## Development approach
 

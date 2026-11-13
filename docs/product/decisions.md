@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.01 (draft; owner approval pending)
+**Current roadmap checkpoint:** P0.02 (research document prepared; external customer evidence pending)
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -13,11 +13,13 @@
 | DEC-006 | Database: PostgreSQL + Prisma; Redis + BullMQ when needed | Confirmed architectural direction | Tenant constraints/RLS and transactions to be fully specified during P3/P4 |
 | DEC-007 | Modular monolith initially; use REST/OpenAPI and domain events | Confirmed architectural direction | Avoid premature microservices |
 | DEC-008 | Separate top-level `frontend/` and `backend/` folders | Confirmed by owner request | Created in P0.01; full scaffolding belongs to P3 |
-| DEC-009 | Specialized Merchant Operations CRM is first commercial product | **Proposed - confirm** | Previous roadmap recommendation; validate through P0.02-P0.10 |
+| DEC-009 | Specialized Merchant Operations CRM is the initial product direction | **Approved 2026-11-13 (subject to market validation)** | ISO-first, POS reseller second, PayFac third; refine during P0.02-P0.10 |
 | DEC-010 | Initial paid plans and published prices | **Unvalidated proposal** | Price interviews and cost model required |
 | DEC-011 | Selling jurisdiction and billing provider | **Open** | Verify provider eligibility, taxation and legal entity |
 | DEC-012 | Public-facing brand / product names | **Open** | Original name and trademark clearance required |
-| DEC-013 | P0.01 business vision charter acceptance | **Awaiting owner approval** | Close only after explicit sign-off |
+| DEC-013 | P0.01 business vision charter acceptance | **Approved 2026-11-13** | Product owner explicitly approved mission and proposed order; P0.01 closed |
+
+| DEC-014 | P0.02 ICP prioritization is a desk-research hypothesis until direct customer evidence is collected | **Provisional** | See `docs/product/icp.md`, interview validation planned for P0.04 |
 
 ## Change control
 
@@ -25,7 +27,7 @@ Add a dated entry before changing architecture, product order or launch scope. S
 
 ## Owner sign-off record
 
-- Decision: Pending
-- Approved by: Pending
-- Date: Pending
-- Next permitted phase on approval: P0.02 - Customer Segment Map
+- Decision: Approved - P0.01 charter and initial product order
+- Approved by: Product owner, in ChatGPT conversation
+- Date: 2026-11-13
+- Next phase: P0.02 - Customer Segment Map (active)

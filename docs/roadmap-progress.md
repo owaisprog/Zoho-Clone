@@ -1,51 +1,51 @@
 # Zoho Clone - Master Roadmap Progress
 
-**Last updated:** 2026-11-13  
-**Authoritative roadmap:** Complete AI Master Roadmap v2.0 - P0-P17 plus individual product tracks  
-**Active sub-phase:** P0.01 - Business Vision Charter  
-**Tracking issue:** https://github.com/owaisprog/Zoho-Clone/issues/3  
-**Status:** DRAFT PREPARED; OWNER APPROVAL REQUIRED
+**Updated:** 2026-11-13
+**Source roadmap:** Complete AI Master Roadmap v2.0 - P0-P17 and individual product tracks
+**Current phase:** P0.02 - Customer Segment Map
+**P0.01 issue:** https://github.com/owaisprog/Zoho-Clone/issues/3
+**P0.02 status:** Desk-research draft prepared; buyer interviews/owner ranking confirmation pending
 
-## Current checkpoint
+## Phase overview
 
-| Item | Evidence / status |
-| --- | --- |
-| GitHub repository inspected | Yes - `owaisprog/Zoho-Clone`; root initially contained only `README.md` |
-| `frontend/` directory | Created with explanatory `README.md`; no application scaffold |
-| `backend/` directory | Created with explanatory `README.md`; no Express scaffold |
-| Stack confirmed | Next.js/React/TypeScript frontend; Node.js/Express/TypeScript backend; PostgreSQL/Prisma; Redis/BullMQ |
-| P0.01 vision artifact | `docs/product/vision.md` |
-| P0.01 decision log | `docs/product/decisions.md` |
-| Business hypotheses distinguished from confirmed decisions | Yes |
-| P0.01 sign-off | **Pending owner review and approval** |
-| Next roadmap item | P0.02 - Customer Segment Map (after P0.01 approval) |
+| Phase | Status | Evidence |
+| --- | --- | --- |
+| P0.01 - Business Vision Charter | **COMPLETE - approved 2026-11-13** | `docs/product/vision.md`, `docs/product/decisions.md`, GitHub issue #3 |
+| P0.02 - Customer Segment Map | **IN PROGRESS** | `docs/product/icp.md`, `docs/product/icp-scorecard.csv`, `docs/product/p0-02-evidence.md` |
+| P0.03 - Competitive Capability Matrix | NOT STARTED | Depends on P0.02 |
+| P0.04 - Customer Interview Playbook | NOT STARTED | Depends on P0.03 |
+| P3 - Frontend/Express backend scaffolding | NOT STARTED | Earlier discovery and architecture dependencies |
 
-## Sub-phase record
+## P0.01 completion evidence
 
-### P0.01 - Business Vision Charter
+- The product owner explicitly approved the charter and proposed product order in conversation on **2026-11-13**.
+- Vision, success criteria, full product scope, stack and AI-led responsibilities are documented.
+- GitHub repository has `frontend/` and `backend/` directories containing README files. No application scaffold yet.
+- Owner approval closes P0.01; open commercial/legal questions remain **downstream discovery items**, not blockers to the already-approved vision.
+- No code tests were required; this was a document/decision phase.
 
-- **Prerequisite:** Product owner states project mission and target business segments.
-- **Delivered:** Draft mission; target customer hypotheses; first-product hypothesis; long-term all-product scope; commercial model hypothesis; stack; development constraints; measurable proposed objectives; decision log.
-- **Backend/API work:** Not applicable - this is a pre-build planning phase.
-- **Tests/review:** Scope and contradiction review; technical stack consistency checked; no runtime tests applicable.
-- **Unresolved:** Owner sign-off; initial segment prioritization; legal/commercial jurisdiction; public-facing name.
-- **Exit criteria:** Product owner explicitly approves the charter and measurable objectives.
-- **Status:** Waiting for approval; **not marked complete**.
+## P0.02 current outputs
 
-### P0.02 - Customer Segment Map
+- [x] Distinguish payment-industry ICPs from generic SMB and agency users.
+- [x] Rank three initial target segments with an explicit scoring method.
+- [x] Identify each buyer, job to be done, problem, initial product fit, buying process and objections.
+- [x] Record external sources supporting industry workflow relevance and competitor capability.
+- [x] Document which scores and benefits are assumptions rather than interviewed customer evidence.
+- [ ] Product owner approves or revises final P0.02 segment order.
+- [ ] Gather direct prospect evidence and update scores (scheduled for P0.04; may begin earlier).
+- [ ] Close P0.02 issue and proceed to P0.03.
 
-- **Status:** Not started / blocked on P0.01 sign-off.
-- **Required output:** Three ranked initial customer segments with buyer, job-to-be-done, pain, evidence and buying process.
+**No interviews, customer demand measurements, legal review, deployment or software testing are claimed as completed.**
 
-## Operating procedure for future sub-phases
+## Next action
 
-1. Inspect the current repository and latest progress tracker.
-2. Read the active phase from the roadmap and identify dependencies.
-3. Specify exact deliverables, permissions, data behavior and tests.
-4. Implement the minimum coherent change, with a reviewable diff.
-5. Run actual tests when software is involved; retain failure evidence.
-6. Record commit/PR links, acceptance results and any blocked items.
-7. Obtain owner approval at decision/release gates.
-8. Mark the phase complete only after the gate is satisfied.
+Review `docs/product/icp.md`. Confirm the segment priority or provide a revision. Once approved, mark P0.02 complete and start P0.03. Interviews and customer evidence collection remain separate tracked validation work.
 
-Never claim a test passed without executing it, or a deployment succeeded without verifying the deployed environment.
+## Development operating rules
+
+1. Read the authoritative roadmap and this checkpoint before each phase.
+2. Confirm prerequisite completion, technical stack and owner decision boundaries.
+3. Create scoped artifacts/code; keep original repository data intact.
+4. Test actual code before claiming software passes; record result and limitations.
+5. Link commits/issues, then seek product-owner approval for gates.
+6. Advance phase status only after its explicit exit criteria are met.

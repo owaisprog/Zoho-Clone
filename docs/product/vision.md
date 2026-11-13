@@ -1,9 +1,9 @@
 # P0.01 - Business Vision Charter
 
 **Project:** Zoho Clone  
-**Version:** 0.1 (draft for owner approval)  
+**Version:** 1.0 (product-owner approved)  
 **Created:** 2026-11-13  
-**Status:** DRAFT - NOT YET APPROVED  
+**Status:** APPROVED - P0.01 COMPLETE  
 **Roadmap:** Zoho Clone Complete AI Master Roadmap v2.0, P0.01
 
 ## 1. Mission
@@ -31,7 +31,7 @@ For the first release, payment-service organizations may face especially costly 
 
 **Scope rule:** Every identified product and major feature remains on the *long-term roadmap*. This does not make all functionality part of the first release.
 
-## 4. First commercially usable product (proposed)
+## 4. First commercially usable product (approved initial direction; market validation pending)
 
 **Working product:** Merchant Operations CRM.
 
@@ -101,7 +101,7 @@ AI can execute available tools during an active session. It cannot guarantee uns
 
 ## 10. Proposed measurable success criteria
 
-### P0 validation criteria - proposal pending owner approval
+### P0 validation criteria - owner-approved targets (not achieved yet)
 - 15-25 interviews across relevant decision-makers (first target, not a guaranteed outcome).
 - 5 qualified design partners who validate the chosen workflow problem.
 - 2 potential paid pilots or comparable documented commercial intent.
@@ -124,15 +124,17 @@ P0 market and vision validation -> P1 product requirements -> P2 UX -> P3 archit
 
 ## 12. Open decisions requiring owner confirmation
 
-- [ ] Approve or revise this mission and long-term breadth.
-- [ ] Confirm the first customer segment and whether merchant operations is the initial product.
+- [x] Approve this mission and long-term breadth (approved 2026-11-13).
+- [x] Approve initial focus on merchant operations and ISO-first ranking for research (subject to P0.02 validation).
 - [ ] Confirm target selling regions and legal/commercial operating jurisdiction.
 - [ ] Confirm owner-approved positioning and market-facing brand (working repo name may remain Zoho Clone).
-- [ ] Confirm the proposed P0 validation success criteria.
-- [ ] Approve P0.01 closure and authorize beginning P0.02.
+- [x] Approve the P0 validation success criteria as targets (approved 2026-11-13).
+- [x] Approve P0.01 closure and authorize P0.02 (2026-11-13).
 
 ## 13. Acceptance and sign-off
 
 **P0.01 completion requires:** The charter defines vision, target customers, app scope, constraints and measurable product objectives; contradictions are reviewed; the decision log is updated; and the product owner explicitly approves the charter.
 
-**Current state:** Draft complete and stored in GitHub. **Owner approval pending.** P0.01 must not be marked complete until approval is received.
+**Current state:** APPROVED by the product owner on 2026-11-13 through the ChatGPT project conversation. P0.01 is complete. P0.02 - Customer Segment Map is active; real customer validation is not yet complete.
+
+**Approval scope:** Owner approved the vision and proposed product order, **not** any specific unvalidated market evidence, payment provider, legal jurisdiction, public brand, or final price.

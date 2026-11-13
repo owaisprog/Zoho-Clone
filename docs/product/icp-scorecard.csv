@@ -1,0 +1,4 @@
+rank,segment,buyer,champion,job_to_be_done,pain_score_1_5,buyer_access_score_1_5,willingness_to_pay_score_1_5,mvp_fit_score_1_5,feasibility_score_1_5,reuse_score_1_5,weighted_total_100,evidence_status,validation_status
+1,"Independent ISOs and merchant services providers","CEO/COO/VP Operations","Merchant onboarding manager","Unify lead-agent-merchant onboarding visibility",4,4,4,4,3,5,80,"Competitor product pages and onboarding docs only","Not interviewed"
+2,"POS providers and resellers","Founder/COO/Operations GM","Deployment manager","Unify sales, merchant and POS activation handoffs",4,3,3,4,3,4,71,"Clover partner/hardware workflows only","Not interviewed"
+3,"PayFacs and payment software providers","COO/VP Product/Head of Payments","Payments operations lead","Coordinate compliant submerchant lifecycle across systems",5,2,4,2,2,4,67,"Stripe PayFac guide; industry responsibilities only","Not interviewed"
