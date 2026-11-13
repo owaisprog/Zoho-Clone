@@ -3,7 +3,7 @@
 **Project:** Zoho Clone
 **Date:** 2026-11-13
 **Phase:** P0.06 — Data Sensitivity Inventory
-**Status:** REVIEW DRAFT — owner/legal approval outstanding; **not implemented security controls**.
+**Status:** OWNER-APPROVED DESIGN REQUIREMENTS (2026-11-13). Not implemented security controls, legal certification or audit evidence.
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/9
 **Owner sequencing override:** P0.05 validation skipped at owner's direction with 0/3 real workflows validated, recorded at `p0-05-validation-waiver.md`.
 
@@ -66,10 +66,10 @@ See [data-inventory.csv](data-inventory.csv): **36 candidate data categories**, 
 ### Required sign-offs
 
 - [ ] Product owner confirms initial selling jurisdictions and which data types are in-scope for MVP.
-- [ ] Product owner accepts **no raw bank/card/ID/KYC data in initial CRM** and provider-hosted handling.
+- [x] Product owner approves **no raw bank/card/ID/KYC/credential data** in initial CRM; use approved hosted providers as a DESIGN requirement (2026-11-13).
 - [ ] Qualified legal/privacy review defines controller/processor terms, notice, retention and subject-rights handling where applicable.
 - [ ] Processor/partner contracts establish which status references and documents we may handle.
-- [ ] Owner approves classification levels and role-based restrictions.
+- [x] Owner approves five classification classes and proposed access restrictions **as design requirements** (2026-11-13).
 - [ ] Architecture phase converts classification into enforceable schemas, field allowlists, integration interfaces and tests.
 
 ## 6. Evidence and verification
@@ -91,4 +91,4 @@ This phase's purpose is **to identify prohibited/sensitive fields before coding*
 - European Commission, GDPR principles: https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/principles-gdpr_en
 - OWASP, Logging Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet
 
-**P0.06 acceptance:** classification matrix and sensitive field exclusions drafted (yes); product owner/legal operating assumptions approved (pending); phase remains **IN PROGRESS**.
+**P0.06 acceptance:** Product owner approved proposed classifications and initial CRM high-risk data exclusions on 2026-11-13. P0.06 documentation phase is COMPLETE. Legal jurisdiction, provider contracts, retention and technical implementation/testing remain OPEN before live processing.
