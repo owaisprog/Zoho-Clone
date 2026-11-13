@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.07 — Domain Glossary and Synthetic Sample Records (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P1.08 — API and Event Contract Specification (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -45,8 +45,8 @@
 | P1.04 Personas and Journeys | **COMPLETE — owner-approved provisional baseline on 2026-11-13**, [Issue #17](https://github.com/owaisprog/Zoho-Clone/issues/17) closed; 12 synthetic personas, 18 journeys, 72 steps, 36 future tests NOT RUN |
 | P1.05 Feature Hierarchy and Release Gates | **COMPLETE — OWNER APPROVED INTERNAL PLANNING BASELINE on 2026-11-13**, [Issue #18](https://github.com/owaisprog/Zoho-Clone/issues/18) closed; 36 features and R0/R1/R2 vs external gate design approved as requirements |
 | P1.06 Permission and Sharing Matrix | **COMPLETE — OWNER APPROVED DESIGN REQUIREMENTS on 2026-11-13**, [Issue #19](https://github.com/owaisprog/Zoho-Clone/issues/19) closed; 286 proposed rules / 52 tests NOT RUN; no security controls implemented |
-| **P1.07 Domain Glossary and Sample Records** | **IN PROGRESS — 31 proposed entities, 230 fields, 33 relationship rules, synthetic two-tenant samples, 46 future tests**, [Issue #20](https://github.com/owaisprog/Zoho-Clone/issues/20) open; owner review pending |
-| P1.08 API and Event Contract Spec | NOT STARTED |
+| P1.07 Domain Glossary and Sample Records | **COMPLETE — OWNER APPROVED PROVISIONAL DESIGN 2026-11-13**, [Issue #20](https://github.com/owaisprog/Zoho-Clone/issues/20) closed; 31 entities, 230 fields, 68 fictional records; no DB or tests |
+| **P1.08 API and Event Contract Spec** | **IN PROGRESS — 67 proposed REST operations, 16 internal events, 164 future contract/security tests**, [Issue #21](https://github.com/owaisprog/Zoho-Clone/issues/21) open; owner review pending |
 | P1.09 Acceptance and Traceability Map | NOT STARTED |
 | P1.10 Risk and Decision Register | NOT STARTED |
 
@@ -92,15 +92,22 @@
 - [x] [52 proposed negative access scenarios](security/permission-negative-cases.csv) — **NOT RUN**.
 - [x] Owner approved P1.06 least-privilege roles, default deny, tenant isolation and record/field sharing as **DESIGN ONLY**, on 2026-11-13; issue #19 closed. Security implementation and tests remain undone.
 
-### P1.07 deliverables prepared for owner review
+### P1.07 owner-approved provisional design
 - [x] [31-entity glossary](product/domain-glossary.md) for R0/R1/R2 and deferred provider references.
 - [x] [230-row field dictionary](product/domain-dictionary.csv) with types, classifications, allowlists and explicit forbidden-field examples.
 - [x] [33 relationship rules](product/domain-relationships.md) for same-org joins, stage history, assignment and source boundaries.
 - [x] [68 fictional sample records](product/domain-synthetic-records.json) across two demo organizations; no real customer/payment information.
 - [x] [46 future domain validation scenarios](product/domain-validation-cases.csv) — **NOT RUN**.
-- [ ] Owner approves P1.07 glossary, field names, status semantics and relationships as provisional internal requirements before P1.08.
+- [x] Owner approved P1.07 glossary, classified fields, provisional states, relations and synthetic records **as design only** on 2026-11-13; issue #20 closed. Not an implemented database schema.
 
-**No executable schema, migration, real database, app, RBAC/ABAC policy engine, actual permission tests or runtime controls exist yet.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
+### P1.08 deliverables prepared for owner review
+- [x] [API contracts](api/api-contracts.md) and [draft OpenAPI 3.1](api/openapi-v1.json): **67 operations**, 44 paths, 72 schemas. No actual server routes.
+- [x] [API/FR/UC/feature traceability](api/api-traceability.csv): 18 PRD UC and 37 Functional FR with direct API operations; cross-cutting UI/QA and deferred specialist modules intentionally not exposed.
+- [x] [16 internal event types and outbox design](api/event-contracts.md), [catalog](api/event-catalog.csv) and [JSON Schema](api/event-envelope.schema.json): **not emitted**.
+- [x] [164 future contract/security cases](api/api-contract-cases.csv): all **NOT EXECUTED**.
+- [ ] Owner approves P1.08 API, events and error/authorization boundaries before P1.09.
+
+**No executable schema, migration, real database, app, RBAC/ABAC policy engine, actual API routes or runtime tests exist yet.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
 ## Technical decisions (unchanged)
 
