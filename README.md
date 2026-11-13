@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register in progress. All 14 evidence gaps remain OPEN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register owner-approved for tracking only; Phase P2.01 Brand and Design Tokens in progress. All 14 risks and 12 decisions remain OPEN; 727 tests NOT RUN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -50,7 +50,7 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 
 **P0 DECISION:** Product owner explicitly approved conditional internal GO on 2026-11-13; see [owner waiver record](docs/product/p0-07-09-research-waivers.md) and [signed build gate](docs/product/phase0_gate.md). Real market evidence and production security/contract/legal release gates are outstanding. Production, live payments, real merchant data and public commercial use are NOT authorized.
 
-## P1 — Requirements (active)
+## P1 — Requirements (owner-approved planning/design only)
 
 - [P1 sub-phase plan](docs/p1-phase-plan.md) — P1.01 through P1.10 requirements work.
 - [P1.01 Master PRD](docs/product/prd.md) — first Merchant Operations CRM, prioritized releases and non-goals; owner-approved 2026-11-13.
@@ -105,7 +105,17 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.10 Open Risk Register](docs/product/p1-risk-register.md) and [CSV](docs/product/p1-risk-register.csv) — 14 original P1.09 G-001..G-014 gaps retained **OPEN**, with proposed priorities/mitigations and real evidence needs.
 - [P1.10 Decision Register](docs/product/p1-decision-register.md) and [Open Decision Backlog](docs/product/p1-decision-backlog.csv) — existing owner-approved design baselines distinguished from 12 unresolved choices.
 - [P1.10 Risk Mitigation Sequencing](docs/product/p1-risk-mitigation-plan.md) — phase checkpoints, accountability and G-INT versus blocked G-EXT/G-COM.
-- [P1.10 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/23) — open for owner approval.
+- [P1.10 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/23) — CLOSED as owner-approved tracking only; all 14 risks and 12 decisions remain OPEN.
+
+## P2 — Product UX and Interface Design (active)
+
+- [P2.01–P2.17 UX phase plan](docs/design/p2-phase-plan.md) — full 17-step design sequence and owner checkpoints.
+- [P2.01 Original Brand & Tokens](docs/design/brand-and-tokens.md) — proposed original B2B typography/spacing/semantics, **NOT final commercial branding**.
+- [154 proposed design tokens](docs/design/design_tokens.json) — 36 primitive colors, 24 light and 24 dark semantic color tokens; other layout/type/motion/density tokens.
+- [P2.01 Sample Contrast Review](docs/design/color-contrast-review.csv) — 27 calculated light/dark token pair checks; NOT browser-based WCAG certification.
+- [P2.01 Component Usage Examples](docs/design/component-examples.md) — dense CRM tables, merchant application context, permissions and failure states.
+- [P2.01 Standalone Static UX Preview](docs/design/token-preview.html) — fictional merchant queue, theme and density toggles; no backend, auth, real data or deployment.
+- [P2.01 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/24) — OPEN for owner review. P2.02 Information Architecture begins after design approval.
 
 ## Development approach
 
