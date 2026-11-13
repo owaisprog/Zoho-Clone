@@ -1,7 +1,7 @@
 # P1 — Requirements and Acceptance Contracts: Phase Plan
 
 **Initiated:** 2026-11-13
-**Status:** P1 active. P1.01–P1.04 OWNER-APPROVED and closed; P1.05 Feature Hierarchy and Release Gates drafted, owner review pending.
+**Status:** P1 active. P1.01–P1.05 OWNER-APPROVED and closed; P1.06 Permission and Sharing Matrix drafted, owner review pending.
 **Authorization:** P0.10 owner-signed conditional GO for P1/P2 and future P3 **synthetic-data-only** internal development. Real customer data and external launch **not** authorized.
 **P1 exit:** Versioned owner-approved PRD/SRS, a traceability matrix, domain glossary and approved bounded MVP backlog.
 
@@ -13,8 +13,8 @@
 | P1.02 | Functional SRS — validations, states, errors and recovery | `docs/product/srs.md`, `srs-requirements.csv`, `srs-state-transitions.md`, `srs-acceptance-cases.csv` | **COMPLETE — owner-approved 2026-11-13; 49 requirements and 59 future acceptance cases; issue #15 closed** |
 | P1.03 | Nonfunctional SRS — latency, reliability, backups, accessibility, security | `docs/product/nfr.md`, `nfr-matrix.csv`, `nfr-verification-plan.md`, `nfr-acceptance-cases.csv` | **COMPLETE — owner-approved design targets on 2026-11-13; 46 unmeasured NFRs, 52 unexecuted test cases; issue #16 closed** |
 | P1.04 | User personas and journeys | `docs/product/personas.md`, `docs/product/journeys.md`, `docs/product/journey-map.csv`, `docs/product/journey-acceptance-cases.csv` | **COMPLETE — owner-approved provisional baseline 2026-11-13; 12 personas, 18 synthetic journeys, 72 steps and 36 unexecuted future tests; issue #17 closed** |
-| **P1.05** | **Feature hierarchy and release gates** | `docs/product/features.md`, `docs/product/mvp-backlog.csv`, `docs/product/feature-traceability.csv`, `docs/product/release-gates.md` | **IN PROGRESS — 36 features, 26 UC and 49 FR covered; internal vs external release gates drafted; owner review pending; issue #18 open** |
-| P1.06 | Permission and sharing matrix | `docs/security/permission-matrix.md` | NOT STARTED |
+| P1.05 | Feature hierarchy and release gates | `docs/product/features.md`, `docs/product/mvp-backlog.csv`, `docs/product/feature-traceability.csv`, `docs/product/release-gates.md` | **COMPLETE — owner-approved internal planning baseline 2026-11-13; 36 features, 26 UC/49 FR traced; issue #18 closed** |
+| **P1.06** | **Permission and sharing matrix** | `docs/security/permission-matrix.md`, `permission-matrix.csv`, `permission-policy-rules.md`, `permission-negative-cases.csv` | **IN PROGRESS — 286 proposed role/resource rules, 52 future negative-access tests, owner review pending; issue #19 open** |
 | P1.07 | Domain glossary and synthetic sample records | `docs/product/domain-glossary.md`, synthetic examples | NOT STARTED |
 | P1.08 | API and event contract specification | `docs/api/api-contracts.md`, versioned OpenAPI after design | NOT STARTED |
 | P1.09 | Acceptance and traceability map | `docs/qa/acceptance-traceability.md` | NOT STARTED |
@@ -53,6 +53,16 @@
 - [ ] Product owner reviews and approves feature priorities, dependencies and **R0/R1/R2 internal vs external release gates**.
 - [ ] Following approval close P1.05 and open P1.06 Permission and Sharing Matrix.
 
+## P1.05 owner approval / P1.06 current documentation
+
+- [x] Owner approved P1.05's 36 feature priorities, dependency order and R0/R1/R2 vs external release gates **as internal planning requirements only** on 2026-11-13.
+- [x] P1.05 closed (#18). No feature implemented or any external pilot/production access authorized.
+- [x] [Permission and Sharing Matrix](security/permission-matrix.md) — 13 actor roles, 22 resource families and default-deny policy.
+- [x] [Role/resource policy CSV](security/permission-matrix.csv) — **286** proposed scope/action/field rules.
+- [x] [Policy execution rules](security/permission-policy-rules.md) — membership, role, record, field, revocation and worker safety checks.
+- [x] [52 future security denial cases](security/permission-negative-cases.csv) — **NOT EXECUTED**.
+- [ ] Owner approves P1.06 role/resource sharing rules and hard safety restrictions before P1.07 Domain Glossary.
+
 ## Release gating (separate from documentation)
 
 - **Internal sandbox:** synthetic data and no real processor/billing/merchant data.
@@ -68,7 +78,8 @@ P1.01 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/14
 P1.02 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/15  
 P1.03 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/16  
 P1.04 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/17  
-P1.05 active issue: https://github.com/owaisprog/Zoho-Clone/issues/18
+P1.05 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/18  
+P1.06 active issue: https://github.com/owaisprog/Zoho-Clone/issues/19
 
 **No Next.js or Express application has yet been scaffolded.** The top-level `frontend/` and `backend/` folders contain README placeholders. No P1 code tests were run because the deliverables are specifications.
 
