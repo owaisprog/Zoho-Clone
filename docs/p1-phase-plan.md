@@ -1,7 +1,7 @@
 # P1 — Requirements and Acceptance Contracts: Phase Plan
 
 **Initiated:** 2026-11-13
-**Status:** P1 active. P1.01–P1.05 OWNER-APPROVED and closed; P1.06 Permission and Sharing Matrix drafted, owner review pending.
+**Status:** P1 active. P1.01–P1.06 OWNER-APPROVED and closed as design; P1.07 Domain Glossary and Synthetic Records drafted, owner review pending.
 **Authorization:** P0.10 owner-signed conditional GO for P1/P2 and future P3 **synthetic-data-only** internal development. Real customer data and external launch **not** authorized.
 **P1 exit:** Versioned owner-approved PRD/SRS, a traceability matrix, domain glossary and approved bounded MVP backlog.
 
@@ -14,8 +14,8 @@
 | P1.03 | Nonfunctional SRS — latency, reliability, backups, accessibility, security | `docs/product/nfr.md`, `nfr-matrix.csv`, `nfr-verification-plan.md`, `nfr-acceptance-cases.csv` | **COMPLETE — owner-approved design targets on 2026-11-13; 46 unmeasured NFRs, 52 unexecuted test cases; issue #16 closed** |
 | P1.04 | User personas and journeys | `docs/product/personas.md`, `docs/product/journeys.md`, `docs/product/journey-map.csv`, `docs/product/journey-acceptance-cases.csv` | **COMPLETE — owner-approved provisional baseline 2026-11-13; 12 personas, 18 synthetic journeys, 72 steps and 36 unexecuted future tests; issue #17 closed** |
 | P1.05 | Feature hierarchy and release gates | `docs/product/features.md`, `docs/product/mvp-backlog.csv`, `docs/product/feature-traceability.csv`, `docs/product/release-gates.md` | **COMPLETE — owner-approved internal planning baseline 2026-11-13; 36 features, 26 UC/49 FR traced; issue #18 closed** |
-| **P1.06** | **Permission and sharing matrix** | `docs/security/permission-matrix.md`, `permission-matrix.csv`, `permission-policy-rules.md`, `permission-negative-cases.csv` | **IN PROGRESS — 286 proposed role/resource rules, 52 future negative-access tests, owner review pending; issue #19 open** |
-| P1.07 | Domain glossary and synthetic sample records | `docs/product/domain-glossary.md`, synthetic examples | NOT STARTED |
+| P1.06 | Permission and sharing matrix | `docs/security/permission-matrix.md`, `permission-matrix.csv`, `permission-policy-rules.md`, `permission-negative-cases.csv` | **COMPLETE — owner-approved DESIGN REQUIREMENTS 2026-11-13; 286 permission rules / 52 future tests, nothing implemented; issue #19 closed** |
+| **P1.07** | **Domain glossary and synthetic sample records** | `docs/product/domain-glossary.md`, `domain-dictionary.csv`, `domain-relationships.md`, `domain-synthetic-records.json`, `domain-validation-cases.csv` | **IN PROGRESS — 31 proposed entities / 230 fields / 33 relationship rules / 46 future tests; owner review pending; issue #20 open** |
 | P1.08 | API and event contract specification | `docs/api/api-contracts.md`, versioned OpenAPI after design | NOT STARTED |
 | P1.09 | Acceptance and traceability map | `docs/qa/acceptance-traceability.md` | NOT STARTED |
 | P1.10 | Risk and decision register | `docs/product/p1-risk-register.md` | NOT STARTED |
@@ -61,7 +61,17 @@
 - [x] [Role/resource policy CSV](security/permission-matrix.csv) — **286** proposed scope/action/field rules.
 - [x] [Policy execution rules](security/permission-policy-rules.md) — membership, role, record, field, revocation and worker safety checks.
 - [x] [52 future security denial cases](security/permission-negative-cases.csv) — **NOT EXECUTED**.
-- [ ] Owner approves P1.06 role/resource sharing rules and hard safety restrictions before P1.07 Domain Glossary.
+- [x] Owner approved P1.06 least-privilege roles, default deny, tenant isolation and field/record sharing rules **as design, not implemented controls** on 2026-11-13; issue #19 closed.
+
+## P1.06 approval and P1.07 active data-domain baseline
+
+- [x] P1.06 owner-approved 286 permission rules for 13 actors/22 resources, **52 future security tests NOT RUN**. No RBAC/ABAC/DB isolation implemented.
+- [x] [Domain glossary](product/domain-glossary.md): **31 proposed entities**, bounded context terms and internal/external status distinction.
+- [x] [Domain dictionary](product/domain-dictionary.csv): **230 candidate field definitions** with classifications and prohibited-field examples.
+- [x] [Domain relationships](product/domain-relationships.md): **33 conceptual relation/integrity rules**.
+- [x] [Synthetic sample records](product/domain-synthetic-records.json): fictional two-tenant safe sample, not executable database fixtures.
+- [x] [Domain validation matrix](product/domain-validation-cases.csv): **46 future cases marked NOT RUN**.
+- [ ] Owner reviews/approves P1.07 entity/field/status/relationship proposal before P1.08 API and Event Contract Specification.
 
 ## Release gating (separate from documentation)
 
@@ -79,7 +89,8 @@ P1.02 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/15
 P1.03 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/16  
 P1.04 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/17  
 P1.05 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/18  
-P1.06 active issue: https://github.com/owaisprog/Zoho-Clone/issues/19
+P1.06 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/19  
+P1.07 active issue: https://github.com/owaisprog/Zoho-Clone/issues/20
 
 **No Next.js or Express application has yet been scaffolded.** The top-level `frontend/` and `backend/` folders contain README placeholders. No P1 code tests were run because the deliverables are specifications.
 
