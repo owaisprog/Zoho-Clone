@@ -1,7 +1,7 @@
 # P1.09 — Coverage, Evidence and Implementation Gap Register
 
-**Version:** 0.1 — owner review draft · 2026-11-13  
-**Status:** Open gaps are real; no unsupported PASS/READY/CERTIFIED claims.  
+**Version:** 1.0 — owner-approved P1.09 gap baseline · 2026-11-13  
+**Status:** P1.09 owner approved this gap tracking as **PLANNING ONLY** on 2026-11-13. **ALL 14 G-001..G-014 REMAIN OPEN**; no unsupported PASS/READY/CERTIFIED claims.  
 **Sources:** [121-row requirement coverage](requirements-coverage.csv), [36-row feature coverage](feature-coverage.csv), [727-case planned test inventory](test-inventory.csv) and [P0 debt issue #8](https://github.com/owaisprog/Zoho-Clone/issues/8).
 
 ## 1. Exact coverage findings
@@ -36,4 +36,4 @@
 
 The P1.09 documentation phase can be approved without resolving these implementation and external-evidence gaps, provided **they remain open, assigned and accurately labeled**. Actual G-INT release acceptance requires executing tests and closing/blocking relevant technical risks. G-EXT/G-COM require separate explicit permission, proven safeguards, real partner/buyer constraints and commercial/legal decisions.
 
-P1.10 should carry the gap IDs into the risk/decision register. Do not automatically mark these gaps `CLOSED` when P1.09 is approved.
+P1.10 now carries each of the **14 OPEN** gap IDs into [the P1.10 risk register](../product/p1-risk-register.csv) and [risk narrative](../product/p1-risk-register.md). **None has been mitigated or closed by P1.09 approval**; evidence and security obligations remain open until independently verified.
