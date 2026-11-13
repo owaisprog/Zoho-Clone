@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P2.01 Brand and Design Tokens OWNER-APPROVED as PROVISIONAL ORIGINAL INTERNAL UX on 2026-11-13; **P2.02 Information Architecture DRAFT active**. All 14 risks, 12 pending decisions and 727 unexecuted P1 implementation tests remain OPEN/unverified.
+**Current roadmap checkpoint:** P2.01 Brand and Design Tokens OWNER-APPROVED as PROVISIONAL ORIGINAL INTERNAL UX on 2026-11-13; **P2.02 Information Architecture DRAFT active**. All 14 risks and 12 pending decisions remain OPEN; the original 727 P1 implementation tests stay NOT RUN. **P3.01 early source development authorized in parallel with P2.02 on 2026-11-14**, with 13 separate scaffold CI tests passed.
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -76,6 +76,9 @@
 | DEC-051 | P2.02 information architecture and route inventory | **DRAFT — owner review pending** | 64 proposed UI route patterns: 5 public, 19 R0, 20 R1, 15 R2, 5 deferred; [route inventory](../design/route-inventory.csv), [P2.02 issue #25](https://github.com/owaisprog/Zoho-Clone/issues/25). No Next.js pages built. |
 | DEC-052 | P2.02 navigation and server-permission separation | **DRAFT — not implemented** | 27 proposed menu entries filtered by verified active org, entitlement, role+record+field policy; owner/admin not universal CRM reader; 40 paper-design review scenarios NOT RUN; 727 original P1 tests unchanged |
 
+| DEC-053 | P3.01 early actual code start in parallel with P2.02 | **EXPLICITLY OWNER-APPROVED INTERNAL SYNTHETIC DEVELOPMENT 2026-11-14; issue #26 OPEN** | Product owner requested real Next.js and Express.js coding now, not just docs; P2.02 still OPEN; no production/customer-data/security waiver |
+| DEC-054 | P3.01 initial executable scope | **COMMITTED + BOUNDED CI PASS** | Node 22 npm workspaces, Next.js 16.4.6 + original responsive fictional UI, Express 5 liveness health endpoint and safe 404, 9 frontend + 4 backend scaffold tests passed in CI [run #43493982182](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493982182) on \`a6fb6c8b6391738f3bdddb01e11ed7bc6a7d208f\`. No authentication, ORM schema, tenant guards, real customer/merchant data, processing or production. Original 727 P1 cases NOT RUN. |
+
 ## Change control
 
 Add a dated entry before changing architecture, product order or launch scope. Separate **confirmed owner decisions**, **engineering recommendations**, and **unvalidated hypotheses**. Never describe a proposed price, legal choice or deployment status as approved.
@@ -108,3 +111,5 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P2.01 signoff: Owner approved provisional original internal UX baseline on 2026-11-13, not final commercial brand or verified accessibility; issue #24 CLOSED
 - Current sub-phase: **P2.02 Information Architecture**, original site map, route/menu policy and 40 future UX design reviews awaiting separate owner approval; issue #25 OPEN
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
+
+- P3.01 early engineering exception: Owner authorized actual frontend/backend code and synthetic-only tests on 2026-11-14 while P2.02 remains OPEN; see issue #26 and `docs/engineering/p3-early-start.md`.

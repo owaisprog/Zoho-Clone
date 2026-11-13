@@ -1,13 +1,54 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register owner-approved for tracking only; P2.01 Brand and Design Tokens owner-approved as provisional internal UX; P2.02 Information Architecture in progress. All 14 risks and 12 decisions remain OPEN; 727 P1 tests NOT RUN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register owner-approved for tracking only; P2.01 Brand and Design Tokens owner-approved as provisional internal UX; P2.02 Information Architecture in progress; **P3.01 actual Next.js and Express.js source started early in parallel**, with 13 new scaffold tests passed in GitHub Actions. All 14 risks and 12 decisions remain OPEN; the original 727 P1 tests remain NOT RUN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
+## Run the first real frontend and backend
+
+**P3.01 is now actual source code, not documentation.** Use Node.js **22+** and npm. From this repository's root:
+
+~~~sh
+npm install
+npm run dev:api
+~~~
+
+In a **second terminal**, from the same repository:
+
+~~~sh
+npm run dev:web
+~~~
+
+Open **http://localhost:3000** for the original concept landing page and
+**http://localhost:3000/app** for the synthetic dashboard. The Express process
+health endpoint is **http://127.0.0.1:4000/api/v1/health**.
+
+Run checks:
+
+~~~sh
+npm run typecheck
+npm run test
+npm run build
+~~~
+
+**Verified CI evidence:** [P3 scaffold run #43493982182](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493982182)
+on commit \`a6fb6c8b6391738f3bdddb01e11ed7bc6a7d208f\`: frontend TypeScript PASS,
+backend TypeScript PASS, **9 frontend + 4 backend scaffold tests PASS**, Next.js build PASS,
+Express build PASS. The original **727 P1.09 product acceptance cases remain NOT RUN**.
+These 13 tests are additional scaffold tests and do not establish security, DB or tenancy readiness.
+
+**Important:** The demo pages are publicly readable fictional examples with **NO login,
+tenant RBAC, database, commercial billing or processor connection**. They are not
+safe for real customer/card/bank/identity/KYC data or external production. P2.02
+remains open; its final route architecture can change the temporary preview routes.
+All 14 evidence risks and 12 open decisions remain outstanding. GitHub CI currently
+uses \`npm install\` without a checked-in lockfile; lockfile/fully reproducible install
+is a near-term improvement.
+
 ## Repository structure
 
-- [frontend/](frontend/README.md) - Next.js, React, TypeScript, Tailwind CSS and shadcn/ui (scaffold scheduled for P3).
-- [backend/](backend/README.md) - Node.js, Express.js, TypeScript, PostgreSQL, Prisma, Redis and BullMQ (scaffold scheduled for P3).
+- [frontend/](frontend/README.md) — **working Next.js 16/React/TypeScript App Router source**, Tailwind CSS and original shared token CSS; shadcn component integration is later.
+- [backend/](backend/README.md) — **working Node.js/Express 5/TypeScript health-only source**; PostgreSQL/Prisma/auth/Redis/BullMQ are future, not installed or verified.
 - [docs/product/vision.md](docs/product/vision.md) - P0.01 Business Vision Charter.
 - [docs/product/decisions.md](docs/product/decisions.md) - Product and technical decisions.
 - [docs/roadmap-progress.md](docs/roadmap-progress.md) - Active roadmap checkpoint.
@@ -124,8 +165,11 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 
 ## Development approach
 
-Follow the **Zoho Clone Complete AI Master Roadmap v2.0** (P0-P17 plus individual product tracks). The owner has authorized internal P1/P2 planning and future synthetic-data P3 engineering under conditional P0.10 GO; all production/data-security/real-customer proof gates remain. Work on one sub-phase at a time, inspect the repository, implement and test the scoped change, record evidence, then advance after the required approval. Application scaffolding begins in P3.
+Follow the **Zoho Clone Complete AI Master Roadmap v2.0** (P0-P17 plus individual product tracks). The owner has authorized internal P1/P2 planning and an explicit **early P3.01 synthetic-only code start parallel with P2.02** under conditional P0.10 GO; all production/data-security/real-customer proof gates remain. Work on one sub-phase at a time, inspect the repository, implement and test the scoped change, record evidence, then advance after the required approval. P3.01 frontend/backend scaffold source is committed; deeper protected platform coding remains gated.
 
 ## Important
 
-This repository intentionally does not yet contain a working frontend or backend. Do not assume the project is deployable until its foundation, tests, infrastructure, and release gates are completed. Never commit passwords, API tokens, secrets, or actual customer payment data.
+This repository now contains an actual **running-capable local synthetic frontend/backend scaffold**, verified by a bounded GitHub CI build and 13 scaffold tests. It is **NOT** a secure, deployable customer-facing SaaS; authentication, tenant isolation, data storage, product acceptance tests and release gates are still unfinished. Never commit passwords, API tokens, secrets, or actual customer payment data.
+
+- [Early P3.01 engineering handoff and CI proof](docs/engineering/p3-early-start.md) — parallel authorization, real source overview, 13 executed scaffold checks and restrictions.
+- [P3.01 GitHub development issue](https://github.com/owaisprog/Zoho-Clone/issues/26) — OPEN for owner review; P2.02 issue #25 remains OPEN.

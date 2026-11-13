@@ -69,3 +69,15 @@
 - Project stack remains Next.js/React/TypeScript/Tailwind frontend and Node.js/**Express.js**/TypeScript backend; P3 is the authorized **future** coding phase, not started by opening this issue.
 
 **Updated:** 2026-11-13 · **P2.02 OPEN**. No working frontend/backend, browser tests or approval of P2.02 routes yet.
+
+
+## Explicit owner-authorized parallel P3.01 development (2026-11-14)
+
+The owner approved **starting real Next.js/Express.js code early**, without waiting for all
+17 P2 design steps. [P3.01 #26](https://github.com/owaisprog/Zoho-Clone/issues/26)
+is OPEN while **P2.02 #25 remains OPEN**. The P3.01 layout paths are a temporary
+fictional local preview and do NOT implement or pre-approve P2.02's 64-route/tenant-safe
+information architecture. Changes to P2 design can be incorporated later as real P3/P4
+features are approved. [CI evidence](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493982182)
+shows 13 bounded scaffold tests plus builds/typechecks PASS, not browser a11y or product
+acceptance. P1 risks/decisions and 727 untouched test cases remain OPEN/NOT RUN.

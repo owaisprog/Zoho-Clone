@@ -2,7 +2,7 @@
 
 **Owner authorization:** 2026-11-14 request: start **actual Next.js frontend and Express.js backend coding** in GitHub \`owaisprog/Zoho-Clone\` before all P2 design subphases are completed, with synthetic data only.
 
-**Issue:** [#26](https://github.com/owaisprog/Zoho-Clone/issues/26) — OPEN until real code/build/test evidence reviewed.
+**Issue:** [#26](https://github.com/owaisprog/Zoho-Clone/issues/26) — OPEN until owner reviews verified scaffold. **Actual GitHub Actions run #43493982182 SUCCEEDED** at commit `a6fb6c8b6391738f3bdddb01e11ed7bc6a7d208f`.
 **Parallel design:** P2.02 IA [#25](https://github.com/owaisprog/Zoho-Clone/issues/25) remains OPEN (provisional).
 **Boundary:** This is a bounded EARLY P3.01 exception to the original sequential roadmap, not a waiver of any safety or quality acceptance requirement.
 
@@ -25,4 +25,17 @@
 
 **Environment:** Do not commit secrets, real data, .env files or generated node_modules. GitHub CI currently uses \`npm install\` because no checked-in lockfile exists. A lockfile + \`npm ci\` should be added once install is verified; dependency and security audit evidence remains open. No database is created or simulated as if implemented.
 
-**P3.01 review gate:** Code committed, npm installs, actual typecheck/test/build outcomes recorded with commit SHA, safe UI reviewed and owner accepts bounded local synthetic-only scaffold. An actual failure means FAIL/BLOCKED, never silently marked PASS. P2.02 continues concurrently; no G-EXT/G-COM authorization follows.
+**P3.01 review gate:** Code committed. In [CI run #43493982182](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493982182), installation, frontend/backend TypeScript checks, **9 frontend + 4 backend scaffold tests**, and both builds **all passed**. This is verified real CI evidence, not a claimed local run or manual browser test. **Owner review and acceptance of P3.01 are still pending; issue #26 stays OPEN.** P2.02 continues concurrently; no G-EXT/G-COM authorization follows.
+
+
+## First CI attempt and fix
+
+The first GitHub Actions run [#43493710723](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493710723) failed at TypeScript TS5097 because two frontend test imports ended in \`.ts\`. The source imports were corrected (commit \`a6fb6c8b...\`). The rerun [#43493982182](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493982182) **passed TypeScript, 13 executed scaffold tests and both builds**. No failures were silently reclassified as passes.
+
+### Evidence boundaries
+
+The 13 scaffold tests cover fictional data/search summaries, safe health adapter behavior,
+process health/404/config. They do **not** exercise an authenticated browser, actual DB,
+org/agent permissions, direct-IDOR, WCAG, failure restore, payment/KYC, or verified partner
+workflow. Original 727 P1 tests remain NOT RUN and all 14 documented gaps OPEN. CI didn't
+deploy any service.

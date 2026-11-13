@@ -3,7 +3,7 @@
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
 **Current sub-phase:** **P2.02 — Information Architecture (DRAFT PREPARED, OWNER REVIEW PENDING)**
-**Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
+**Current authorization:** P0.10 owner-approved **CONDITIONAL GO** plus explicit 2026-11-14 owner approval to **start P3.01 code early in parallel with still-open P2.02**, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
 ## P0 audit and explicit owner decisions
@@ -133,6 +133,23 @@
 | P2.03–P2.17 UX/screens/usability | NOT STARTED — tracked individually in phase plan. |
 
 **P2.01 owner gate PASSED as provisional design, not final branding or verified accessibility (2026-11-13). P2.02 owner gate PENDING:** Approve proposed original IA, 64 route patterns, visible/hidden permission states, safe direct-link/tenant switch and mobile hierarchy before P2.03. All **14 risks and 12 unresolved decisions remain OPEN**, with **727 P1 tests still NOT RUN**. The 40 additional IA review scenarios are paper-design checks separate from the P1 test inventory.
+
+## Parallel P3.01 — First REAL frontend/backend source (early start)
+
+**Owner authorization:** 2026-11-14 approval to begin actual Next.js frontend and Express.js backend implementation **before completing P2**. This is a bounded internal-synthetic exception to the original sequential roadmap. **P2.02 UX information architecture remains OPEN in issue #25; P3.01 scaffold remains OPEN in issue #26 for review.**
+
+| Actual code / evidence | Verified status |
+|---|---|
+| \`frontend/package.json\`, \`frontend/src/app\`, components, token CSS | **COMMITTED** — Next.js 16.4.6 App Router, React/TypeScript, responsive original landing/workspace/sales/merchant pages |
+| \`frontend/src/lib/synthetic-data.ts\` | **COMMITTED** — 5 invented internal cases + 4 fictional example.com leads; no external or customer data |
+| \`backend/src/app.ts\`, \`server.ts\`, \`config.ts\` | **COMMITTED** — Express 5 health-only route \`GET /api/v1/health\`, safe 404/errors and localhost bind |
+| Scaffold tests in \`frontend/test\`, \`backend/test\` | **13 ACTUALLY PASSED** (9 frontend + 4 backend) in [GitHub Actions run #43493982182](https://github.com/owaisprog/Zoho-Clone/actions/runs/43493982182), commit \`a6fb6c8b6391738f3bdddb01e11ed7bc6a7d208f\` |
+| TypeScript checks / builds | **PASS** same actual run for both workspaces |
+| Original P1.09 planned acceptance inventory | **727/727 STILL NOT RUN** — unrelated future auth/tenant/security/CRM tests |
+| Runtime identity, role/record/field guards, Prisma schema, protected business APIs, DB, processor/production | **NOT IMPLEMENTED**, not inferred from process-health or demo UI |
+| Requirements/gates | All **14 risks/gaps** and **12 undecided choices** remain OPEN; G-EXT/G-COM BLOCKED; research issue #8 OPEN |
+
+[Engineering handoff and scope notes](engineering/p3-early-start.md) document exact scripts and the absence of real customer data/production. No PostgreSQL or Prisma migration is created as an unapproved ID/tenant model decision. CI npm install without lockfile is a known improvement opportunity. The 13 scaffold passes are not a substitute for required original 727 product test cases.
 
 ## Technical decisions (unchanged)
 
