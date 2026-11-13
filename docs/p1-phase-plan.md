@@ -1,7 +1,7 @@
 # P1 — Requirements and Acceptance Contracts: Phase Plan
 
 **Initiated:** 2026-11-13
-**Status:** P1 active. P1.01 Master PRD drafted; owner review pending.
+**Status:** P1 active. P1.01 Master PRD OWNER-APPROVED and closed; P1.02 Functional SRS drafted, owner review pending.
 **Authorization:** P0.10 owner-signed conditional GO for P1/P2 and future P3 **synthetic-data-only** internal development. Real customer data and external launch **not** authorized.
 **P1 exit:** Versioned owner-approved PRD/SRS, a traceability matrix, domain glossary and approved bounded MVP backlog.
 
@@ -9,8 +9,8 @@
 
 | ID | Sub-phase / required output | Working artifact path | Status / owner gate |
 |---|---|---|---|
-| **P1.01** | **Master PRD** — users, success metrics, scope, prioritized releases | `docs/product/prd.md`, `prd-release-matrix.csv`, `prd-synthetic-fixtures.json` | **IN PROGRESS: draft ready for owner review** |
-| P1.02 | Functional SRS — validations, states, errors and recovery | `docs/product/srs.md` | NOT STARTED; needs approved P1.01 |
+| **P1.01** | **Master PRD** — users, success metrics, scope, prioritized releases | `docs/product/prd.md`, `prd-release-matrix.csv`, `prd-synthetic-fixtures.json` | **COMPLETE — owner-approved 2026-11-13; issue #14 closed** |
+| **P1.02** | **Functional SRS — validations, states, errors and recovery** | `docs/product/srs.md`, `srs-requirements.csv`, `srs-state-transitions.md`, `srs-acceptance-cases.csv` | **IN PROGRESS: 49 requirements, 59 future acceptance cases drafted; owner review pending; issue #15 open** |
 | P1.03 | Nonfunctional SRS — latency, reliability, backups, accessibility, security | `docs/product/nfr.md` | NOT STARTED; needs P1.02 |
 | P1.04 | User personas and journeys | `docs/product/personas.md`, `docs/product/journeys.md` | NOT STARTED |
 | P1.05 | Feature hierarchy and release gates | `docs/product/features.md`, MVP backlog | NOT STARTED |
@@ -27,8 +27,8 @@
 - [x] Synthetic fixture sample for two fictional organizations and five example merchant cases.
 - [x] P0.06 approved data exclusions and tenant/privacy obligations referenced.
 - [x] P0.04, P0.05, P0.07, P0.08 and P0.09 research shortfalls **not** treated as validated facts.
-- [ ] Owner reviews and approves R0 platform, R1 CRM and R2 MerchantOps scope as P1.01 baseline.
-- [ ] Once approved, mark P1.01 complete and start P1.02 Functional SRS.
+- [x] Owner approved the R0 platform, R1 CRM and R2 MerchantOps scope as P1.01 baseline on 2026-11-13.
+- [x] P1.01 completed, GitHub issue #14 closed, P1.02 Functional SRS started and filed in issue #15.
 
 ## Release gating (separate from documentation)
 
@@ -41,7 +41,8 @@
 Public repo: https://github.com/owaisprog/Zoho-Clone  
 P0 conditional approval record: `docs/product/p0-07-09-research-waivers.md`  
 Open market evidence debt: https://github.com/owaisprog/Zoho-Clone/issues/8  
-P1.01 tracking issue: https://github.com/owaisprog/Zoho-Clone/issues/14
+P1.01 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/14  
+P1.02 active issue: https://github.com/owaisprog/Zoho-Clone/issues/15
 
 **No Next.js or Express application has yet been scaffolded.** The top-level `frontend/` and `backend/` folders contain README placeholders. No P1 code tests were run because the deliverables are specifications.
 
