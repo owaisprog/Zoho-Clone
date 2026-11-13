@@ -1,6 +1,6 @@
 # P1.09 — Acceptance and End-to-End Requirements Traceability
 
-**Version:** 0.1 — OWNER-REVIEW DRAFT · 2026-11-13  
+**Version:** 1.0 — OWNER-APPROVED PLANNING BASELINE · 2026-11-13  
 **Phase:** P1.09 Acceptance and Traceability Map · [Issue #22](https://github.com/owaisprog/Zoho-Clone/issues/22)  
 **Prerequisites:** P1.01–P1.08 owner-approved **design baselines**, including P1.08 approved as API/event contracts **not implemented endpoints or running events**.  
 **Execution status:** **ZERO executed tests; ZERO proven passes; ZERO working application deployments.**  
@@ -110,7 +110,7 @@ See [coverage-gaps.md](coverage-gaps.md) for exact open tasks. Key unresolved wo
 - [x] All **16** domain events and **286** role/resource matrix decisions have proposed test cases.
 - [x] The consolidated **727** test inventory marks **0 run/0 passed**.
 - [x] R0/R1/R2 internal release verification separated from external legal/processor and commercial GO.
-- [ ] Product owner reviews and approves P1.09 mappings and evidence-policy as **planning only**.
-- [ ] On approval close P1.09 (#22) and start **P1.10 Risk and Decision Register**.
+- [x] Product owner approved P1.09 traceability, 727 planned cases and real-run evidence policy as **planning only, NOT executed or passed tests**, on 2026-11-13.
+- [x] P1.09 issue #22 closed; P1.10 Risk and Decision Register opened in issue #23; all 14 G-001..G-014 remain OPEN.
 
-**Current P1.09 state: IN PROGRESS — owner approval pending. Code, migrations and actual runtime test evidence are absent.**
+**Current P1.09 state: COMPLETE — OWNER-APPROVED PLANNING ONLY (2026-11-13).** Code, migrations and actual runtime test evidence are absent; 0/727 tests executed and all 14 evidence/implementation gaps remain OPEN.
