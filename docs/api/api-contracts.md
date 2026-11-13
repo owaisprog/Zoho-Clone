@@ -1,9 +1,9 @@
 # P1.08 — REST API and Event Contract Specification
 
-**Version:** 0.1 — **owner-review draft** · 2026-11-13  
+**Version:** 1.0 — **OWNER-APPROVED PROVISIONAL INTERNAL DESIGN** · 2026-11-13  
 **Phase:** P1.08 — API and Event Contracts · [Issue #21](https://github.com/owaisprog/Zoho-Clone/issues/21)  
 **Prerequisite:** P1.01–P1.07 owner-approved **planning/design requirements**, including P1.07 provisional domain model, **not** an implemented database.  
-**State:** **CONTRACTS PROPOSED; NO API ROUTES, EXPRESS SERVER, PRISMA SCHEMA, OIDC SESSION HANDLER OR EVENT BUS EXIST.**  
+**State:** **P1.08 COMPLETE — OWNER-APPROVED API/EVENT DESIGN ONLY (2026-11-13)**. No API routes, Express server, Prisma schema, OIDC handler or event bus exists.  
 **Authorization:** P0.10 internal **synthetic-data-only** development. No real customer data, live processor onboarding, subscription charges, pilot accounts or public production.
 
 Machine-readable companion: [OpenAPI 3.1 draft](openapi-v1.json) (**67 operations, 44 paths, 72 schemas**), [API-to-requirement map](api-traceability.csv), [event contracts](event-contracts.md), [16-event catalog](event-catalog.csv), [event envelope JSON Schema](event-envelope.schema.json), and [164 future API acceptance cases](api-contract-cases.csv). The OpenAPI specification defines intended request/response shapes, NOT an accessible endpoint or server URL.
@@ -94,7 +94,7 @@ See [Internal Event Contracts](event-contracts.md). Proposed domain events are *
 - [x] Machine-readable draft OpenAPI and traceability prepared with versioned R0/R1/R2 operations.
 - [x] Proposed internal event envelope/correlation, outbox, ordering/idempotency and denial rules prepared.
 - [x] Contract-test scenarios marked as future/unexecuted.
-- [ ] Product owner reviews and approves these **proposed API/event design contracts**, including remaining open decisions.
-- [ ] After approval, close issue #21 and start **P1.09 Acceptance and Traceability Map**.
+- [x] Product owner expressly approved P1.08 versioned REST/API, permissions/error, and internal event contracts **as provisional design, not implemented endpoints or running services** on 2026-11-13.
+- [x] P1.08 issue #21 closed after design approval; P1.09 Acceptance and Traceability Map opened as issue #22.
 
-**P1.08 remains OPEN. No endpoint, event, schema migration, security control or automated contract test exists in code.**
+**P1.08 COMPLETE as provisional design only.** No endpoint, event, schema migration, security control or automated contract test exists in code.
