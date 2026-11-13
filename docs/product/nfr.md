@@ -1,12 +1,12 @@
 # P1.03 — Nonfunctional Software Requirements Specification (NFR)
 
 **Project:** Zoho Clone (internal working name)
-**Version:** 0.1 — owner-review draft
+**Version:** 1.0 — OWNER-APPROVED P1.03 DESIGN BASELINE (2026-11-13)
 **Prepared:** 2026-11-13
 **Phase:** P1.03 Nonfunctional SRS
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/16
 **Input:** [P1.01 Owner-Approved PRD](prd.md), [P1.02 Owner-Approved Functional SRS](srs.md) (2026-11-13)
-**Status:** DRAFT PREPARED; **no targets are measured, no controls are deployed, no compliance certification exists.**
+**Status:** **P1.03 COMPLETE — owner-approved 2026-11-13 as DESIGN REQUIREMENTS ONLY.** No targets have been measured, no controls deployed, no compliance certification exists.
 **Authorization:** P0.10 conditional internal GO; no real merchant/customer data, public customers, paid pilots or live payment/processor integrations.
 
 ## 1. How to read these targets
@@ -383,7 +383,7 @@ The [verification plan](nfr-verification-plan.md) contains test profile, evidenc
 - [x] Performance tradeoffs and cost/availability/RPO/RTO are clearly proposed, not contractual.
 - [x] Hard production gates distinguish internal test from external pilot and production use.
 - [x] Future acceptance cases and measurement evidence template prepared.
-- [ ] **Product owner reviews and approves proposed NFR targets and hard release gates.**
-- [ ] After owner approval, close P1.03 and begin P1.04 User Personas and Journeys.
+- [x] **Product owner explicitly approved P1.03 proposed NFR targets and mandatory security/privacy release gates as design requirements, not verified results, on 2026-11-13.**
+- [x] P1.03 was approved and closed; P1.04 User Personas and Journeys opened as issue #17.
 
-**Status: P1.03 IN PROGRESS; owner sign-off pending; NFR measurements executed: 0.**
+**Status: P1.03 COMPLETE — owner-approved design specification; NFR measurements executed: 0.** Implementation and release gates remain mandatory.
