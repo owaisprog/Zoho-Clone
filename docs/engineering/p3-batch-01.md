@@ -37,3 +37,19 @@ For the demo-only bridge, `API_INTERNAL_URL` must remain `http://127.0.0.1:4000`
 GitHub CI checks are **not** the original P1.09 727 future acceptance cases. Do not count any new scaffold/contract tests toward 727. All 727 remain NOT RUN; all 14 evidence risks/gaps and 12 unresolved decisions remain OPEN. The 40 P2.02 paper-review tests are also NOT RUN. No real customer interview evidence, secure database tenant isolation, real onboarding, access control, production deployment, G-EXT or G-COM approval is implied.
 
 The five subphases can be called **implemented and CI-verified** only if the CI typechecks, tests, builds and lockfile installation succeed. Owner signoff and broader security/product acceptance remain separate gates.
+
+
+## Verified GitHub Actions evidence (2026-11-14)
+
+[Run #43499956192](https://github.com/owaisprog/Zoho-Clone/actions/runs/43499956192)
+completed **SUCCESS** on commit `8f181cab93d735d68f07a5e915350744194e040b`:
+- `npm ci --no-audit --no-fund` from the checked-in Node 22 root `package-lock.json`: PASS.
+- Frontend TypeScript and backend TypeScript: PASS.
+- Frontend: **21 tests passed**, backend: **11 passed**, shared demo contracts: **4 passed**. **36 passed, 0 failed.**
+- Next.js production build and Express TypeScript build: PASS.
+
+**Tracking issues:** [P3.03 #29](https://github.com/owaisprog/Zoho-Clone/issues/29),
+[P3.04 #30](https://github.com/owaisprog/Zoho-Clone/issues/30),
+[P3.05 #31](https://github.com/owaisprog/Zoho-Clone/issues/31),
+[P3.06 #32](https://github.com/owaisprog/Zoho-Clone/issues/32),
+[P3.07 #33](https://github.com/owaisprog/Zoho-Clone/issues/33). All remain open for owner review and non-CI acceptance. PR #28 is DRAFT. Original 727 tests remain NOT RUN.

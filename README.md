@@ -6,7 +6,7 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 
 ## P3 Batch 01: five related development subphases (in review)
 
-P3.03–P3.07 adds deterministic dependency installation, a shared synthetic-only
+P3.03–P3.07 code (draft PR #28; GitHub CI 36/36 PASS) adds deterministic dependency installation, a shared synthetic-only
 Express/Next contract, fictional dashboard pipeline analytics, local-only lead
 create/edit interactions, and broader error/contract tests. See
 [implementation and gate notes](docs/engineering/p3-batch-01.md).
