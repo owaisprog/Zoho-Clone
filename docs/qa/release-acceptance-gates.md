@@ -1,8 +1,8 @@
 # P1.09 — Acceptance Gates and Real Test Evidence Requirements
 
-**Version:** 0.1 · Owner-review draft · 2026-11-13  
+**Version:** 1.0 · Owner-approved planning gates · 2026-11-13  
 **Companion:** [Acceptance traceability](acceptance-traceability.md), [Master inventory](test-inventory.csv), [G-INT/G-EXT/G-COM policy from P1.05](../product/release-gates.md).  
-**Status:** DOCUMENTATION ONLY. **0 of 727 future cases executed.** Nothing in this file is proof of a running or secure product.
+**Status:** P1.09 **OWNER-APPROVED AS PLANNING ONLY** on 2026-11-13. **0 of 727 future cases executed.** Nothing in this file is proof of a running or secure product.
 
 ## 1. Separate three concepts
 
@@ -75,7 +75,7 @@ Do **not** write `PASS`, `100% secure`, `WCAG certified`, `99.9% uptime achieved
 - [x] All 36 planned features have linked acceptance criteria, though specific runtime feature tests may need refinement before implementation.
 - [x] All 286 permission-matrix decisions, 67 API operations and 16 events have proposed coverage.
 - [x] A unified 727-case inventory has unique IDs; **none executed**.
-- [ ] Product owner explicitly signs off P1.09 acceptance/traceability planning.
-- [ ] After signoff move to P1.10 Risk and Decision Register, **not automatically to production**.
+- [x] Product owner explicitly signed off P1.09 acceptance/traceability **planning only, not executed or passed tests**, on 2026-11-13.
+- [x] P1.09 issue #22 closed; P1.10 risk/decision register opened as issue #23. All 14 existing gaps remain OPEN, **not automatically mitigated or production approved**.
 
-**Current status: OWNER APPROVAL PENDING.**
+**Current status: P1.09 COMPLETE AS OWNER-APPROVED PLANNING.** Actual internal/external gates remain unsatisfied.
