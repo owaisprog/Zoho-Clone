@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01-P0.04 approved / closed; P0.04 interview shortfall documented (0 actual interviews); P0.05 Merchant Process Maps in progress.
+**Status:** P0.01-P0.04 approved / closed; P0.04 interview shortfall documented (0 actual interviews); P0.05 Merchant Process Maps planning drafts approved; real-world validation 0/3 remains open.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -25,6 +25,8 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/workflow-maps.md](docs/product/workflow-maps.md) - P0.05 draft ISO, POS and PayFac swimlanes (unvalidated).
 - [docs/product/workflow-validation.md](docs/product/workflow-validation.md) - three real-world workflow validation gate.
 - [docs/product/workflow-scenarios.csv](docs/product/workflow-scenarios.csv) - 20 synthetic future test scenarios.
+
+- [docs/product/p0-06-data-sensitivity-prework.md](docs/product/p0-06-data-sensitivity-prework.md) - preliminary P0.06 classification notes, not an approved inventory or completed phase.
 
 ## Development approach
 

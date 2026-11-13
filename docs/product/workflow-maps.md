@@ -1,7 +1,7 @@
 # P0.05 — Merchant Process Maps
 
 **Prepared:** 2026-11-13
-**Status:** DRAFT: synthetic, informed by public provider documentation, **NOT customer-validated**.
+**Status:** OWNER-APPROVED DRAFT as planning baseline on 2026-11-13; synthetic and **NOT customer-validated**. Phase P0.05 remains OPEN until 3 actual workflows are verified.
 **Phase issue:** https://github.com/owaisprog/Zoho-Clone/issues/7
 **Research issue:** https://github.com/owaisprog/Zoho-Clone/issues/8
 
@@ -129,6 +129,7 @@ All eventual records need tenant isolation, record-level permissions, secure fil
 ## Validation gate and owner actions
 
 - [x] 3 distinct **draft** workflows with swimlanes, roles, exceptions, future data and API boundaries.
+- [x] Owner approved the three draft maps as **provisional planning models** on 2026-11-13. This approval is not evidence of real-world process accuracy.
 - [x] Source-supported general processing steps separated from hypotheses.
 - [ ] ISO operator validates a real recent lead-to-activation journey.
 - [ ] POS deployment operator validates a real recent installation/activation journey.

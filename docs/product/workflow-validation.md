@@ -1,6 +1,6 @@
 # P0.05 — Workflow Validation and Acceptance
 
-**Status:** Three draft maps created; **0/3 real-world workflow validations**. P0.05 issue #7 stays open.
+**Status:** Draft maps approved by product owner on 2026-11-13 for planning use; **0/3 real-world workflow validations**. P0.05 issue #7 stays open.
 
 ## Evidence requirements for each map
 
@@ -22,7 +22,9 @@ If PayFac participation cannot be obtained, substitute a distinct verified workf
 7. Update maps, state transitions, data flow, permission/exception requirements and contradictions.
 8. Product owner approves each final map after evidence review.
 
-## Owner checklist (none completed)
+## Owner checklist (real-world validation tasks not completed)
+
+- [x] Owner approves synthetic draft workflows for preliminary product planning (2026-11-13).
 - [ ] Private ISO contact selected, consent obtained, real workflow reviewed.
 - [ ] Private POS contact selected, consent obtained, real workflow reviewed.
 - [ ] Private PayFac contact selected, consent obtained, real workflow reviewed.

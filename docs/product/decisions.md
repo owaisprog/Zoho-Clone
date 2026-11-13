@@ -24,7 +24,9 @@
 | DEC-016 | P0.04 interview protocol and general outreach approach | **Owner-approved 2026-11-13** | 0/15-25 interviews completed; documented shortfall under roadmap exception, issue #8 remains open |
 
 | DEC-017 | P0.04 shortfall explicitly reported and moved to separate evidence work | **Documented 2026-11-13** | Public repo must not include real contact identities, merchant records or interview transcripts |
-| DEC-018 | P0.05 must validate 3 real merchant workflows before closure | **IN PROGRESS** | Three research-grounded synthetic drafts exist, zero customer-validated; GitHub issue #7 |
+| DEC-018 | P0.05 draft ISO/POS/PayFac workflow maps | **Owner-approved provisional draft 2026-11-13** | Three draft maps usable for planning; **0/3 actual real-world validations**; issue #7 remains open |
+
+| DEC-019 | P0.06 Data Sensitivity Inventory preliminary research can be drafted without concluding P0.05 | **PREWORK ONLY** | Classification assumptions recorded; policy/retention/legal decisions and P0.05 validations remain open |
 
 ## Change control
 
@@ -38,4 +40,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P0.02 segment priority approval: Approved by product owner on 2026-11-13; customer evidence still outstanding
 - P0.03 competitor research approval: Approved by product owner on 2026-11-13; external product testing and buyer discovery remain open
 - P0.04 owner sign-off: Approved by product owner in this conversation on 2026-11-13; interview shortfall 0 of 15–25 recorded
-- Current phase: P0.05 - Merchant Process Maps (active, real-world validation outstanding)
+- P0.05 provisional draft approval: Product owner approved planning diagrams in conversation on 2026-11-13; not evidence of customer validation
+- Current phase: P0.05 - Merchant Process Maps (open; real-world validation 0/3)
+- P0.06: preliminary data sensitivity prework drafted only; official phase not started

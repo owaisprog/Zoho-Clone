@@ -13,8 +13,8 @@
 | P0.02 — Customer Segment Map | COMPLETE | Owner-approved ISO > POS reseller > PayFac rank; issue #4 closed |
 | P0.03 — Competitive Capability Matrix | COMPLETE | Owner-approved comparison of 6 competitors / 29 capabilities; issue #5 closed |
 | P0.04 — Customer Interview Playbook | CLOSED WITH EXPLICIT INTERVIEW SHORTFALL | Owner-approved scripts and research method. **0 of 15–25 target interviews**; issue #6 closed; [shortfall record](product/p0-04-interview-shortfall.md) |
-| **P0.05 — Merchant Process Maps** | **IN PROGRESS** | Three unvalidated draft swimlanes, candidate data/API rules, 20 synthetic future tests; issue #7 OPEN |
-| P0.06 — Data Sensitivity Inventory | NOT STARTED | Depends on P0.05 actual workflow validation gate |
+| **P0.05 — Merchant Process Maps** | **DRAFT OWNER-APPROVED; IN PROGRESS** | Three provisional draft swimlanes, candidate data/API rules, 20 synthetic future tests; real-world validation 0/3; issue #7 OPEN |
+| P0.06 — Data Sensitivity Inventory | PREWORK DRAFT ONLY; PHASE NOT STARTED | `product/p0-06-data-sensitivity-prework.md`; depends on P0.05 actual workflow validation gate |
 | P3 — Application scaffolding | NOT STARTED | Next.js / Express packages not initialized until architecture phase |
 
 ## Links
@@ -39,11 +39,13 @@ The owner explicitly approved the interview playbook and general outreach approa
 - [x] Exception paths, actors, data, permissions, integrations and planned APIs mapped.
 - [x] 20 synthetic test scenarios written (NOT run).
 - [x] Source/assumption and financial/identity-data boundaries documented.
+- [x] Product owner approved the draft maps for **planning only** on 2026-11-13; no real customer validation is implied.
+- [x] Created non-binding P0.06 data-sensitivity inventory prework so future security discovery is prepared.
 - [ ] Obtain and validate 3 real-world merchant processes with actual qualified operators.
 - [ ] Incorporate contradictory cases and corrections in maps.
 - [ ] Owner signs off maps and closes P0.05 before P0.06.
 
-**Current verified real-world workflow count: 0/3**.
+**Current verified real-world workflow count: 0/3**. Owner approval of drafts does not satisfy actual validation or permit phase closure.
 
 ## Remaining owner actions
 
