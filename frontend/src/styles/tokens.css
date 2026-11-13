@@ -1,0 +1,62 @@
+/* P2.01 owner-approved PROVISIONAL token snapshot.
+   docs/design/design_tokens.json remains the design source of truth.
+   Sync automation is not implemented yet. No final product branding. */
+:root {
+  color-scheme: light;
+  --canvas: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-soft: #F1F4F8;
+  --ink: #182739;
+  --muted: #526174;
+  --border-soft: #DCE3EC;
+  --border-control: #70809B;
+  --nav: #142337;
+  --nav-active: #273B5B;
+  --nav-ink: #F0F4FB;
+  --nav-muted: #B7C7DB;
+  --action: #3655A5;
+  --action-hover: #29458E;
+  --action-ink: #FFFFFF;
+  --focus: #3655A5;
+  --success: #166447;
+  --success-bg: #E8F7EE;
+  --warning: #795000;
+  --warning-bg: #FFF4DB;
+  --danger: #AD2921;
+  --danger-bg: #FDEBEC;
+  --info: #2A568A;
+  --info-bg: #EAF2FF;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --sidebar-width: 264px;
+  --topbar-height: 64px;
+  --font-ui: Inter, Arial, Helvetica, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #101B2B;
+  --surface: #17263B;
+  --surface-soft: #203149;
+  --ink: #EFF4FC;
+  --muted: #BFCBDD;
+  --border-soft: #40536A;
+  --border-control: #758AA6;
+  --nav: #0B1422;
+  --nav-active: #2B4160;
+  --nav-ink: #EFF4FC;
+  --nav-muted: #BFCBDD;
+  --action: #A7BEFF;
+  --action-hover: #CBD8FF;
+  --action-ink: #142337;
+  --focus: #A7BEFF;
+  --success: #7FE3B5;
+  --success-bg: #203149;
+  --warning: #FFD280;
+  --warning-bg: #203149;
+  --danger: #FFB0A7;
+  --danger-bg: #203149;
+  --info: #A4C6FF;
+  --info-bg: #203149;
+}
