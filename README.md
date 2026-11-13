@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -71,7 +71,12 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.04 User Journeys](docs/product/journeys.md) — 18 workflows, including security/error branches.
 - [P1.04 Step Map](docs/product/journey-map.csv) — 72 steps tracing to all 26 PRD use cases.
 - [P1.04 Acceptance Cases](docs/product/journey-acceptance-cases.csv) — 36 future tests, none executed.
-- [P1.04 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/17) — active owner review gate.
+- [P1.04 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/17) — closed after owner approval as a provisional design baseline.
+- [P1.05 feature hierarchy](docs/product/features.md) — 36 planned features, R0 shared platform/R1 CRM/R2 merchant operations, future app families.
+- [P1.05 prioritized MVP backlog](docs/product/mvp-backlog.csv) — 24 MUST, 6 SHOULD, 6 DEFERRED features; not implemented.
+- [P1.05 UC/FR traceability](docs/product/feature-traceability.csv) — all 26 approved PRD use cases and 49 Functional SRS requirements covered.
+- [P1.05 release gates](docs/product/release-gates.md) — synthetic-only internal acceptance versus external pilot/commercial hard blockers.
+- [P1.05 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/18) — open for owner review.
 
 ## Development approach
 
