@@ -2,7 +2,7 @@
 
 **Initiated:** 2026-11-13  
 **Source:** Zoho Clone Master Roadmap v2.0 — **P2.01 through P2.17** (17 sub-phases)  
-**Current sub-phase:** **P2.01 Brand and Design Tokens — DRAFT IN PROGRESS, OWNER APPROVAL PENDING**, [GitHub #24](https://github.com/owaisprog/Zoho-Clone/issues/24)  
+**Current sub-phase:** **P2.02 Information Architecture — DRAFT IN PROGRESS, OWNER REVIEW PENDING**, [GitHub #25](https://github.com/owaisprog/Zoho-Clone/issues/25). P2.01 [issue #24](https://github.com/owaisprog/Zoho-Clone/issues/24) closed after owner-approved provisional original UX baseline on 2026-11-13.  
 **P1 gate:** P1.01–P1.10 signed off **as planning/design only** on 2026-11-13, P1.10 [issue #23](https://github.com/owaisprog/Zoho-Clone/issues/23) closed.  
 **Constraints:** **ALL 14 P1.09 evidence/implementation gaps remain OPEN**; **12 P1.10 unresolved decisions remain OPEN**. P0.10 permits only **synthetic-data internal UX/planning/development**. No actual auth, tenant enforcement, Prisma schema, Express APIs, customer data, live processor, production or public trial exists. No executed test result can be implied by a design review.
 
@@ -10,8 +10,8 @@
 
 | Sub-phase | Required UX deliverable | Planned working artifacts (not all exist) | Status |
 |---|---|---|---|
-| **P2.01** | Brand and design tokens — Original provisional brand, typography/colors/spacing, contrast/themes | `docs/design/brand-and-tokens.md`, `docs/design/design_tokens.json`, `docs/design/color-contrast-review.csv`, `docs/design/component-examples.md`, `docs/design/token-preview.html` | **IN PROGRESS — draft design for owner review; issue #24 open** |
-| **P2.02** | Information architecture — App taxonomy, sitemap, permission-filtered navigation | `docs/design/information-architecture.md`, `docs/design/navigation.yml` | NOT STARTED |
+| **P2.01** | Brand and design tokens — Original provisional brand, typography/colors/spacing, contrast/themes | `docs/design/brand-and-tokens.md`, `docs/design/design_tokens.json`, `docs/design/color-contrast-review.csv`, `docs/design/component-examples.md`, `docs/design/token-preview.html` | **COMPLETE — owner-approved provisional original internal UX baseline 2026-11-13; issue #24 closed; not final brand/a11y** |
+| **P2.02** | Information architecture — App taxonomy, sitemap, permission-filtered navigation | `docs/design/information-architecture.md`, `docs/design/navigation.yml`, `docs/design/route-inventory.csv`, `docs/design/navigation-review-cases.csv` | **IN PROGRESS — draft IA/navigation/route design prepared; issue #25 open, owner review pending** |
 | **P2.03** | Marketing website wireframes — Home/features/pricing/docs/legal/demo with honest claims | `docs/design/marketing-wireframes.md` | NOT STARTED |
 | **P2.04** | Login and recovery UX — Sign-up/login/MFA/recovery/verify, tenant switch, expired links | `docs/design/auth-ux.md` | NOT STARTED |
 | **P2.05** | Organization onboarding UX — New org, invite, app selection, synthetic data, save/recover | `docs/design/onboarding-ux.md` | NOT STARTED |
@@ -57,4 +57,4 @@
 - P2.17's 5-journey prototype will be designed around **fictional** organizations and synthetic statuses, and actual user observations must be separately logged rather than fabricated.
 - Project stack remains Next.js/React/TypeScript/Tailwind frontend and Node.js/**Express.js**/TypeScript backend; P3 is the authorized **future** coding phase, not started by opening this issue.
 
-**Updated:** 2026-11-13 · **P2.01 OPEN**.
+**Updated:** 2026-11-13 · **P2.02 OPEN**. No working frontend/backend, browser tests or approval of P2.02 routes yet.
