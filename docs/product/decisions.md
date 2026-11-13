@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.06 (Data Sensitivity Inventory — drafted; owner approval pending)
+**Current roadmap checkpoint:** P0.07 (MVP Value Proposition — draft, real prospect validation pending)
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -26,9 +26,12 @@
 | DEC-017 | P0.04 shortfall explicitly reported and moved to separate evidence work | **Documented 2026-11-13** | Public repo must not include real contact identities, merchant records or interview transcripts |
 | DEC-018 | P0.05 draft ISO/POS/PayFac workflow maps | **Owner-approved provisional drafts** | Three maps remain unvalidated; actual customer validation = 0/3 |
 
-| DEC-019 | P0.06 Data Sensitivity Inventory | **IN PROGRESS** | Full classification draft, prohibited-field policy, 36 data categories, file policy and security review prepared; owner sign-off pending |
+| DEC-019 | P0.06 five classifications and initial CRM raw sensitive-data exclusions | **Owner-approved as DESIGN REQUIREMENTS on 2026-11-13; phase closed** | 36 category inventory, no raw bank/card/identity/KYC/credentials; NOT legal certification or implemented controls |
 
 | DEC-020 | P0.05 three-workflow validation gate | **OWNER WAIVED on 2026-11-13 for roadmap sequencing; NOT COMPLETED** | "skip this and jump to next". 0/3 verified; issue #7 closed as not planned, validation debt issue #8 remains open. Security/compliance controls NOT waived. |
+
+| DEC-021 | P0.07 merchant operations CRM value proposition | **Working hypothesis; P0.07 active** | ISO buyer; measurable time to identify owner/status/next action on stalled case; no actual buyer validation yet |
+| DEC-022 | Market-facing name, pricing, processor integrations, regulated data jurisdiction | **OPEN** | No unsupported product, customer ROI, live integration or certification claims permitted |
 
 ## Change control
 
@@ -44,4 +47,5 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P0.04 owner sign-off: Approved by product owner in this conversation on 2026-11-13; interview shortfall 0 of 15–25 recorded
 - P0.05 provisional draft approval: Product owner approved planning diagrams in conversation on 2026-11-13; not evidence of customer validation
 - P0.05 waiver: Owner explicitly requested to skip validation and proceed on 2026-11-13; unvalidated 0/3, issue #7 closed as not planned
-- Current phase: **P0.06 — Data Sensitivity Inventory** active; owner approval of classification and initial MVP high-risk data exclusions pending
+- P0.06 owner sign-off: Product owner explicitly approved the five classes and initial CRM raw card/bank/identity/KYC/credential exclusions as design requirements on 2026-11-13; no certification implied; issue #9 closed
+- Current phase: **P0.07 — MVP Value Proposition**, draft concepts and real prospect validation outstanding
