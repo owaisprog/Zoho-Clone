@@ -1,6 +1,6 @@
 # P1.10 — Risk Mitigation Plan and Decision Checkpoints
 
-**Version:** 0.1 — OWNER REVIEW DRAFT · 2026-11-13  
+**Version:** 1.0 — OWNER-APPROVED INTERNAL MITIGATION TRACKING · 2026-11-13  
 **Issue:** [P1.10 #23](https://github.com/owaisprog/Zoho-Clone/issues/23)  
 **Inputs:** [14-open risk register](p1-risk-register.csv), [12 open decisions](p1-decision-backlog.csv), [P1.09 QA gaps](../qa/coverage-gaps.md), [R0/R1/R2 and G-EXT/G-COM gates](release-gates.md).  
 **Operating limit:** Synthetic-data-only internal sequencing under P0.10. **No real customer/merchant records, provider boarding, financial data, paid pilot or public production authorized.** All 14 risk statuses stay OPEN.
@@ -68,7 +68,7 @@ All 12 unresolved items are in [P1.10 open decision backlog](p1-decision-backlog
 - [x] P2/P3/P4/P5/P7/P8/P12-P14 risk mitigation checkpoints and external business validation separated.
 - [x] 12 unresolved decisions tracked without fabricating signoffs.
 - [x] Nonwaivable security/privacy and external approval boundaries explicitly preserved.
-- [ ] Product owner separately approves P1.10 *planning register only* and next move to P2 UX Design.
+- [x] Product owner approved P1.10 tracking and move to P2 UX design on 2026-11-13 **without approving risk closure, actual implementation or external launch**.
 - [ ] **No requirement/evidence gaps closed by P1.10 approval.**
 
-**P1.10 remains IN PROGRESS awaiting owner approval.**
+**P1.10 COMPLETE AS OWNER-APPROVED TRACKING ONLY.** All 14 risks, 12 unresolved decisions and external release blockers remain OPEN.
