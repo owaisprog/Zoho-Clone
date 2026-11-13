@@ -2,7 +2,7 @@
 
 **Project:** Zoho Clone
 **Date:** 2026-11-13
-**Status:** DRAFT — phase active; awaiting product-owner review and authorization to begin outreach.
+**Status:** OWNER-APPROVED 2026-11-13. P0.04 closed using explicitly documented 0/15-25 interview shortfall; no outreach or interviews actually performed.
 **Prior phase:** P0.03 Competitive Capability Matrix, approved 2026-11-13.
 **Tracking issue:** https://github.com/owaisprog/Zoho-Clone/issues/6
 **Audience:** ISO / merchant services companies (priority 1); POS providers/resellers (priority 2); PayFac/software-led payments (priority 3).
@@ -187,8 +187,8 @@ Do not force the interviews to confirm our current decision; a justified pivot i
 - [x] Outreach and post-interview templates.
 - [x] Private evidence capture format, score rubric and validation workflow.
 - [x] AI versus owner responsibilities documented.
-- [ ] Product owner reviews/approves the interview protocol and outreach copy.
-- [ ] Product owner selects initial organization types / prospective contacts for outreach.
-- [ ] Interview execution is scheduled and tracked truthfully; actual results not fabricated.
+- [x] Product owner approved the interview protocol and general outreach approach on 2026-11-13.
+- [ ] Owner must privately select real contacts before sending messages (outstanding research issue #8).
+- [x] Explicit shortfall documented: **0 actual interviews, 0 outreach, 0 real customer workflows validated**. Execution remains open in issue #8.
 
-**Status:** IN PROGRESS. Approval of the playbook, rather than completing all 15–25 interviews, is the documentation gate for P0.04. Customer discovery/validation continues under subsequent P0 sub-phases; actual evidence is essential before commercial launch commitments.
+**Status:** P0.04 is CLOSED using the master roadmap's **explicit interview shortfall** alternative. See `p0-04-interview-shortfall.md`. External validation is still required to satisfy P0.05 and commercial-release gates.

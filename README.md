@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01-P0.03 approved/closed; P0.04 Customer Interview Playbook in progress.
+**Status:** P0.01-P0.04 approved / closed; P0.04 interview shortfall documented (0 actual interviews); P0.05 Merchant Process Maps in progress.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -17,9 +17,14 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/competitive-capability-matrix.md](docs/product/competitive-capability-matrix.md) - P0.03 vendor capability comparison (owner-approved research baseline; prospect validation pending).
 - [docs/product/competitive-evidence.md](docs/product/competitive-evidence.md) - Official vendor source register and evidence limitations.
 
-- [docs/product/customer-interview-playbook.md](docs/product/customer-interview-playbook.md) - P0.04 interview protocol (draft, owner approval pending).
+- [docs/product/customer-interview-playbook.md](docs/product/customer-interview-playbook.md) - P0.04 interview protocol (owner-approved; 0 of 15-25 target interviews actually completed).
 - [docs/product/interview-question-bank.md](docs/product/interview-question-bank.md) - interview questions and segment-specific probes.
 - [docs/product/interview-execution-plan.md](docs/product/interview-execution-plan.md) - recruiting quotas, evidence handling and decision gates.
+
+- [docs/product/p0-04-interview-shortfall.md](docs/product/p0-04-interview-shortfall.md) - explicit research shortfall and owner handoff.
+- [docs/product/workflow-maps.md](docs/product/workflow-maps.md) - P0.05 draft ISO, POS and PayFac swimlanes (unvalidated).
+- [docs/product/workflow-validation.md](docs/product/workflow-validation.md) - three real-world workflow validation gate.
+- [docs/product/workflow-scenarios.csv](docs/product/workflow-scenarios.csv) - 20 synthetic future test scenarios.
 
 ## Development approach
 

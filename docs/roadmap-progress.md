@@ -1,53 +1,61 @@
 # Zoho Clone — Master Roadmap Progress
 
 **Updated:** 2026-11-13
-**Source roadmap:** Complete AI Master Roadmap v2.0 — P0–P17 and additional product tracks
-**Active sub-phase:** **P0.04 — Customer Interview Playbook**
-**P0.01:** https://github.com/owaisprog/Zoho-Clone/issues/3 (closed)
-**P0.02:** https://github.com/owaisprog/Zoho-Clone/issues/4 (closed)
-**P0.03:** https://github.com/owaisprog/Zoho-Clone/issues/5 (closed — owner-approved)
-**P0.04:** https://github.com/owaisprog/Zoho-Clone/issues/6 (open — materials prepared; awaiting approval)
+**Authoritative roadmap:** Zoho Clone Complete AI Master Roadmap v2.0 (P0–P17 plus product tracks)
+**Active phase:** **P0.05 — Merchant Process Maps**
+**Owner:** Product owner approves decisions; ChatGPT drafts, codes/tests in later phases and maintains GitHub artifacts.
 
-## Phase tracker
+## Phase ledger
 
-| Phase | State | Evidence |
+| Phase | Status | Evidence |
 | --- | --- | --- |
-| P0.01 — Business Vision Charter | COMPLETE, approved 2026-11-13 | `docs/product/vision.md`, issue #3 |
-| P0.02 — Customer Segment Map | COMPLETE, approved 2026-11-13 | `docs/product/icp.md`, evidence/scorecard, issue #4 |
-| P0.03 — Competitive Capability Matrix | **COMPLETE, approved 2026-11-13** | `competitive-capability-matrix.md`, `competitor-feature-matrix.csv`, evidence, issue #5 |
-| P0.04 — Customer Interview Playbook | **IN PROGRESS** | `customer-interview-playbook.md`, `interview-question-bank.md`, `interview-execution-plan.md`, `interview-note-template.md`, `interview-outreach.md`, CSV, issue #6 |
-| P0.05 and later customer validation | NOT STARTED | P0.04 protocol sign-off and real interviews required |
-| P3 — Application scaffolding | NOT STARTED | Depends on earlier discovery/requirements/architecture gates |
+| P0.01 — Business Vision Charter | COMPLETE | Owner-approved charter; issue #3 closed |
+| P0.02 — Customer Segment Map | COMPLETE | Owner-approved ISO > POS reseller > PayFac rank; issue #4 closed |
+| P0.03 — Competitive Capability Matrix | COMPLETE | Owner-approved comparison of 6 competitors / 29 capabilities; issue #5 closed |
+| P0.04 — Customer Interview Playbook | CLOSED WITH EXPLICIT INTERVIEW SHORTFALL | Owner-approved scripts and research method. **0 of 15–25 target interviews**; issue #6 closed; [shortfall record](product/p0-04-interview-shortfall.md) |
+| **P0.05 — Merchant Process Maps** | **IN PROGRESS** | Three unvalidated draft swimlanes, candidate data/API rules, 20 synthetic future tests; issue #7 OPEN |
+| P0.06 — Data Sensitivity Inventory | NOT STARTED | Depends on P0.05 actual workflow validation gate |
+| P3 — Application scaffolding | NOT STARTED | Next.js / Express packages not initialized until architecture phase |
 
-## P0.03 closure record
+## Links
 
-The product owner explicitly approved **P0.03 competitive findings and validation priorities** in project conversation on 2026-11-13.
+- P0.04 approval and shortfall: https://github.com/owaisprog/Zoho-Clone/issues/6
+- P0.05 active phase: https://github.com/owaisprog/Zoho-Clone/issues/7
+- Interview/evidence debt: https://github.com/owaisprog/Zoho-Clone/issues/8
+- ISO / POS / PayFac [draft process maps](product/workflow-maps.md)
+- [Validation and acceptance](product/workflow-validation.md)
+- [Synthetic scenarios](product/workflow-scenarios.csv)
 
-Six competitors were compared across 29 capabilities in a published research matrix. Sources are official vendor descriptions; they are not independent hands-on product tests. Customer pain, budget and switching demand remain hypotheses. The approval closes the **documented comparison phase**, not actual field validation.
+## P0.04 completion record
 
-## P0.04 — Current work and definition of done
+The owner explicitly approved the interview playbook and general outreach approach on 2026-11-13. The authoritative master PDF's P0.04 acceptance requires **15–25 interviews OR a documented shortfall**. We report the shortfall truthfully: 0 interviews, 0 invitations sent, 0 verified private contact list, 0 paid pilot commitments. The documentation phase was closed using the shortfall alternative. This is **not** customer validation.
 
-- [x] Scope three approved ICPs: ISO first, POS second, PayFac third.
-- [x] Build neutral opening, screener, agenda, core questions and segment-specific probes.
-- [x] Build outreach scripts and optional follow-up copy.
-- [x] Build private note template and public-safe blank CSV header.
-- [x] Build evidence strength scoring, anti-bias rules and research synthesis plan.
-- [x] Separate human owner consent/contact/outreach responsibilities from ChatGPT drafting/analysis.
-- [x] Record that the GitHub repository is **public**, so sensitive interviews belong elsewhere.
-- [ ] Owner reviews and approves interview protocol/recruitment approach.
-- [ ] Owner prepares/approves a shortlist of real prospective contacts in **private** storage.
-- [ ] Mark P0.04 complete and open the next discovery phase after approval.
+## P0.05 current deliverables
 
-**No interviews, emails, recordings, external sales contact, runtime software tests or customer validation are claimed as performed.**
+- [x] Read master roadmap to verify exact P0.05 name: **Merchant Process Maps**.
+- [x] ISO merchant lead-to-underwriting/boarding/activation workflow drafted.
+- [x] POS reseller merchant approval-to-device-installation/activation workflow drafted.
+- [x] PayFac submerchant identity-verification/requirements/capability workflow drafted.
+- [x] Exception paths, actors, data, permissions, integrations and planned APIs mapped.
+- [x] 20 synthetic test scenarios written (NOT run).
+- [x] Source/assumption and financial/identity-data boundaries documented.
+- [ ] Obtain and validate 3 real-world merchant processes with actual qualified operators.
+- [ ] Incorporate contradictory cases and corrections in maps.
+- [ ] Owner signs off maps and closes P0.05 before P0.06.
 
-## Implementation status
+**Current verified real-world workflow count: 0/3**.
 
-The `frontend/` and `backend/` folders exist, each currently with a README. Next.js and Express application scaffolding begins in the later P3 setup phase. Do not conflate research-document completion with implemented product functionality.
+## Remaining owner actions
 
-## Working rules
+1. Prepare an appropriately authorized, private shortlist of ISO/POS/PayFac respondents; public GitHub must not hold personal contact details.
+2. Approve specific correspondence, contact participants and collect consented, safely anonymized recent workflow details.
+3. Provide sanitized process corrections for ChatGPT to incorporate into P0.05 maps.
+4. Approve the *three actually validated* workflows to close P0.05.
 
-1. Read current phase, approved dependencies, and decision log.
-2. Create scoped artifacts and reproducible verification evidence.
-3. For code phases, execute tests and record honest outcomes.
-4. Never publish private respondent data or credentials.
-5. Record approval before closing gate issues, then advance sequentially.
+## Development stack — unchanged
+
+Frontend: Next.js + React + TypeScript + Tailwind CSS + shadcn/ui. Backend: Node.js + Express.js + TypeScript. Database: PostgreSQL + Prisma. Redis/BullMQ when needed. Modular monolith. Only the existing `frontend/` and `backend/` README placeholders exist; no working app, database, APIs, deployment or executable tests yet.
+
+## Integrity rules
+
+Never describe vendor marketing, synthetic scenarios or an approved research *plan* as actual customer interviews. Do not mark P0.05 complete with unvalidated diagrams. Use private secure storage for any real research notes and confidential customer data.

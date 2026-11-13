@@ -1,7 +1,7 @@
 # P0.04 — Recruitment, Execution and Evidence Plan
 
 **Project:** Zoho Clone
-**Status:** Draft; no outreach has been sent, no interview booked or completed.
+**Status:** Recruitment protocol owner-approved 2026-11-13; no outreach has been sent, no interview booked or completed. External research is tracked separately in issue #8.
 **Primary document:** [Customer Interview Playbook](customer-interview-playbook.md).
 
 ## 1. Recruitment targets and operating sequence

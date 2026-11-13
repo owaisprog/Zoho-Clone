@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.04 (Customer Interview Playbook in progress)
+**Current roadmap checkpoint:** P0.05 (Merchant Process Maps — drafts; awaiting real-world workflow validation)
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -21,7 +21,10 @@
 
 | DEC-014 | P0.02 segment order ISO -> POS reseller -> PayFac | **Approved 2026-11-13 as research priority** | Ranking is authorized; scores and pain hypotheses still need interviews in P0.04/P0.05 |
 | DEC-015 | P0.03 competitive matrix and differentiation hypotheses | **Approved 2026-11-13 as research baseline** | Six competitors, 29 feature dimensions; buyer validation still required |
-| DEC-016 | P0.04 research protocol will be non-leading, privacy-preserving, and disconfirmable | **Draft; owner review pending** | Interview scripts, participant quotas, anonymized notes, qualification/pilot evidence and signed-off recruiting plan |
+| DEC-016 | P0.04 interview protocol and general outreach approach | **Owner-approved 2026-11-13** | 0/15-25 interviews completed; documented shortfall under roadmap exception, issue #8 remains open |
+
+| DEC-017 | P0.04 shortfall explicitly reported and moved to separate evidence work | **Documented 2026-11-13** | Public repo must not include real contact identities, merchant records or interview transcripts |
+| DEC-018 | P0.05 must validate 3 real merchant workflows before closure | **IN PROGRESS** | Three research-grounded synthetic drafts exist, zero customer-validated; GitHub issue #7 |
 
 ## Change control
 
@@ -34,4 +37,5 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - Date: 2026-11-13
 - P0.02 segment priority approval: Approved by product owner on 2026-11-13; customer evidence still outstanding
 - P0.03 competitor research approval: Approved by product owner on 2026-11-13; external product testing and buyer discovery remain open
-- Current phase: P0.04 - Customer Interview Playbook (active)
+- P0.04 owner sign-off: Approved by product owner in this conversation on 2026-11-13; interview shortfall 0 of 15–25 recorded
+- Current phase: P0.05 - Merchant Process Maps (active, real-world validation outstanding)

@@ -1,6 +1,6 @@
 # P0.04 — Interview Outreach and Follow-up Copy
 
-**Status:** Draft. Not sent to anyone. Communications require product-owner approval and authorized use of connected services.
+**Status:** General outreach strategy OWNER-APPROVED 2026-11-13; no message sent. Specific recipients and external communications still require appropriate owner authorization, consent and account access.
 **Goal:** Invite targeted B2B operators/buyers for unbiased research; do **not** misrepresent interviews as customer commitments.
 
 ## Email — ISO / merchant services operator
