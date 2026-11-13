@@ -4,6 +4,18 @@
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
+## P3 Batch 03 — typed tenant-aware backend foundations (review pending)
+
+P3.13–P3.17 implements test-only, dependency-injected Express service foundations:
+typed fictional-data input validation, default-deny active membership rules,
+tenant/owner-scoped lead read and write operations, optimistic versioning,
+idempotency and negative HTTP security tests. No real authentication, database,
+tenancy, credentials or production API routes are enabled. See
+[Batch 03 engineering notes](docs/engineering/p3-batch-03.md).
+
+**All 14 original risks, 12 open decisions and 727 unexecuted original
+acceptance/security cases remain unchanged.**
+
 ## P3 Batch 02: lead details, internal operations and fictional tasks (in review)
 
 P3.08–P3.12 ([draft PR #34](https://github.com/owaisprog/Zoho-Clone/pull/34), [52/52 tests CI PASS](https://github.com/owaisprog/Zoho-Clone/actions/runs/43502348085)) adds browser-only lead detail/activity, internal MerchantOps stage workbench,
