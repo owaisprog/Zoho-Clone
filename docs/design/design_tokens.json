@@ -1,10 +1,10 @@
 {
-  "$description": "P2.01 PROPOSED ORIGINAL DESIGN TOKENS, OWNER REVIEW PENDING. Not runtime code, not production brand selection, not accessibility certification. Uses W3C Design Tokens 2025.10 shape for proposed future transform; exact toolchain unresolved.",
+  "$description": "P2.01 OWNER-APPROVED PROVISIONAL ORIGINAL INTERNAL DESIGN TOKENS on 2026-11-13; NOT runtime code, NOT final commercial brand and NOT verified accessibility. Future transformer/Next.js implementation in P3.",
   "$extensions": {
     "org.zohoClone": {
       "phase": "P2.01",
       "date": "2026-11-13",
-      "designStatus": "PROPOSED_NOT_APPROVED",
+      "designStatus": "OWNER_APPROVED_PROVISIONAL_INTERNAL_DESIGN",
       "runtimeStatus": "NOT_IMPLEMENTED",
       "safety": "SYNTHETIC_ONLY",
       "brandStatus": "WORKING_NAME_ONLY",
