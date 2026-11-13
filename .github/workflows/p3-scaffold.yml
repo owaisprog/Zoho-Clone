@@ -1,0 +1,36 @@
+name: P3 Scaffold Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # P3.01 currently has no checked-in lockfile. Use npm install, NOT npm ci.
+      # A reproducible package-lock.json and npm ci are a separate near-term task.
+      - name: Install workspace dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Type-check source
+        run: npm run typecheck
+
+      - name: Run scaffold tests
+        run: npm run test
+
+      - name: Build frontend and backend
+        run: npm run build
