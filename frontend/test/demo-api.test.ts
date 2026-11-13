@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { getDemoApplications, getDemoLeads, isSyntheticLead } from "../src/lib/demo-api";
 import { DEMO_APPLICATIONS, DEMO_LEADS } from "../src/lib/synthetic-data";
+import { DEMO_CONTRACT } from "@zoho-clone/demo-contracts";
 
 describe("P3.02 server-side synthetic Express data adapter", () => {
   it("uses a verified fictional Express payload, not browser fetching", async () => {
@@ -9,7 +10,7 @@ describe("P3.02 server-side synthetic Express data adapter", () => {
     try {
       globalThis.fetch = async (input) => {
         assert.match(String(input), /\/api\/v1\/demo\/leads$/);
-        return Response.json({ scope: "synthetic-only", dataset: "leads", records: DEMO_LEADS });
+        return Response.json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "leads", records: DEMO_LEADS });
       };
       const result = await getDemoLeads();
       assert.equal(result.source, "express-demo-api");
@@ -40,7 +41,7 @@ describe("P3.02 server-side synthetic Express data adapter", () => {
       const result = await getDemoLeads();
       assert.equal(result.source, "local-fixtures");
       assert.ok(!JSON.stringify(result).includes("do-not-show"));
-      globalThis.fetch = async () => Response.json({ scope: "production", dataset: "leads", records: DEMO_LEADS });
+      globalThis.fetch = async () => Response.json({ contract: DEMO_CONTRACT, scope: "production", dataset: "leads", records: DEMO_LEADS });
       assert.equal((await getDemoLeads()).source, "local-fixtures");
     } finally { globalThis.fetch = oldFetch; }
   });
@@ -49,11 +50,11 @@ describe("P3.02 server-side synthetic Express data adapter", () => {
     const oldFetch = globalThis.fetch;
     try {
       globalThis.fetch = async () => Response.json({
-        scope: "synthetic-only", dataset: "applications", records: DEMO_LEADS,
+        contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "applications", records: DEMO_LEADS,
       });
       assert.equal((await getDemoLeads()).source, "local-fixtures");
       globalThis.fetch = async () => Response.json({
-        scope: "synthetic-only", dataset: "applications",
+        contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "applications",
         records: [DEMO_APPLICATIONS[0], DEMO_APPLICATIONS[0], ...DEMO_APPLICATIONS.slice(2)],
       });
       assert.equal((await getDemoApplications()).source, "local-fixtures");

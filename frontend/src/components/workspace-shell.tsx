@@ -62,6 +62,10 @@ function NavGroup({
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const pageTitle = pathname === "/app" ? "Overview" :
+    pathname === "/app/sales/leads" ? "Sales CRM / Leads" :
+    pathname === "/app/operations/applications" ? "Merchant applications" :
+    pathname === "/app/settings" ? "Settings concept" : "Unrecognized demo page";
 
   const navigation = (
     <>
@@ -100,7 +104,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
               <summary aria-label="Open demo navigation"><Layers3 size={20} /></summary>
               <div className="mobile-nav-content">{navigation}</div>
             </details>
-            <span className="topbar-path">Workspace <span className="path-separator">/</span> Internal preview</span>
+            <span className="topbar-path">Workspace <span className="path-separator">/</span> {pageTitle}</span>
           </div>
           <div className="topbar-actions">
             <span className="synthetic-badge"><span className="badge-dot" /> SYNTHETIC DEMO</span>
@@ -112,7 +116,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
         <main id="main-content" className="workspace-content">{children}</main>
 
         <footer className="workspace-bottom">
-          <span><Activity size={14} aria-hidden="true" /> P3.01 early scaffold · no production data</span>
+          <span><Activity size={14} aria-hidden="true" /> P3 batch / synthetic preview · no production data</span>
           <span className="bottom-right">
             <CircleHelp size={14} aria-hidden="true" /> Design + process demo, not secure customer software
             <ArrowUpRight size={13} aria-hidden="true" />

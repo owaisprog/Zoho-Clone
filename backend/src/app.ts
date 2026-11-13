@@ -1,6 +1,7 @@
 import express, { type ErrorRequestHandler, type RequestHandler } from "express";
 import helmet from "helmet";
 import { demoApplications, demoLeads } from "./demo-fixtures.js";
+import { DEMO_CONTRACT } from "@zoho-clone/demo-contracts";
 
 export const API_VERSION = "v1" as const;
 
@@ -30,11 +31,11 @@ export function createApp() {
   // P3.02: Fixed, publicly readable, FICTIONAL demo fixtures. No protected CRUD.
   // Local bind restrictions in config.ts remain required; this is not a real CRM API.
   app.get("/api/v1/demo/leads", noStore, (_req, res) => {
-    res.status(200).json({ scope: "synthetic-only", dataset: "leads", records: demoLeads });
+    res.status(200).json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "leads", records: demoLeads });
   });
 
   app.get("/api/v1/demo/applications", noStore, (_req, res) => {
-    res.status(200).json({ scope: "synthetic-only", dataset: "applications", records: demoApplications });
+    res.status(200).json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "applications", records: demoApplications });
   });
 
   // No /api/v1/organizations, real CRM, merchant, payments, KYC, or write API.

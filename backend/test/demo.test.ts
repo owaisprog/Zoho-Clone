@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import request from "supertest";
 import { createApp } from "../src/app.js";
 import { demoApplications, demoLeads } from "../src/demo-fixtures.js";
+import { DEMO_CONTRACT, parseSyntheticEnvelope } from "@zoho-clone/demo-contracts";
 
 describe("P3.02 explicitly synthetic read-only demo API", () => {
   const app = createApp();
@@ -12,6 +13,8 @@ describe("P3.02 explicitly synthetic read-only demo API", () => {
     assert.equal(response.status, 200);
     assert.equal(response.headers["cache-control"], "no-store");
     assert.equal(response.body.scope, "synthetic-only");
+    assert.equal(response.body.contract, DEMO_CONTRACT);
+    assert.deepEqual(parseSyntheticEnvelope(response.body, "leads", demoLeads), demoLeads);
     assert.equal(response.body.dataset, "leads");
     assert.deepEqual(response.body.records, demoLeads);
     assert.ok(response.body.records.every((row: { email: string; id: string }) =>
@@ -23,6 +26,8 @@ describe("P3.02 explicitly synthetic read-only demo API", () => {
     assert.equal(response.status, 200);
     assert.equal(response.body.scope, "synthetic-only");
     assert.equal(response.body.dataset, "applications");
+    assert.equal(response.body.contract, DEMO_CONTRACT);
+    assert.deepEqual(parseSyntheticEnvelope(response.body, "applications", demoApplications), demoApplications);
     assert.deepEqual(response.body.records, demoApplications);
     assert.ok(response.body.records.every((row: { id: string }) => row.id.startsWith("APP-DEMO-")));
     assert.ok(!JSON.stringify(response.body).includes("processor_approved"));

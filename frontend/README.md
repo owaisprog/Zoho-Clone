@@ -47,3 +47,15 @@ put real customer/card/bank/identity/KYC data into this demo. P2.02 remains open
 and may change future route names; these are only safe early preview routes.
 
 The synthetic fixture labels and example.com addresses are deliberately fictional.
+
+## P3 batch 01: fictional lead workbench
+
+P3.04–P3.07 code adds a shared strict demo API contract, dynamic pipeline snapshot,
+local-only health/data checks, a synthetic lead editor and safe loading/error UI.
+Browse `/app/sales/leads` to add or edit explicitly fictional leads **in browser
+memory only**. Nothing is POSTed, persisted or available to other users. Reload
+restores the fixed example.com fixtures. These prototype interactions must not
+be misrepresented as working CRM backend CRUD.
+
+See [batch notes](../docs/engineering/p3-batch-01.md). All 14 risk gaps, 12 open
+decisions and 727 original tests remain unresolved/unexecuted.

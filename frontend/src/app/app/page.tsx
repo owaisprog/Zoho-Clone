@@ -3,6 +3,7 @@ import {
   Activity, ArrowRight, ArrowUpRight, ClipboardCheck, Clock3, Database, Server,
 } from "lucide-react";
 import { getBackendStatus } from "@/lib/backend-status";
+import { getDemoWorkload, getLeadPipeline } from "@/lib/demo-analytics";
 import { getDemoApplications, getDemoLeads } from "@/lib/demo-api";
 import {
   getApplicationSummary,
@@ -15,6 +16,8 @@ export default async function WorkspaceHome() {
     getDemoApplications(), getDemoLeads(), getBackendStatus(),
   ]);
   const summary = getApplicationSummary(applications.records);
+  const workload = getDemoWorkload(applications.records, leads.records);
+  const pipeline = getLeadPipeline(leads.records);
 
   return (
     <>
@@ -94,6 +97,35 @@ export default async function WorkspaceHome() {
           </div>
         </section>
       </div>
+
+      <section className="panel pipeline-panel" aria-label="Fictional lead pipeline">
+        <div className="panel-title-row">
+          <div>
+            <h2>Sales pipeline snapshot</h2>
+            <p>{workload.leads} fictional leads, {workload.qualified} qualified · read-only</p>
+          </div>
+          <Link href="/app/sales/leads" className="text-link">
+            Browse lead workbench <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </div>
+        <div className="pipeline-rows">
+          {pipeline.map((item) => (
+            <div className="pipeline-row" key={item.stage}>
+              <div className="pipeline-row-header">
+                <span>{item.label}</span>
+                <strong>{item.count} <span>({item.percentage}%)</span></strong>
+              </div>
+              <div className="pipeline-track" aria-hidden="true">
+                <div className={"pipeline-fill pipeline-" + item.stage} style={{ width: item.percentage + "%" }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="demo-data-source">
+          Data: {leads.source === "express-demo-api" ? "validated local Express demo API" : "local fictional fallback"}.
+          No actual CRM forecast, revenue, or approvals.
+        </p>
+      </section>
     </>
   );
 }

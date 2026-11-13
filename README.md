@@ -4,12 +4,24 @@
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
+## P3 Batch 01: five related development subphases (in review)
+
+P3.03–P3.07 adds deterministic dependency installation, a shared synthetic-only
+Express/Next contract, fictional dashboard pipeline analytics, local-only lead
+create/edit interactions, and broader error/contract tests. See
+[implementation and gate notes](docs/engineering/p3-batch-01.md).
+
+**Read-only GET demo routes are not real CRM services.** New lead drafts exist
+in browser memory only and disappear on refresh. The original 727 acceptance/
+security tests, 14 risks and 12 decisions remain unclosed; P2.02 and P3.01
+owner review remain pending. No real customer data or external/production use.
+
 ## Run the first real frontend and backend
 
 **P3.01 is now actual source code, not documentation.** Use Node.js **22+** and npm. From this repository's root:
 
 ~~~sh
-npm install
+npm ci
 npm run dev:api
 ~~~
 
