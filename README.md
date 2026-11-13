@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **All P0.01–P0.10 planning/decision document packages prepared.** Owner-approved early plans are retained; P0.05 was skipped with 0/3 real workflows validated. P0.07–P0.09 real-market evidence and P0.10 owner build/no-build signoff remain open. **P0 is not commercially validated.**
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -48,11 +48,19 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P0.09 pilot criteria](docs/product/pilot_plan.md), [scorecard](docs/product/pilot-scorecard-template.csv), [qualification template](docs/product/pilot-qualification-template.md)
 - [P0.10 build/no-build gate](docs/product/phase0_gate.md), [open risks](docs/product/p0-critical-risks.csv)
 
-**P0 next decision:** Conditional internal-only GO for requirements/UX/sandbox development has been recommended, but **not yet approved by the product owner**. Production, live payments, real merchant data and public commercial use are NOT authorized. The master roadmap requires a signed build/no-build decision and evidence-backed claims; those cannot be manufactured by an AI planning pass.
+**P0 DECISION:** Product owner explicitly approved conditional internal GO on 2026-11-13; see [owner waiver record](docs/product/p0-07-09-research-waivers.md) and [signed build gate](docs/product/phase0_gate.md). Real market evidence and production security/contract/legal release gates are outstanding. Production, live payments, real merchant data and public commercial use are NOT authorized.
+
+## P1 — Requirements (active)
+
+- [P1 sub-phase plan](docs/p1-phase-plan.md) — P1.01 through P1.10 requirements work.
+- [P1.01 Master PRD](docs/product/prd.md) — first Merchant Operations CRM, prioritized releases and non-goals; owner review pending.
+- [P1.01 release/use-case matrix](docs/product/prd-release-matrix.csv) — 26 scoped use cases.
+- [P1.01 synthetic-only fixture examples](docs/product/prd-synthetic-fixtures.json) — fictional organizations and merchant cases, NOT a running database seed.
+- [P1.01 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/14) — active owner review gate.
 
 ## Development approach
 
-Follow the approved **Zoho Clone Complete AI Master Roadmap v2.0** (P0-P17 plus individual product tracks). Work on one sub-phase at a time, inspect the repository, implement and test the scoped change, record evidence, then advance after the required approval. Product discovery phases create documents; application scaffolding begins in P3.
+Follow the **Zoho Clone Complete AI Master Roadmap v2.0** (P0-P17 plus individual product tracks). The owner has authorized internal P1/P2 planning and future synthetic-data P3 engineering under conditional P0.10 GO; all production/data-security/real-customer proof gates remain. Work on one sub-phase at a time, inspect the repository, implement and test the scoped change, record evidence, then advance after the required approval. Application scaffolding begins in P3.
 
 ## Important
 
