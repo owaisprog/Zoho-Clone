@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.06 — Permission and Sharing Matrix (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P1.07 — Domain Glossary and Synthetic Sample Records (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -44,8 +44,8 @@
 | P1.03 Nonfunctional SRS | **COMPLETE — OWNER APPROVED DESIGN TARGETS on 2026-11-13**, [Issue #16](https://github.com/owaisprog/Zoho-Clone/issues/16) closed; 46 unmeasured targets / 52 future tests |
 | P1.04 Personas and Journeys | **COMPLETE — owner-approved provisional baseline on 2026-11-13**, [Issue #17](https://github.com/owaisprog/Zoho-Clone/issues/17) closed; 12 synthetic personas, 18 journeys, 72 steps, 36 future tests NOT RUN |
 | P1.05 Feature Hierarchy and Release Gates | **COMPLETE — OWNER APPROVED INTERNAL PLANNING BASELINE on 2026-11-13**, [Issue #18](https://github.com/owaisprog/Zoho-Clone/issues/18) closed; 36 features and R0/R1/R2 vs external gate design approved as requirements |
-| **P1.06 Permission and Sharing Matrix** | **IN PROGRESS — 286 proposed role/resource decisions for 13 actors and 22 resource types; 52 future negative-access tests**, [Issue #19](https://github.com/owaisprog/Zoho-Clone/issues/19) open; owner review pending |
-| P1.07 Domain Glossary and Sample Records | NOT STARTED |
+| P1.06 Permission and Sharing Matrix | **COMPLETE — OWNER APPROVED DESIGN REQUIREMENTS on 2026-11-13**, [Issue #19](https://github.com/owaisprog/Zoho-Clone/issues/19) closed; 286 proposed rules / 52 tests NOT RUN; no security controls implemented |
+| **P1.07 Domain Glossary and Sample Records** | **IN PROGRESS — 31 proposed entities, 230 fields, 33 relationship rules, synthetic two-tenant samples, 46 future tests**, [Issue #20](https://github.com/owaisprog/Zoho-Clone/issues/20) open; owner review pending |
 | P1.08 API and Event Contract Spec | NOT STARTED |
 | P1.09 Acceptance and Traceability Map | NOT STARTED |
 | P1.10 Risk and Decision Register | NOT STARTED |
@@ -85,14 +85,22 @@
 - [x] [Release gates](product/release-gates.md) — product-slice internal sandbox, external pilot and commercial readiness separated.
 - [x] Owner approved P1.05 priorities, exclusions, dependency order and internal-vs-external gates as DESIGN/PLANNING on 2026-11-13; issue #18 closed. No software implemented or release gate passed.
 
-### P1.06 deliverables prepared for owner review
+### P1.06 owner-approved permissions design
 - [x] [Permission matrix](security/permission-matrix.md) — 13 actor roles, 22 resource families, deny by default and explicit field/row access.
 - [x] [Permission matrix CSV](security/permission-matrix.csv) — 286 draft role/resource decisions; 217 default-denied.
 - [x] [Authorization policy rules](security/permission-policy-rules.md) — server authorization order, active membership, role/record/field scopes, revocation, audit and safe worker restrictions.
 - [x] [52 proposed negative access scenarios](security/permission-negative-cases.csv) — **NOT RUN**.
-- [ ] Owner approves P1.06 as a proposed permissions/sharing design before P1.07 Domain Glossary.
+- [x] Owner approved P1.06 least-privilege roles, default deny, tenant isolation and record/field sharing as **DESIGN ONLY**, on 2026-11-13; issue #19 closed. Security implementation and tests remain undone.
 
-**No executable software, RBAC/ABAC policy engine, actual permission tests or runtime controls exist yet.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
+### P1.07 deliverables prepared for owner review
+- [x] [31-entity glossary](product/domain-glossary.md) for R0/R1/R2 and deferred provider references.
+- [x] [230-row field dictionary](product/domain-dictionary.csv) with types, classifications, allowlists and explicit forbidden-field examples.
+- [x] [33 relationship rules](product/domain-relationships.md) for same-org joins, stage history, assignment and source boundaries.
+- [x] [68 fictional sample records](product/domain-synthetic-records.json) across two demo organizations; no real customer/payment information.
+- [x] [46 future domain validation scenarios](product/domain-validation-cases.csv) — **NOT RUN**.
+- [ ] Owner approves P1.07 glossary, field names, status semantics and relationships as provisional internal requirements before P1.08.
+
+**No executable schema, migration, real database, app, RBAC/ABAC policy engine, actual permission tests or runtime controls exist yet.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
 ## Technical decisions (unchanged)
 
