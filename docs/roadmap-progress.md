@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.09 — Acceptance and Traceability Map (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P1.10 — Risk and Decision Register (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -47,8 +47,8 @@
 | P1.06 Permission and Sharing Matrix | **COMPLETE — OWNER APPROVED DESIGN REQUIREMENTS on 2026-11-13**, [Issue #19](https://github.com/owaisprog/Zoho-Clone/issues/19) closed; 286 proposed rules / 52 tests NOT RUN; no security controls implemented |
 | P1.07 Domain Glossary and Sample Records | **COMPLETE — OWNER APPROVED PROVISIONAL DESIGN 2026-11-13**, [Issue #20](https://github.com/owaisprog/Zoho-Clone/issues/20) closed; 31 entities, 230 fields, 68 fictional records; no DB or tests |
 | P1.08 API and Event Contract Spec | **COMPLETE — owner-approved provisional design 2026-11-13**, [Issue #21](https://github.com/owaisprog/Zoho-Clone/issues/21) closed; 67 proposed operations/16 events/164 future cases NOT RUN |
-| **P1.09 Acceptance and Traceability Map** | **IN PROGRESS — 121 requirements, 36 features, 727 future test cases and 14 evidence gaps documented**, [Issue #22](https://github.com/owaisprog/Zoho-Clone/issues/22) open; owner review pending |
-| P1.10 Risk and Decision Register | NOT STARTED |
+| P1.09 Acceptance and Traceability Map | **COMPLETE — OWNER APPROVED PLANNING ONLY on 2026-11-13**, [Issue #22](https://github.com/owaisprog/Zoho-Clone/issues/22) closed; 727 future cases NOT RUN and 14 gaps remain OPEN |
+| **P1.10 Risk and Decision Register** | **IN PROGRESS — 14/14 evidence and implementation gaps OPEN, 12 decisions unresolved, mitigation sequence drafted**, [Issue #23](https://github.com/owaisprog/Zoho-Clone/issues/23) open; owner review pending |
 
 ### P1.01 completed and P1.02 drafted
 - [x] [Master PRD](product/prd.md) — problem, users, personas, scope, major use cases, releases, non-goals, success measurement, dependencies and open unknowns.
@@ -107,14 +107,20 @@
 - [x] [164 future contract/security cases](api/api-contract-cases.csv): all **NOT EXECUTED**.
 - [x] Owner approved P1.08 API/event contracts as **provisional design requirements** on 2026-11-13; issue #21 closed. No API endpoints/event workers/contract tests implemented.
 
-### P1.09 artifacts prepared for owner review
+### P1.09 approved acceptance planning
 - [x] [Traceability and evidence rules](qa/acceptance-traceability.md) with **121/121** UC/FR/NFR planning-test links.
 - [x] [Requirement coverage CSV](qa/requirements-coverage.csv), [feature coverage CSV](qa/feature-coverage.csv): **36/36** features have planned-test links, not proven independent implementation coverage.
 - [x] [727 future test cases](qa/test-inventory.csv), including [286 permission decision cases](qa/permission-decision-cases.csv) and [32 event scenarios](qa/event-acceptance-cases.csv) — **0 executed**.
 - [x] [Release acceptance gates](qa/release-acceptance-gates.md) and [14-item gap register](qa/coverage-gaps.md).
-- [ ] Owner approves P1.09 acceptance coverage and real evidence policy as internal planning before P1.10 Risk and Decision Register.
+- [x] Owner approved P1.09 test and evidence mapping **as internal planning, not executed/passed tests** on 2026-11-13; issue #22 closed. **All 14 evidence gaps remain OPEN.**
 
-**No executable schema, database, application, tenant/RBAC controls, live API or event service, or runtime test evidence exists yet.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
+### P1.10 artifacts prepared for owner review
+- [x] [14-item open risk register](product/p1-risk-register.csv) and [risk guidance](product/p1-risk-register.md): all original G-001 through G-014 mapped and **OPEN**.
+- [x] [12 open future decisions](product/p1-decision-backlog.csv) and [decision narrative](product/p1-decision-register.md): no unapproved choice fabricated as decided.
+- [x] [Risk mitigation plan](product/p1-risk-mitigation-plan.md): proposed roles/actions/checkpoints plus external/commercial gates.
+- [ ] Owner approves P1.10 risk/decision tracking as internal design/planning before P2 UX. No risk closes just from approval.
+
+**0 of 727 tests executed, 0 passed. No executable app/schema/authorization/runtime security evidence exists. G-EXT and G-COM remain blocked.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
 ## Technical decisions (unchanged)
 
