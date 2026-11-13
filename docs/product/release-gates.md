@@ -1,11 +1,11 @@
 # P1.05 — Release Gates, Acceptance Contracts and Deployment Boundaries
 
 **Project:** Zoho Clone (internal working name)
-**Version:** 0.1 — owner-review draft
+**Version:** 1.0 — OWNER-APPROVED INTERNAL RELEASE GATE DESIGN (2026-11-13)
 **Prepared:** 2026-11-13
 **Phase:** P1.05 Feature Hierarchy and Release Gates
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/18
-**Status:** DRAFT planning contracts only. **No R0/R1/R2 feature has shipped, been deployed or passed runtime tests.**
+**Status:** P1.05 OWNER-APPROVED as internal release gate PLANNING on 2026-11-13. **No R0/R1/R2 feature has shipped, been deployed or passed runtime tests.** External pilot/production gates are NOT authorized.
 
 ## 1. Two different dimensions: implementation slice vs permission to release
 
@@ -23,7 +23,7 @@ An R0/R1/R2 feature marked “done in a developer branch” does NOT automatical
 
 | Gate | Requirements package | Implementation | Test evidence | Owner authorization |
 |---|---|---|---|---|
-| P1.05 feature taxonomy | 36 proposed feature specs, priority/UC/FR traceability prepared | N/A | Documentation mapping only | **PENDING product-owner review** |
+| P1.05 feature taxonomy | 36 planned features, priority/UC/FR traceability approved as design | N/A | Documentation mapping only | **OWNER-APPROVED internal planning 2026-11-13** |
 | R0 G-INT | Planned | **NOT BUILT** | **NOT RUN** | Synthetic-only internal path authorized in principle |
 | R1 G-INT | Planned | **NOT BUILT** | **NOT RUN** | Synthetic-only internal path authorized in principle |
 | R2 G-INT | Planned (merchant process still hypothetical) | **NOT BUILT** | **NOT RUN** | Synthetic-only internal path authorized in principle |
@@ -150,7 +150,7 @@ Do not use GitHub issue labels as a substitute for explicit recorded evidence an
 - [x] Differentiated G-INT, G-EXT and G-COM safety, product, legal and market gates.
 - [x] Explicit no-live-data/no-processor/no-payment boundaries.
 - [x] Fully traceable backlog to 26 UC/49 FR.
-- [ ] Product owner approves P1.05 feature hierarchy, priority and gates as a planning baseline.
-- [ ] Once approved close issue #18 and start **P1.06 Permission and Sharing Matrix**.
+- [x] Product owner approved P1.05 feature hierarchy, priorities and internal-vs-production gate design as an internal planning baseline on 2026-11-13.
+- [x] P1.05 issue #18 closed and P1.06 Permission and Sharing Matrix started in issue #19.
 
-**P1.05 is NOT COMPLETE until owner approval. No release gate, test, app or certification has been passed in the present repo.**
+**P1.05 COMPLETE as an owner-approved planning design.** No actual product release gate, test, app, external launch or certification has been passed.
