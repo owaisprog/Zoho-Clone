@@ -1,7 +1,7 @@
 # P1 — Requirements and Acceptance Contracts: Phase Plan
 
 **Initiated:** 2026-11-13
-**Status:** P1 active. P1.01–P1.07 OWNER-APPROVED and closed as provisional design; P1.08 API and Event Contracts drafted, owner review pending.
+**Status:** P1 active. P1.01–P1.08 OWNER-APPROVED and closed as provisional design; P1.09 Acceptance and Traceability Map drafted, owner review pending.
 **Authorization:** P0.10 owner-signed conditional GO for P1/P2 and future P3 **synthetic-data-only** internal development. Real customer data and external launch **not** authorized.
 **P1 exit:** Versioned owner-approved PRD/SRS, a traceability matrix, domain glossary and approved bounded MVP backlog.
 
@@ -16,8 +16,8 @@
 | P1.05 | Feature hierarchy and release gates | `docs/product/features.md`, `docs/product/mvp-backlog.csv`, `docs/product/feature-traceability.csv`, `docs/product/release-gates.md` | **COMPLETE — owner-approved internal planning baseline 2026-11-13; 36 features, 26 UC/49 FR traced; issue #18 closed** |
 | P1.06 | Permission and sharing matrix | `docs/security/permission-matrix.md`, `permission-matrix.csv`, `permission-policy-rules.md`, `permission-negative-cases.csv` | **COMPLETE — owner-approved DESIGN REQUIREMENTS 2026-11-13; 286 permission rules / 52 future tests, nothing implemented; issue #19 closed** |
 | P1.07 | Domain glossary and synthetic sample records | `docs/product/domain-glossary.md`, `domain-dictionary.csv`, `domain-relationships.md`, `domain-synthetic-records.json`, `domain-validation-cases.csv` | **COMPLETE — OWNER-APPROVED PROVISIONAL DESIGN 2026-11-13; 31 entities / 230 fields / 68 synthetic records / 46 future tests; issue #20 closed** |
-| **P1.08** | **API and event contract specification** | `docs/api/api-contracts.md`, `openapi-v1.json`, `api-traceability.csv`, `event-contracts.md`, `event-catalog.csv`, `event-envelope.schema.json`, `api-contract-cases.csv` | **IN PROGRESS — 67 proposed REST operations, 16 event types, 164 future test cases; owner review pending; issue #21 open** |
-| P1.09 | Acceptance and traceability map | `docs/qa/acceptance-traceability.md` | NOT STARTED |
+| P1.08 | API and event contract specification | `docs/api/api-contracts.md`, `openapi-v1.json`, `api-traceability.csv`, `event-contracts.md`, `event-catalog.csv`, `event-envelope.schema.json`, `api-contract-cases.csv` | **COMPLETE — owner-approved provisional API/event design 2026-11-13; 67 operations, 16 events, 164 future tests; NOT implemented; issue #21 closed** |
+| **P1.09** | **Acceptance and traceability map** | `docs/qa/acceptance-traceability.md`, `requirements-coverage.csv`, `feature-coverage.csv`, `test-inventory.csv`, `permission-decision-cases.csv`, `event-acceptance-cases.csv`, `release-acceptance-gates.md`, `coverage-gaps.md` | **IN PROGRESS — 121 requirements and 36 features mapped, 727 planned tests, 14 gaps; owner review pending; issue #22 open** |
 | P1.10 | Risk and decision register | `docs/product/p1-risk-register.md` | NOT STARTED |
 
 ## P1.01 owner approval checklist
@@ -80,7 +80,17 @@
 - [x] [API traceability](api/api-traceability.csv): direct endpoint mapping to 18 of 26 PRD UC and 37 of 49 Functional FR; other scopes are UI/test/deferred, not fake live endpoints.
 - [x] [Internal event contracts](api/event-contracts.md), [16-event catalog](api/event-catalog.csv), [event envelope schema](api/event-envelope.schema.json); not emitted or queued.
 - [x] [164 future API contract cases](api/api-contract-cases.csv), all **NOT RUN**.
-- [ ] Owner reviews/approves P1.08 API routes, permission/error conventions, event envelope and deferred endpoint boundaries before P1.09 Acceptance Traceability.
+- [x] Owner approved P1.08 API routes, permission/error contracts, event envelope and deferred endpoints as **provisional design requirements, not implemented endpoints or events**, on 2026-11-13; issue #21 closed.
+
+## P1.08 approval and active P1.09 acceptance traceability
+
+- [x] P1.08 approved as provisional design: 67 REST operations, 16 events; no API/event runtime exists; issue #21 closed.
+- [x] [Traceability specification](qa/acceptance-traceability.md) and [121-row UC/FR/NFR requirements map](qa/requirements-coverage.csv) authored; all 121 have **planned** tests.
+- [x] [36-row feature coverage](qa/feature-coverage.csv) and [727-case test inventory](qa/test-inventory.csv) prepared; **ALL NOT RUN**.
+- [x] [286 policy decision cases](qa/permission-decision-cases.csv) and [32 event cases](qa/event-acceptance-cases.csv) registered; NO permission engine or events implemented.
+- [x] [Acceptance gates](qa/release-acceptance-gates.md) separate internal synthetic tests from external/paid launch.
+- [x] [14-item coverage/evidence gap register](qa/coverage-gaps.md) keeps work open until real implementation and research.
+- [ ] Owner reviews and approves P1.09 traceability and evidence rules as planning requirements before P1.10.
 
 ## Release gating (separate from documentation)
 
@@ -100,7 +110,8 @@ P1.04 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/17
 P1.05 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/18  
 P1.06 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/19  
 P1.07 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/20  
-P1.08 active issue: https://github.com/owaisprog/Zoho-Clone/issues/21
+P1.08 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/21  
+P1.09 active issue: https://github.com/owaisprog/Zoho-Clone/issues/22
 
 **No Next.js or Express application has yet been scaffolded.** The top-level `frontend/` and `backend/` folders contain README placeholders. No P1 code tests were run because the deliverables are specifications.
 
