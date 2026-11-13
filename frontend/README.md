@@ -59,3 +59,12 @@ be misrepresented as working CRM backend CRUD.
 
 See [batch notes](../docs/engineering/p3-batch-01.md). All 14 risk gaps, 12 open
 decisions and 727 original tests remain unresolved/unexecuted.
+
+
+## P3 Batch 02 — fictional workbenches
+
+- \`/app/sales/leads\`: select fictional lead details, see generated session activity, sort/filter/page and reset. No arbitrary notes or persistent audit log.
+- \`/app/operations/applications\`: search/filter/page invented merchant examples and move through *internal-only* stages in memory. No actual processor boarding/approval.
+- \`/app/tasks\`: read fixed fictional task examples from Express (strictly validated); local progress controls do not call write APIs.
+
+See [Batch 02 handoff](../docs/engineering/p3-batch-02.md).

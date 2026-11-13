@@ -1,6 +1,6 @@
 import express, { type ErrorRequestHandler, type RequestHandler } from "express";
 import helmet from "helmet";
-import { demoApplications, demoLeads } from "./demo-fixtures.js";
+import { demoApplications, demoLeads, demoTasks } from "./demo-fixtures.js";
 import { DEMO_CONTRACT } from "@zoho-clone/demo-contracts";
 
 export const API_VERSION = "v1" as const;
@@ -36,6 +36,11 @@ export function createApp() {
 
   app.get("/api/v1/demo/applications", noStore, (_req, res) => {
     res.status(200).json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "applications", records: demoApplications });
+  });
+
+  // Fixed synthetic tasks only; this does not implement an authenticated work API.
+  app.get("/api/v1/demo/tasks", noStore, (_req, res) => {
+    res.status(200).json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "tasks", records: demoTasks });
   });
 
   // No /api/v1/organizations, real CRM, merchant, payments, KYC, or write API.

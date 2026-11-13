@@ -36,3 +36,11 @@ fixtures. No POST/PATCH/DELETE endpoints exist. The API binds locally only;
 do not use it for real merchant, client, employee, financial or identity data.
 
 See [batch notes](../docs/engineering/p3-batch-01.md).
+
+
+## P3 Batch 02 — fictional task API
+
+\`GET /api/v1/demo/tasks\` returns a few hardcoded \`TASK-DEMO-*\` examples with the same
+shared fictional-only contract and no-store headers as the lead/merchant demos.
+No server-side task mutation or real-user activity is implemented. The endpoint
+remains local-only; no real names, work records, processor information or credentials.

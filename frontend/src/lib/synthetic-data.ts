@@ -117,6 +117,13 @@ export const DEMO_LEADS: readonly DemoLead[] = [
   },
 ] as const;
 
+export const DEMO_TASKS: readonly import("@zoho-clone/demo-contracts").DemoTask[] = [
+  { id: "TASK-DEMO-101", title: "Demo lead qualification review", status: "todo", owner: "Demo Sales", relatedId: "LEAD-DEMO-103", dueLabel: "Demo day 1" },
+  { id: "TASK-DEMO-102", title: "Demo checklist follow-up", status: "in_progress", owner: "Demo Operations", relatedId: "APP-DEMO-102", dueLabel: "Demo day 2" },
+  { id: "TASK-DEMO-103", title: "Demo internal handoff notes", status: "done", owner: "Demo Operations", relatedId: "APP-DEMO-104", dueLabel: "Demo day 3" },
+  { id: "TASK-DEMO-104", title: "Demo opportunity sorting", status: "todo", owner: "Demo Sales", relatedId: "LEAD-DEMO-104", dueLabel: "Demo day 4" },
+];
+
 export const STAGE_LABELS: Record<InternalApplicationStage, string> = {
   draft: "Draft",
   needs_more_info: "Needs information",

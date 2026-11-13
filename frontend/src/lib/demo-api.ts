@@ -2,9 +2,9 @@
 // This is not an identity, tenant, payment or production-data integration.
 import {
   DEMO_CONTRACT, parseSyntheticEnvelope,
-  type DemoLead, type DemoApplication,
+  type DemoLead, type DemoApplication, type DemoTask,
 } from "@zoho-clone/demo-contracts";
-import { DEMO_APPLICATIONS, DEMO_LEADS } from "./synthetic-data";
+import { DEMO_APPLICATIONS, DEMO_LEADS, DEMO_TASKS } from "./synthetic-data";
 import { safeLocalApiBase } from "./local-api-url";
 export { isSyntheticLead, isSyntheticApplication } from "@zoho-clone/demo-contracts";
 
@@ -13,8 +13,8 @@ export interface DemoDataset<T> {
   source: "express-demo-api" | "local-fixtures";
 }
 
-async function fetchSynthetic<T extends DemoLead | DemoApplication>(
-  dataset: "leads" | "applications", fallback: readonly T[],
+async function fetchSynthetic<T extends DemoLead | DemoApplication | DemoTask>(
+  dataset: "leads" | "applications" | "tasks", fallback: readonly T[],
 ): Promise<DemoDataset<T>> {
   try {
     const base = safeLocalApiBase(process.env.API_INTERNAL_URL);
@@ -41,4 +41,8 @@ export function getDemoLeads(): Promise<DemoDataset<DemoLead>> {
 
 export function getDemoApplications(): Promise<DemoDataset<DemoApplication>> {
   return fetchSynthetic("applications", DEMO_APPLICATIONS);
+}
+
+export function getDemoTasks(): Promise<DemoDataset<DemoTask>> {
+  return fetchSynthetic("tasks", DEMO_TASKS);
 }

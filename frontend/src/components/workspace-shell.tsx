@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Layers3,
   LockKeyhole,
+  ListTodo,
   Settings2,
   UsersRound,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const primary = [
   { label: "Overview", href: "/app", icon: LayoutDashboard },
   { label: "Sales CRM", href: "/app/sales/leads", icon: UsersRound },
   { label: "Merchant Operations", href: "/app/operations/applications", icon: ClipboardList },
+  { label: "Tasks (demo)", href: "/app/tasks", icon: ListTodo },
 ] as const;
 
 const administration = [
@@ -65,6 +67,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pageTitle = pathname === "/app" ? "Overview" :
     pathname === "/app/sales/leads" ? "Sales CRM / Leads" :
     pathname === "/app/operations/applications" ? "Merchant applications" :
+    pathname === "/app/tasks" ? "Tasks (fictional)" :
     pathname === "/app/settings" ? "Settings concept" : "Unrecognized demo page";
 
   const navigation = (
