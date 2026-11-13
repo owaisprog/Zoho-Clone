@@ -189,3 +189,19 @@ P3.08–P3.12 are implementation slices in the synthetic preview, not full produ
 **Still unchanged:** all 14 risks/gaps OPEN; all 12 decisions OPEN; all 727 P1.09 acceptance/security cases NOT RUN; all 40 P2.02 IA review cases NOT RUN; P2.02 #25/P3.01 #26 open; PR #27 and #28 draft. G-EXT/G-COM BLOCKED. No identity, secure tenant DB, customer data, protected CRUD, processor approval, KYC or production release.
 
 **P3 Batch 02 CI evidence:** [run #43502348085](https://github.com/owaisprog/Zoho-Clone/actions/runs/43502348085) completed SUCCESS: 34 frontend + 13 backend + 5 shared = **52 scaffold/demo tests passed**, typechecks, locked npm install and builds passed. [Draft PR #34](https://github.com/owaisprog/Zoho-Clone/pull/34); review issues #35–#39 remain OPEN. This does not affect the 727 original NOT_RUN acceptance cases or 14 open risks / 12 decisions.
+
+## Parallel P3 Batch 03 — P3.13–P3.17 typed protected backend foundation
+
+**Code committed; CI passed; owner review pending (2026-11-14)** in
+`feat/p3-batch-03-foundations`. [Engineering scope and safeguards](engineering/p3-batch-03.md)
+describe typed internal lead contracts, current-membership default-deny policy,
+scoped repository/service, test-injected Express routes and two-tenant denial tests.
+
+**Not an authorized production API:** default backend startup does not mount
+these routes. Real identity, tenant IDs and fine-grained grants remain OPEN-001,
+OPEN-002, OPEN-003. No Prisma migrations, live data, provider secrets, payment
+integrations or external release. All 14 risks/gaps OPEN, 12 decisions OPEN,
+727 original P1.09 cases NOT RUN, 40 P2.02 IA reviews NOT RUN, G-EXT/G-COM
+BLOCKED. P2.02 and unfinished owner reviews remain open.
+
+**P3 batch 03 engineering evidence:** [draft PR #40](https://github.com/owaisprog/Zoho-Clone/pull/40) and [CI run #43507084906](https://github.com/owaisprog/Zoho-Clone/actions/runs/43507084906) success: 66 standalone tests PASS (34 frontend, 27 backend, 5 shared), typechecks, npm ci and builds PASS. Issues #41–#45 remain open for owner review. Protected preview endpoints are **unmounted from normal app startup** and use only injected fictional test principals, not deployed authentication. The original 727 tests remain NOT RUN; 14 risk gaps and 12 unresolved decisions remain OPEN.
