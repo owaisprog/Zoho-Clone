@@ -44,14 +44,14 @@ The product owner's P0.10 approval allows **synthetic-data-only internal develop
 
 | ID | Feature | Priority | Dependencies | Roadmap implementation |
 |---|---|---|---|---|
-| FT-001 | Tenant workspace creation | MUST | none | P4 |
+| FT-001 | Tenant workspace creation | MUST | FT-035 | P4 |
 | FT-002 | Organization switcher and verified membership | MUST | FT-001 | P4 |
 | FT-003 | Internal staff invitation and revocation | MUST | FT-002 | P4 |
 | FT-004 | Tenant and record authorization kernel | MUST | FT-001;FT-002 | P4/P12 |
 | FT-005 | Least-privilege audit records | MUST | FT-002;FT-004 | P4/P12 |
 | FT-006 | Plan and app grant enforcement | MUST | FT-002;FT-004 | P6 |
 | FT-007 | Hosted billing adapter contract | SHOULD | FT-004;FT-006 | P6/P7 |
-| FT-035 | Tenant-safe authentication and session recovery | MUST | FT-001;FT-004 | P4 |
+| FT-035 | Tenant-safe authentication and session recovery | MUST | none | P4 |
 
 ### R1 — Sales CRM
 
