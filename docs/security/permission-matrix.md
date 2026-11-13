@@ -1,12 +1,12 @@
 # P1.06 — Permission and Sharing Matrix
 
 **Project:** Zoho Clone — internal working name
-**Version:** 0.1 — product-owner review draft
+**Version:** 1.0 — OWNER-APPROVED P1.06 DESIGN REQUIREMENTS (2026-11-13)
 **Prepared:** 2026-11-13
 **Phase:** P1.06 Permission and Sharing Matrix
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/19
 **Inputs:** P1.01 owner-approved PRD, P1.02 Functional SRS, P1.03 NFR design targets, P1.04 provisional personas/journeys and P1.05 feature/release gates (owner-approved 2026-11-13).
-**State:** **DRAFT ONLY** — no RBAC/ABAC policy engine, database RLS, APIs, user sessions or executable security tests exist yet.
+**State:** **P1.06 COMPLETE — owner-approved least-privilege, default-deny, tenant, record and field policy DESIGN only (2026-11-13).** No RBAC/ABAC code, database RLS, APIs, user sessions or executed security tests exist yet.
 **Authorization:** P0.10 conditional GO for internal **synthetic-data-only** work. No live merchant/customer data, real processor integration, external pilot or public paid production authorized.
 
 ## 1. Access principles
@@ -145,7 +145,7 @@ The companion [permission-negative-cases.csv](permission-negative-cases.csv) lis
 - [x] Deny-default, active membership, entitlements, row/field policy, sharing and forbidden-data restrictions articulated.
 - [x] Platform support/external agents/external merchants/machine principals have no implicit access.
 - [x] Future negative-access matrix and implementation handoff written.
-- [ ] **Product owner approves** proposed roles, their scope, sharing rules and hard denials **as design requirements**.
-- [ ] After owner sign-off close P1.06 and begin P1.07 Domain Glossary and Sample Records.
+- [x] **Product owner approved** all proposed least-privilege roles, default-deny access, tenant/record/field sharing rules and hard denials **AS DESIGN REQUIREMENTS, not implemented security controls**, on 2026-11-13.
+- [x] P1.06 issue #19 closed after owner approval; P1.07 Domain Glossary and Synthetic Sample Records started in issue #20.
 
-**Status:** P1.06 **IN PROGRESS** — all documents are drafts; no permission code or verification runs exist. Research about ISO/POS/PayFac roles and real workflows remains outstanding, issue #8.
+**Status:** P1.06 **COMPLETE — APPROVED DESIGN BASELINE ONLY**. No permission code or verification runs exist. Research about ISO/POS/PayFac roles and real workflows remains outstanding in issue #8.
