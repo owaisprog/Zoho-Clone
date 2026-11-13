@@ -3,6 +3,7 @@
 **Last updated:** 2026-11-13  
 **Authoritative roadmap:** Complete AI Master Roadmap v2.0 - P0-P17 plus individual product tracks  
 **Active sub-phase:** P0.01 - Business Vision Charter  
+**Tracking issue:** https://github.com/owaisprog/Zoho-Clone/issues/3  
 **Status:** DRAFT PREPARED; OWNER APPROVAL REQUIRED
 
 ## Current checkpoint
