@@ -1,6 +1,6 @@
 # P1.04 — User Journeys and End-to-End Task Flows
 
-**Version:** 0.1 — OWNER-REVIEW DRAFT
+**Version:** 1.0 — OWNER-APPROVED PROVISIONAL JOURNEY BASELINE (2026-11-13)
 **Prepared:** 2026-11-13
 **Phase:** P1.04 Personas and Journeys
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/17
@@ -383,8 +383,8 @@ Each journey specifies actor/persona, entry trigger, intent, handoff, intended s
 - [x] All 26 approved P1.01 use cases have at least one journey reference (some deferred as explicit non-availability paths).
 - [x] Handoffs, unsafe data collection, role denial, session expiration, processor-boundary and recovery paths covered.
 - [x] [Synthetic future acceptance cases](journey-acceptance-cases.csv) prepared; none run.
-- [ ] Product owner confirms the chosen personas, journey priorities and limits.
+- [x] Product owner approved chosen personas, journey priorities and limits **as provisional planning assumptions** on 2026-11-13.
 - [ ] Actual qualified ISO/POS/PayFac research remains an unresolved independent task in issue #8.
-- [ ] Only after owner approval, close P1.04 and start P1.05 Feature Hierarchy and Release Gates.
+- [x] P1.04 closed after owner approval; P1.05 Feature Hierarchy and Release Gates opened as issue #18.
 
-**P1.04 status: IN PROGRESS. Not a completed UX design or customer-validated research report.**
+**P1.04 status: COMPLETE AS A PROVISIONAL PLANNING BASELINE.** Not a completed UX implementation or customer-validated research report.
