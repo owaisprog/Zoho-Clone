@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01–P0.04 approved/closed; P0.05 skipped by owner with 0/3 real workflows validated; **P0.06 design rules owner-approved and closed; P0.07 MVP Value Proposition in progress**.
+**Status:** **All P0.01–P0.10 planning/decision document packages prepared.** Owner-approved early plans are retained; P0.05 was skipped with 0/3 real workflows validated. P0.07–P0.09 real-market evidence and P0.10 owner build/no-build signoff remain open. **P0 is not commercially validated.**
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -39,6 +39,16 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/landing-copy.md](docs/product/landing-copy.md) - P0.07 two landing copy concepts (not published).
 - [docs/product/value-validation-plan.md](docs/product/value-validation-plan.md) - P0.07 measurable customer value test.
 - [docs/product/value-claims.csv](docs/product/value-claims.csv) - proposed marketing claims and evidence restrictions.
+
+## P0 complete documentation package (prepared, not a validated exit)
+
+- [P0 ten-subphase audit](docs/p0-phase-ledger.md)
+- [P0.07 positioning](docs/product/positioning.md), [landing copy](docs/product/landing-copy.md), [claim testing](docs/product/value-validation-plan.md)
+- [P0.08 pricing hypotheses](docs/product/pricing_hypotheses.md), [buyer worksheet](docs/product/pricing-interview-worksheet.csv), [competitor price notes](docs/product/pricing-competitor-notes.md)
+- [P0.09 pilot criteria](docs/product/pilot_plan.md), [scorecard](docs/product/pilot-scorecard-template.csv), [qualification template](docs/product/pilot-qualification-template.md)
+- [P0.10 build/no-build gate](docs/product/phase0_gate.md), [open risks](docs/product/p0-critical-risks.csv)
+
+**P0 next decision:** Conditional internal-only GO for requirements/UX/sandbox development has been recommended, but **not yet approved by the product owner**. Production, live payments, real merchant data and public commercial use are NOT authorized. The master roadmap requires a signed build/no-build decision and evidence-backed claims; those cannot be manufactured by an AI planning pass.
 
 ## Development approach
 
