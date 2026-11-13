@@ -3,7 +3,8 @@
 **Updated:** 2026-11-13
 **Source roadmap:** Complete AI Master Roadmap v2.0 - P0-P17 and individual product tracks
 **Current phase:** P0.02 - Customer Segment Map
-**P0.01 issue:** https://github.com/owaisprog/Zoho-Clone/issues/3
+**P0.01 issue:** https://github.com/owaisprog/Zoho-Clone/issues/3 (closed)  
+**P0.02 issue:** https://github.com/owaisprog/Zoho-Clone/issues/4 (open)
 **P0.02 status:** Desk-research draft prepared; buyer interviews/owner ranking confirmation pending
 
 ## Phase overview
