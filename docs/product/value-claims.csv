@@ -1,0 +1,13 @@
+claim_id,claim,claim_type,evidence_state,basis,marketing_rule
+"VP001","See next owner/action in one merchant operations view","PLANNED","NOT_BUILT","Research concept only","Use 'planned' / 'in development'"
+"VP002","Faster stalled-application diagnosis","HYPOTHESIS","NOT_TESTED","Measured baseline and prototype needed","Do not claim speed"
+"VP003","30% faster","VALIDATION_TARGET","NOT_ACHIEVED","Candidate threshold only","Never advertise as achieved"
+"VP004","Direct processor boarding","EXCLUDED_MVP","NOT_AVAILABLE","No integrations contracted","Disclaim"
+"VP005","Residual payouts/calculation","EXCLUDED_MVP","NOT_AVAILABLE","Separate specialist feature","Disclaim"
+"VP006","No raw card/bank/ID/KYC/credentials","APPROVED_DESIGN","NOT_IMPLEMENTED","P0.06 approved policy","Do not imply certified safeguards"
+"VP007","ISO-first target buyer","OWNER_DECISION","NOT_CUSTOMER_VALIDATED","P0.02 owner approval","Internal planning"
+"VP008","Fully compliant / PCI certified","PROHIBITED","NO_CERTIFICATION","No audit done","Never use"
+"VP009","Product live with free trial","PROHIBITED","NOT_LAUNCHED","Research-only repo","Never use"
+"VP010","All Zoho-like apps available","FUTURE_SCOPE","NOT_BUILT","Long-term roadmap","Never imply shipping"
+"VP011","Cheaper than incumbents","UNSUPPORTED","NO_COMPARABLE_QUOTES","No verified commercial terms","Never use"
+"VP012","Positive customer testimonials","UNSUPPORTED","NO_INTERVIEWS","0 interviews","Never invent"
