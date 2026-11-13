@@ -1,6 +1,6 @@
 # P0.05 — Workflow Validation and Acceptance
 
-**Status:** Draft maps approved by product owner on 2026-11-13 for planning use; **0/3 real-world workflow validations**. P0.05 issue #7 stays open.
+**Status:** Drafts approved for planning, **0/3 real-world workflow validations**. Product owner explicitly skipped the real-world validation gate on 2026-11-13; P0.05 issue #7 is closed NOT PLANNED, not completed. See `p0-05-validation-waiver.md`.
 
 ## Evidence requirements for each map
 
@@ -29,7 +29,7 @@ If PayFac participation cannot be obtained, substitute a distinct verified workf
 - [ ] Private POS contact selected, consent obtained, real workflow reviewed.
 - [ ] Private PayFac contact selected, consent obtained, real workflow reviewed.
 - [ ] Each map corrected based on actual evidence and independently approved.
-- [ ] P0.05 closed only after 3 completed real-world validations.
+- [ ] Three validated workflows (UNSATISFIED). **Owner waived the gate for sequencing; P0.05 is SKIPPED, not complete.**
 
 **P0.04 documented shortfall:** 0 of 15–25 targeted interviews. See `p0-04-interview-shortfall.md` and issue #8. P0.05 cannot be closed simply because its diagrams look credible.
 

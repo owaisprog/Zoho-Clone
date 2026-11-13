@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01-P0.04 approved / closed; P0.04 interview shortfall documented (0 actual interviews); P0.05 Merchant Process Maps planning drafts approved; real-world validation 0/3 remains open.
+**Status:** P0.01–P0.04 approved/closed; P0.05 skipped by owner with 0/3 real workflows validated; **P0.06 Data Sensitivity Inventory in progress**.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -26,7 +26,14 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/workflow-validation.md](docs/product/workflow-validation.md) - three real-world workflow validation gate.
 - [docs/product/workflow-scenarios.csv](docs/product/workflow-scenarios.csv) - 20 synthetic future test scenarios.
 
-- [docs/product/p0-06-data-sensitivity-prework.md](docs/product/p0-06-data-sensitivity-prework.md) - preliminary P0.06 classification notes, not an approved inventory or completed phase.
+- [docs/product/p0-06-data-sensitivity-prework.md](docs/product/p0-06-data-sensitivity-prework.md) - archived P0.06 preliminary notes; replaced by active draft inventory.
+
+- [docs/product/p0-05-validation-waiver.md](docs/product/p0-05-validation-waiver.md) - owner-directed P0.05 skip (not completed).
+- [docs/product/data_classification.md](docs/product/data_classification.md) - P0.06 data classification review draft.
+- [docs/product/data-inventory.csv](docs/product/data-inventory.csv) - 36 candidate data categories.
+- [docs/product/prohibited-fields.md](docs/product/prohibited-fields.md) - initial CRM sensitive-data exclusions.
+- [docs/product/file-handling-policy.md](docs/product/file-handling-policy.md) - future private-file safety policy.
+- [docs/product/p0-06-security-review.md](docs/product/p0-06-security-review.md) - P0.06 risks, open decisions and acceptance.
 
 ## Development approach
 

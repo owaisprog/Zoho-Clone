@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.05 (Merchant Process Maps — drafts; awaiting real-world workflow validation)
+**Current roadmap checkpoint:** P0.06 (Data Sensitivity Inventory — drafted; owner approval pending)
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -24,9 +24,11 @@
 | DEC-016 | P0.04 interview protocol and general outreach approach | **Owner-approved 2026-11-13** | 0/15-25 interviews completed; documented shortfall under roadmap exception, issue #8 remains open |
 
 | DEC-017 | P0.04 shortfall explicitly reported and moved to separate evidence work | **Documented 2026-11-13** | Public repo must not include real contact identities, merchant records or interview transcripts |
-| DEC-018 | P0.05 draft ISO/POS/PayFac workflow maps | **Owner-approved provisional draft 2026-11-13** | Three draft maps usable for planning; **0/3 actual real-world validations**; issue #7 remains open |
+| DEC-018 | P0.05 draft ISO/POS/PayFac workflow maps | **Owner-approved provisional drafts** | Three maps remain unvalidated; actual customer validation = 0/3 |
 
-| DEC-019 | P0.06 Data Sensitivity Inventory preliminary research can be drafted without concluding P0.05 | **PREWORK ONLY** | Classification assumptions recorded; policy/retention/legal decisions and P0.05 validations remain open |
+| DEC-019 | P0.06 Data Sensitivity Inventory | **IN PROGRESS** | Full classification draft, prohibited-field policy, 36 data categories, file policy and security review prepared; owner sign-off pending |
+
+| DEC-020 | P0.05 three-workflow validation gate | **OWNER WAIVED on 2026-11-13 for roadmap sequencing; NOT COMPLETED** | "skip this and jump to next". 0/3 verified; issue #7 closed as not planned, validation debt issue #8 remains open. Security/compliance controls NOT waived. |
 
 ## Change control
 
@@ -41,5 +43,5 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P0.03 competitor research approval: Approved by product owner on 2026-11-13; external product testing and buyer discovery remain open
 - P0.04 owner sign-off: Approved by product owner in this conversation on 2026-11-13; interview shortfall 0 of 15–25 recorded
 - P0.05 provisional draft approval: Product owner approved planning diagrams in conversation on 2026-11-13; not evidence of customer validation
-- Current phase: P0.05 - Merchant Process Maps (open; real-world validation 0/3)
-- P0.06: preliminary data sensitivity prework drafted only; official phase not started
+- P0.05 waiver: Owner explicitly requested to skip validation and proceed on 2026-11-13; unvalidated 0/3, issue #7 closed as not planned
+- Current phase: **P0.06 — Data Sensitivity Inventory** active; owner approval of classification and initial MVP high-risk data exclusions pending

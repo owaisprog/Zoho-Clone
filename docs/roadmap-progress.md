@@ -1,63 +1,52 @@
 # Zoho Clone — Master Roadmap Progress
 
 **Updated:** 2026-11-13
-**Authoritative roadmap:** Zoho Clone Complete AI Master Roadmap v2.0 (P0–P17 plus product tracks)
-**Active phase:** **P0.05 — Merchant Process Maps**
-**Owner:** Product owner approves decisions; ChatGPT drafts, codes/tests in later phases and maintains GitHub artifacts.
+**Source:** Master Roadmap v2.0; sub-phase P0.06
+**Current phase:** **P0.06 — Data Sensitivity Inventory (IN PROGRESS)**
+**Main issue:** https://github.com/owaisprog/Zoho-Clone/issues/9
 
-## Phase ledger
+## Phase status
 
 | Phase | Status | Evidence |
 | --- | --- | --- |
-| P0.01 — Business Vision Charter | COMPLETE | Owner-approved charter; issue #3 closed |
-| P0.02 — Customer Segment Map | COMPLETE | Owner-approved ISO > POS reseller > PayFac rank; issue #4 closed |
-| P0.03 — Competitive Capability Matrix | COMPLETE | Owner-approved comparison of 6 competitors / 29 capabilities; issue #5 closed |
-| P0.04 — Customer Interview Playbook | CLOSED WITH EXPLICIT INTERVIEW SHORTFALL | Owner-approved scripts and research method. **0 of 15–25 target interviews**; issue #6 closed; [shortfall record](product/p0-04-interview-shortfall.md) |
-| **P0.05 — Merchant Process Maps** | **DRAFT OWNER-APPROVED; IN PROGRESS** | Three provisional draft swimlanes, candidate data/API rules, 20 synthetic future tests; real-world validation 0/3; issue #7 OPEN |
-| P0.06 — Data Sensitivity Inventory | PREWORK DRAFT ONLY; PHASE NOT STARTED | `product/p0-06-data-sensitivity-prework.md`; depends on P0.05 actual workflow validation gate |
-| P3 — Application scaffolding | NOT STARTED | Next.js / Express packages not initialized until architecture phase |
+| P0.01 Business Vision Charter | COMPLETE | Owner approved; issue #3 closed |
+| P0.02 Customer Segment Map | COMPLETE | Owner approved; issue #4 closed |
+| P0.03 Competitive Capability Matrix | COMPLETE | Owner approved; issue #5 closed |
+| P0.04 Customer Interview Playbook | CLOSED WITH SHORTFALL | Owner approved protocol; **0/15–25 interviews**; issue #6 |
+| P0.05 Merchant Process Maps | **SKIPPED / WAIVED — NOT COMPLETED** | Owner explicitly requested to skip; **0/3 validated real workflows**; issue #7 closed as NOT PLANNED; see `product/p0-05-validation-waiver.md` |
+| **P0.06 Data Sensitivity Inventory** | **IN PROGRESS** | `product/data_classification.md`, `product/data-inventory.csv`, `product/prohibited-fields.md`, `product/file-handling-policy.md`, `product/p0-06-security-review.md` |
+| P0.07 MVP Value Proposition | NOT STARTED | Begins after P0.06 owner approval |
+| P3 Frontend/backend scaffolding | NOT STARTED | Must still satisfy P1/P2/P3 gates |
 
-## Links
+## P0.05 owner-directed waiver
 
-- P0.04 approval and shortfall: https://github.com/owaisprog/Zoho-Clone/issues/6
-- P0.05 active phase: https://github.com/owaisprog/Zoho-Clone/issues/7
-- Interview/evidence debt: https://github.com/owaisprog/Zoho-Clone/issues/8
-- ISO / POS / PayFac [draft process maps](product/workflow-maps.md)
-- [Validation and acceptance](product/workflow-validation.md)
-- [Synthetic scenarios](product/workflow-scenarios.csv)
+On 2026-11-13 the product owner requested: "skip this and jump to next", after being informed that 0 of 3 real-world merchant process maps were validated.
 
-## P0.04 completion record
+The three draft maps remain valid as planning *hypotheses*, not confirmed customer reality. P0.05 was **not falsely marked complete**. Real evidence work persists in https://github.com/owaisprog/Zoho-Clone/issues/8. The owner-directed bypass is not a waiver of privacy, security, legal review, or safe production release criteria.
 
-The owner explicitly approved the interview playbook and general outreach approach on 2026-11-13. The authoritative master PDF's P0.04 acceptance requires **15–25 interviews OR a documented shortfall**. We report the shortfall truthfully: 0 interviews, 0 invitations sent, 0 verified private contact list, 0 paid pilot commitments. The documentation phase was closed using the shortfall alternative. This is **not** customer validation.
+## P0.06 deliverables and gate
 
-## P0.05 current deliverables
+- [x] Master roadmap P0.06 data scope verified from PDF (contact, bank, ID, card, credentials).
+- [x] Five proposed data classification categories and 36-row candidate inventory drafted.
+- [x] Tenant scopes, access roles, storage systems, export and retention decision fields documented.
+- [x] Explicit prohibited-field list and provider-hosted alternative.
+- [x] Private file policy, logging, integrations, AI and backups considerations.
+- [x] Security threat and later engineering test checklist prepared.
+- [ ] Owner approves initial CRM data collection exclusions and classification categories.
+- [ ] Jurisdiction/legal/processor-specific details reviewed before real production data.
+- [ ] P0.06 issue #9 closed only after approved classification.
+- [ ] Start P0.07 — MVP Value Proposition after P0.06 acceptance.
 
-- [x] Read master roadmap to verify exact P0.05 name: **Merchant Process Maps**.
-- [x] ISO merchant lead-to-underwriting/boarding/activation workflow drafted.
-- [x] POS reseller merchant approval-to-device-installation/activation workflow drafted.
-- [x] PayFac submerchant identity-verification/requirements/capability workflow drafted.
-- [x] Exception paths, actors, data, permissions, integrations and planned APIs mapped.
-- [x] 20 synthetic test scenarios written (NOT run).
-- [x] Source/assumption and financial/identity-data boundaries documented.
-- [x] Product owner approved the draft maps for **planning only** on 2026-11-13; no real customer validation is implied.
-- [x] Created non-binding P0.06 data-sensitivity inventory prework so future security discovery is prepared.
-- [ ] Obtain and validate 3 real-world merchant processes with actual qualified operators.
-- [ ] Incorporate contradictory cases and corrections in maps.
-- [ ] Owner signs off maps and closes P0.05 before P0.06.
+**No backend API, frontend screens, database schema, working security controls or runtime software tests have been implemented at P0.06.**
 
-**Current verified real-world workflow count: 0/3**. Owner approval of drafts does not satisfy actual validation or permit phase closure.
+## Implementation principles unchanged
+Next.js + React + TypeScript + Tailwind/shadcn frontend; Node.js + Express.js + TypeScript backend; PostgreSQL + Prisma, Redis/BullMQ later. Modular monolith, tenant and record-level permissions, versioned REST/OpenAPI, secure provider integrations.
 
-## Remaining owner actions
+## Owner next action
 
-1. Prepare an appropriately authorized, private shortlist of ISO/POS/PayFac respondents; public GitHub must not hold personal contact details.
-2. Approve specific correspondence, contact participants and collect consented, safely anonymized recent workflow details.
-3. Provide sanitized process corrections for ChatGPT to incorporate into P0.05 maps.
-4. Approve the *three actually validated* workflows to close P0.05.
+Approve/revise `product/data_classification.md` and `product/prohibited-fields.md`. Confirm whether the first CRM excludes raw banking/card/identity/KYC and uses hosted providers. Actual selling jurisdictions and contracts are open questions; no implication that this document alone establishes compliance.
 
-## Development stack — unchanged
-
-Frontend: Next.js + React + TypeScript + Tailwind CSS + shadcn/ui. Backend: Node.js + Express.js + TypeScript. Database: PostgreSQL + Prisma. Redis/BullMQ when needed. Modular monolith. Only the existing `frontend/` and `backend/` README placeholders exist; no working app, database, APIs, deployment or executable tests yet.
-
-## Integrity rules
-
-Never describe vendor marketing, synthetic scenarios or an approved research *plan* as actual customer interviews. Do not mark P0.05 complete with unvalidated diagrams. Use private secure storage for any real research notes and confidential customer data.
+## Related issues
+- #7 P0.05: closed NOT PLANNED due to owner's sequencing waiver; requirements remain unverified
+- #8 Research debt: OPEN
+- #9 P0.06: OPEN
