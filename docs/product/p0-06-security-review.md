@@ -1,7 +1,7 @@
 # P0.06 — Security, Threat, and Owner Review
 
 **Prepared:** 2026-11-13
-**Status:** Review draft; legal jurisdiction and processor contracts undetermined. **No systems audited or deployed.**
+**Status:** P0.06 design review approved by owner 2026-11-13. Legal jurisdiction and processor agreements remain undecided. **No systems audited or deployed.**
 **Authority:** Product owner chose to bypass P0.05 research validation; security/privacy requirements are **not waived**.
 
 ## 1. Main threats and controls to design
@@ -45,9 +45,9 @@ These are design sources. Product decisions require review in actual customer/ju
 - [x] Initial MVP high-risk exclusion policy and alternatives documented.
 - [x] Private file policy and threat summary documented.
 - [x] Proposed negative security tests mapped to later implementation phases.
-- [ ] Product owner **approves** classification rules and no-raw-sensitive-data MVP exclusion.
+- [x] Owner **approved** classification and initial CRM exclusion of raw sensitive fields as design rules on 2026-11-13.
 - [ ] Identify target selling jurisdictions and accountable reviewers before production data handling.
 - [ ] Processor contracts/actual P0.05 workflows revisited when available.
-- [ ] Move to P0.07 after explicit P0.06 owner approval; legal/security clearance before production, not presumed from this documentation.
+- [x] Begin P0.07 after P0.06 owner approval; legal/security clearance still required before production.
 
-**P0.06 remains IN PROGRESS.**
+**P0.06 CLOSED AS OWNER-APPROVED DESIGN DOCUMENTATION (2026-11-13).** This is not certification, security testing or legal review.
