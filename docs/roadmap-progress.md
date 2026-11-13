@@ -1,63 +1,69 @@
 # Zoho Clone — Master Roadmap Progress
 
 **Updated:** 2026-11-13
-**Master roadmap:** [Zoho Clone v2.0](../README.md) — 10 P0 sub-phases + application roadmap P1–P17
-**P0 documentation preparation:** **ALL P0.01–P0.10 ARTIFACT PACKAGES PREPARED**
-**P0 actual acceptance:** **NOT FULLY MET** — customer value/price tests, partner evidence and owner P0.10 signoff pending
-**Next proposed gate:** Owner's explicit decision on [P0.10 Build/No-Build](product/phase0_gate.md)
-**Latest phase issue:** https://github.com/owaisprog/Zoho-Clone/issues/13
+**Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
+**Current sub-phase:** **P1.01 — Master PRD (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
+**GitHub:** https://github.com/owaisprog/Zoho-Clone
 
-## Complete P0 ledger
+## P0 audit and explicit owner decisions
 
-| Phase | Documentation produced | Acceptance / evidence status | Issue |
-|---|---|---|---|
-| P0.01 Vision charter | Complete | Owner approved | #3 CLOSED |
-| P0.02 Customer segments | Complete | Owner approved ISO-first ranking as hypothesis | #4 CLOSED |
-| P0.03 Competitive matrix | Complete | Owner approved vendor desk research | #5 CLOSED |
-| P0.04 Customer interview playbook | Complete | **0/15–25 interviews**, explicit shortfall documented | #6 CLOSED WITH SHORTFALL |
-| P0.05 Merchant process maps | Three drafts | **0/3 real workflow validations**, owner waived research gate; **NOT COMPLETE** | #7 CLOSED NOT PLANNED |
-| P0.06 Data sensitivity | Complete as design | Owner approved five classes and initial restricted-data exclusions; no code/compliance cert | #9 CLOSED |
-| P0.07 MVP value proposition | Complete *draft kit*: positioning + landing copy + value test | **0 prospect reviews / 0 measured performance tests**, awaiting validation / owner risk decision | #10 OPEN |
-| P0.08 Pricing interviews | Complete *research kit*: price hypotheses + 5-buyer worksheet + official price anchors | **0/5 qualified pricing interviews; no approved prices** | #11 OPEN |
-| P0.09 Pilot/design-partner criteria | Complete *planning kit*: selection, conditions, scorecard | **0/2 commitments; no explicit continue-without decision** | #12 OPEN |
-| P0.10 Build/no-build gate | Complete *decision draft*: risk register, audit and three-tier recommendation | **Product-owner sign-off pending** | #13 OPEN |
+| Sub-phase | Honest status | Evidence / issue |
+|---|---|---|
+| P0.01 Vision Charter | COMPLETE / approved | #3 closed |
+| P0.02 Customer Segment Map | COMPLETE / approved desk-research priority | #4 closed |
+| P0.03 Competitive Capability Matrix | COMPLETE / owner-approved vendor research | #5 closed |
+| P0.04 Interview Playbook | CLOSED with explicit shortfall | #6 closed; actual interviews **0/15–25** |
+| P0.05 Merchant Process Maps | SKIPPED by owner, NOT COMPLETED | #7 closed NOT PLANNED; **0/3** real workflows verified |
+| P0.06 Data Sensitivity Inventory | COMPLETE as approved design documentation | #9 closed; classifications NOT implemented or certified |
+| P0.07 MVP Value Proposition | **CLOSED — research validation WAIVED for internal sequencing only** | #10 closed NOT PLANNED; 0 qualified buyer claim tests |
+| P0.08 Pricing Interviews | **CLOSED — five-buyer research WAIVED for internal sequencing only** | #11 closed NOT PLANNED; **0/5** buyer interviews; no approved prices |
+| P0.09 Pilot/Design Partner Criteria | **CLOSED through authorized 'continue without partners' option** | #12 closed; **0/2** actual commitments |
+| P0.10 Build/No-build Gate | **APPROVED — CONDITIONAL INTERNAL GO ONLY** | #13 closed; owner signed 2026-11-13; external/production GO not granted |
 
-See [P0 phase ledger](p0-phase-ledger.md) for detailed acceptance status, [Phase 0 gate](product/phase0_gate.md) for recommendation and [Critical risks](product/p0-critical-risks.csv) for ownership.
+**P0 conclusion:** Documentation packages completed and the **internal build/requirements transition authorized**; market validation and production readiness are **not** achieved. See [Phase P0 ledger](p0-phase-ledger.md), [waiver decision](product/p0-07-09-research-waivers.md) and [signed decision](product/phase0_gate.md).
 
-## Prepared P0 deliverables
+## Outstanding evidence, safety and legal obligations
 
-- P0.07 [MVP positioning](product/positioning.md), [proposed landing copy](product/landing-copy.md), [value testing protocol](product/value-validation-plan.md), [claim evidence CSV](product/value-claims.csv).
-- P0.08 [Pricing hypotheses and 5-buyer interview script](product/pricing_hypotheses.md), [blank worksheet](product/pricing-interview-worksheet.csv), [public vendor price anchors](product/pricing-competitor-notes.md).
-- P0.09 [Pilot plan](product/pilot_plan.md), [blank scorecard](product/pilot-scorecard-template.csv), [qualification template](product/pilot-qualification-template.md).
-- P0.10 [Build/no-build decision](product/phase0_gate.md), [risk register CSV](product/p0-critical-risks.csv), [acceptance ledger](p0-phase-ledger.md).
+- Customer problem evidence: **0 interviews**, research issue [#8](https://github.com/owaisprog/Zoho-Clone/issues/8) remains OPEN.
+- Real merchant process validation: **0/3**, P0.05 skipped for sequencing only.
+- Measured value outcome: **0 prospect tests / 0 controlled time measurements**; any 30% claim is **only a target**.
+- Buyer pricing research: **0/5**; hypothetical plan anchors are NOT public prices.
+- Design partners: **0/2**; internal work allowed without partners, real pilots not authorized.
+- Legal entity/jurisdiction, product brand, processor integration contracts, retention rules and customer data contracts remain UNDECIDED.
+- Cross-tenant isolation, authentication, forbidden-data rejection, privacy and security reviews must be **implemented and tested** before any real customer data or external release. Nothing is certified.
 
-## Conditional decision recommendation (NOT YET OWNER-SIGNED)
+## P1 — Requirements, specifications and acceptance contracts
 
-**GO** to P1 requirements / P2 UX / eventually P3 internal sandbox engineering using **synthetic data only**, with earlier ISO workflow assumptions explicitly provisional.
+[Full ten-subphase P1 tracker](p1-phase-plan.md)
 
-**NO-GO** for real merchant data, processor integrations or commercial SaaS launch until security, privacy, tenant isolation, contracts, actual customer evidence and production controls are adequately completed and reviewed.
+| P1 sub-phase | Status |
+|---|---|
+| **P1.01 Master PRD** | **IN PROGRESS — draft authored**, [GitHub Issue #14](https://github.com/owaisprog/Zoho-Clone/issues/14); owner review pending |
+| P1.02 Functional SRS | NOT STARTED; P1.01 approval required |
+| P1.03 Nonfunctional SRS | NOT STARTED |
+| P1.04 Personas and Journeys | NOT STARTED |
+| P1.05 Feature Hierarchy and Release Gates | NOT STARTED |
+| P1.06 Permission and Sharing Matrix | NOT STARTED |
+| P1.07 Domain Glossary and Sample Records | NOT STARTED |
+| P1.08 API and Event Contract Spec | NOT STARTED |
+| P1.09 Acceptance and Traceability Map | NOT STARTED |
+| P1.10 Risk and Decision Register | NOT STARTED |
 
-Owner must decide whether to **accept research risk for internal engineering** by waiving prospect validation P0.07, price interviews P0.08 and pilot commitments P0.09 *for sequencing only*, not as evidence. In the absence of a signed owner P0.10 decision, Phase P0's **validated exit gate is not complete**.
+### P1.01 deliverables prepared
+- [x] [Master PRD](product/prd.md) — problem, users, personas, scope, major use cases, releases, non-goals, success measurement, dependencies and open unknowns.
+- [x] [26 use-case/release rows](product/prd-release-matrix.csv) — mapped to R0 platform, R1 CRM, R2 MerchantOps and later features.
+- [x] [Fictional demo fixtures](product/prd-synthetic-fixtures.json) — two separate invented orgs, 5 example merchant applications, negative access/data tests.
+- [x] [P1 execution plan](p1-phase-plan.md) — ten requirement sub-phases and gates.
+- [ ] Product owner reviews and approves R0/R1/R2 scope and all release priorities.
+- [ ] After sign-off close P1.01 and begin P1.02.
 
-## Open real-world evidence
+**No executable software or runtime tests were added for this documentation phase.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
-- Buyer interviews: **0**; P0.04 shortfall documented, research issue [#8](https://github.com/owaisprog/Zoho-Clone/issues/8) remains open.
-- Real merchant process maps: **0/3**, owner explicitly skipped P0.05.
-- Value claim verification: **0** actual prospect reviews; **0** timed tests.
-- Price interviews: **0/5**.
-- Qualified pilot commitments: **0/2**.
-- Legal/commercial entity/jurisdiction and initial brand: unresolved.
-- Security: only design rules approved, **no functioning app, data isolation, test evidence, certification, or deployable environment**.
+## Technical decisions (unchanged)
 
-## Chosen stack, unchanged
+Frontend Next.js + React + TypeScript + Tailwind/shadcn; backend Node.js + Express.js + TypeScript; PostgreSQL/Prisma and Redis/BullMQ when justified; modular monolith, versioned REST/OpenAPI and tenant/record policy checks.
 
-- Frontend: **Next.js + React + TypeScript + Tailwind CSS + shadcn/ui**.
-- Backend: **Node.js + Express.js + TypeScript**, modular monolith, REST/OpenAPI.
-- Data: PostgreSQL/Prisma; Redis/BullMQ when needed.
-- Original platform spanning every planned major Zoho-like application category in long-term roadmap, not a claim that all are built.
+## Operating boundary
 
-## Next activity after P0.10 sign-off
-
-If the owner approves **conditional internal build**, prepare P1 requirement documents with permission matrices, acceptance tests, test fixtures, record-level tenant isolation, product boundaries and explicit validation unknowns. Do not imply that P3 scaffolding or deployment has started. If the owner declines, revise vision/ICP or conduct buyer evidence work.
-
-**Document completion is not customer validation. No software implementation/tests have occurred in P0.**
+No real merchant/card/bank/identity/KYC data; no live processor credentials, payment collection, production deployment or external pilot without fresh explicit approvals and verified controls. Public GitHub must contain synthetic/anonymized-only examples, no secrets or identifiable interview material.
