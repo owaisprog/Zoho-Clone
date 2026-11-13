@@ -192,7 +192,7 @@ P3.08–P3.12 are implementation slices in the synthetic preview, not full produ
 
 ## Parallel P3 Batch 03 — P3.13–P3.17 typed protected backend foundation
 
-**Code in progress for CI and owner review (2026-11-14)** in
+**Code committed; CI passed; owner review pending (2026-11-14)** in
 `feat/p3-batch-03-foundations`. [Engineering scope and safeguards](engineering/p3-batch-03.md)
 describe typed internal lead contracts, current-membership default-deny policy,
 scoped repository/service, test-injected Express routes and two-tenant denial tests.
@@ -203,3 +203,5 @@ OPEN-002, OPEN-003. No Prisma migrations, live data, provider secrets, payment
 integrations or external release. All 14 risks/gaps OPEN, 12 decisions OPEN,
 727 original P1.09 cases NOT RUN, 40 P2.02 IA reviews NOT RUN, G-EXT/G-COM
 BLOCKED. P2.02 and unfinished owner reviews remain open.
+
+**P3 batch 03 engineering evidence:** [draft PR #40](https://github.com/owaisprog/Zoho-Clone/pull/40) and [CI run #43507084906](https://github.com/owaisprog/Zoho-Clone/actions/runs/43507084906) success: 66 standalone tests PASS (34 frontend, 27 backend, 5 shared), typechecks, npm ci and builds PASS. Issues #41–#45 remain open for owner review. Protected preview endpoints are **unmounted from normal app startup** and use only injected fictional test principals, not deployed authentication. The original 727 tests remain NOT RUN; 14 risk gaps and 12 unresolved decisions remain OPEN.

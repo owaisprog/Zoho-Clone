@@ -1,6 +1,6 @@
 # P3 Batch 03 — Protected backend foundations (P3.13–P3.17)
 
-**Status: implementation prepared for CI and owner review.** This batch is NOT a commercial or production approval. It moves toward a real SaaS backend without silently deciding identity, tenant IDs or access grants.
+**Status: source committed and CI-verified; owner product/security review remains pending.** This batch is NOT a commercial or production approval. It moves toward a real SaaS backend without silently deciding identity, tenant IDs or access grants.
 
 | Subphase | Actual implementation | Still gated |
 |---|---|---|
@@ -36,3 +36,15 @@ The ordinary Express process still exposes only health and the three read-only f
 [API behavior specification](../api/internal-synthetic-protected-preview.md).
 
 **Release boundary:** All **14 original risks/gaps**, **12 unresolved decisions**, **727 unexecuted original P1 acceptance/security cases**, and the **40 unexecuted P2.02 IA review scenarios** remain OPEN/NOT RUN. G-EXT/G-COM remain BLOCKED. No actual identity, DB-backed tenancy, KYC, payments, real onboarding, processor authority or commercial deployment is authorized.
+
+## Actual CI evidence — 2026-11-14
+
+[GitHub Actions run #43507084906](https://github.com/owaisprog/Zoho-Clone/actions/runs/43507084906) completed **SUCCESS** for `c2ec563eb8c691762b4607f39506e2a1d1c84048`.
+- Root locked `npm ci`: PASS.
+- Frontend and backend TypeScript typechecks: PASS.
+- **34 frontend + 27 backend + 5 shared = 66 standalone tests PASS, zero failures**.
+- Next.js production build and Express TypeScript build: PASS.
+
+The **14 newly added backend tests** are scoped synthetic policy/HTTP checks; they are **not** any of the original 727 acceptance/security cases and do not establish real database tenant isolation, a verified identity provider or production readiness.
+
+Tracking issues remain OPEN for owner review: [P3.13 #41](https://github.com/owaisprog/Zoho-Clone/issues/41), [P3.14 #42](https://github.com/owaisprog/Zoho-Clone/issues/42), [P3.15 #43](https://github.com/owaisprog/Zoho-Clone/issues/43), [P3.16 #44](https://github.com/owaisprog/Zoho-Clone/issues/44), [P3.17 #45](https://github.com/owaisprog/Zoho-Clone/issues/45). PR #40 remains DRAFT.

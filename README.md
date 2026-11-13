@@ -6,7 +6,7 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 
 ## P3 Batch 03 — typed tenant-aware backend foundations (review pending)
 
-P3.13–P3.17 implements test-only, dependency-injected Express service foundations:
+P3.13–P3.17 ([draft PR #40](https://github.com/owaisprog/Zoho-Clone/pull/40), [66/66 CI PASS](https://github.com/owaisprog/Zoho-Clone/actions/runs/43507084906)) implements test-only, dependency-injected Express service foundations:
 typed fictional-data input validation, default-deny active membership rules,
 tenant/owner-scoped lead read and write operations, optimistic versioning,
 idempotency and negative HTTP security tests. No real authentication, database,
