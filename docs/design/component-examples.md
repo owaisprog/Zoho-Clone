@@ -1,7 +1,7 @@
 # P2.01 — Component Applications of the Proposed Design Tokens
 
-**Version:** 0.1 — UX review examples · 2026-11-13  
-**Status:** PROPOSED. These are textual UI specifications and a static HTML sample, **not Next.js/shadcn components**.  
+**Version:** 1.0 — owner-approved provisional visual usage guidance · 2026-11-13  
+**Status:** Owner-approved P2.01 provisional internal visual guidance on 2026-11-13. These remain textual UI specifications and a static HTML sample, **not Next.js/shadcn components, actual permission enforcement or verified accessible behavior**.  
 **Token source:** [design_tokens.json](design_tokens.json) · [visual direction](brand-and-tokens.md) · [27 measured token color pairs](color-contrast-review.csv).  
 **Data:** All examples are fictional and **SYNTHETIC DEMO ONLY**; no actual merchant/processor status is implied.
 
@@ -111,4 +111,4 @@ Do not label internal `active_internal` or demo `DEMO_ONLY_ACTIVE` as actual pro
 - [ ] Approve token usage rules for P2.02 Information Architecture and subsequent 16 UX phases.
 - [ ] Keep P1 gaps/risks and 12 decisions OPEN. No automated a11y/browser usability or production QA is claimed.
 
-**Owner design approval pending.**
+**P2.01 owner design baseline approved; P2.02 navigation/IA remains a separate OPEN design gate.**
