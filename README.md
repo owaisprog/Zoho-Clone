@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -81,7 +81,13 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.06 Matrix CSV](docs/security/permission-matrix.csv) — 286 proposed role/resource decisions across 13 actors and 22 resources.
 - [P1.06 Policy Rules](docs/security/permission-policy-rules.md) — safe authorization order, revocation and tenant/record checks.
 - [P1.06 Negative Cases](docs/security/permission-negative-cases.csv) — 52 future access tests, none executed.
-- [P1.06 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/19) — open for owner review.
+- [P1.06 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/19) — closed after owner approval as design requirements only.
+- [P1.07 Domain Glossary](docs/product/domain-glossary.md) — 31 proposed entities and bounded context definitions.
+- [P1.07 Domain Dictionary](docs/product/domain-dictionary.csv) — 230 proposed field definitions and data classifications.
+- [P1.07 Domain Relationships](docs/product/domain-relationships.md) — 33 tenant-safe relationship design rules.
+- [P1.07 Synthetic Records](docs/product/domain-synthetic-records.json) — 68 fictional records across two demo organizations, not database seeds.
+- [P1.07 Domain Validation Cases](docs/product/domain-validation-cases.csv) — 46 future tests, not executed.
+- [P1.07 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/20) — open for owner review.
 
 ## Development approach
 
