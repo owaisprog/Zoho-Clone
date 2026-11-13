@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01 approved and closed; P0.02 Customer Segment Map in progress.
+**Status:** P0.01 and P0.02 approved/closed; P0.03 Competitive Capability Matrix in progress.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -12,7 +12,10 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/decisions.md](docs/product/decisions.md) - Product and technical decisions.
 - [docs/roadmap-progress.md](docs/roadmap-progress.md) - Active roadmap checkpoint.
 
-- [docs/product/icp.md](docs/product/icp.md) - P0.02 Customer Segment Map (draft ranking; owner acceptance pending).
+- [docs/product/icp.md](docs/product/icp.md) - P0.02 Customer Segment Map (owner-approved initial segment ranking; customer validation later).
+
+- [docs/product/competitive-capability-matrix.md](docs/product/competitive-capability-matrix.md) - P0.03 vendor capability comparison (draft, awaiting review).
+- [docs/product/competitive-evidence.md](docs/product/competitive-evidence.md) - Official vendor source register and evidence limitations.
 
 ## Development approach
 

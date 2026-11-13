@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.02 (research document prepared; external customer evidence pending)
+**Current roadmap checkpoint:** P0.03 (competitive comparison research in progress)
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -19,7 +19,8 @@
 | DEC-012 | Public-facing brand / product names | **Open** | Original name and trademark clearance required |
 | DEC-013 | P0.01 business vision charter acceptance | **Approved 2026-11-13** | Product owner explicitly approved mission and proposed order; P0.01 closed |
 
-| DEC-014 | P0.02 ICP prioritization is a desk-research hypothesis until direct customer evidence is collected | **Provisional** | See `docs/product/icp.md`, interview validation planned for P0.04 |
+| DEC-014 | P0.02 segment order ISO -> POS reseller -> PayFac | **Approved 2026-11-13 as research priority** | Ranking is authorized; scores and pain hypotheses still need interviews in P0.04/P0.05 |
+| DEC-015 | P0.03 must compare specialist and general CRM competitors with documented evidence, without claiming unknown features are missing | **In progress** | `docs/product/competitive-capability-matrix.md` + evidence register; owner review pending |
 
 ## Change control
 
@@ -30,4 +31,5 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - Decision: Approved - P0.01 charter and initial product order
 - Approved by: Product owner, in ChatGPT conversation
 - Date: 2026-11-13
-- Next phase: P0.02 - Customer Segment Map (active)
+- P0.02 segment priority approval: Approved by product owner on 2026-11-13; customer evidence still outstanding
+- Current phase: P0.03 - Competitive Capability Matrix (active)

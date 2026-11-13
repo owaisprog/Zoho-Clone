@@ -2,10 +2,11 @@
 
 **Project:** Zoho Clone
 **Created / researched:** 2026-11-13
-**Status:** WORKING DRAFT; segment ranking requires owner review; customer interviews have not been conducted.
+**Status:** APPROVED (segment priority and desk-research map) by product owner on 2026-11-13; customer interviews have not been conducted.
 **Source roadmap:** P0.02 - Customer segment map; planning size 2-5 days
 **Prior gate:** P0.01 approved by product owner on 2026-11-13.
 **Owner-selected first product direction:** Specialized Merchant Operations CRM, within the eventual full Zoho-like application ecosystem.
+**Ranking sign-off:** Independent ISOs first; POS providers/resellers second; PayFacs third. Explicit owner approval in project conversation on 2026-11-13.
 
 > Evidence policy: External product documentation establishes that a workflow exists and competitors serve it; it does **not** establish that our customer prospects have unsolved problems, budget, purchase intent, or willingness to switch. All numeric rankings and proposed company-size ranges below are initial assumptions to test.
 
@@ -223,10 +224,10 @@ A failed or partial interview target should be recorded explicitly; never fabric
 - [x] Generic SMB and agencies distinguished from payment company buyers.
 - [x] Public sources linked, with fact/inference boundaries.
 - [x] Scorecard supplied as CSV.
-- [ ] Owner reviews and approves the P0.02 ordering and qualification assumptions.
+- [x] Owner reviewed and approved the P0.02 segment ordering as a working research priority (2026-11-13).
 - [ ] Direct customer validation incorporated later during P0.04/P0.05; ranking updated if evidence contradicts assumptions.
 
-**Phase status: IN PROGRESS.** Public documentation supports market/workflow relevance; no customer interviews or paid pilot commitments are claimed.
+**Phase status: COMPLETE - product-owner approved on 2026-11-13.** The desk-research ICP map and ranking are approved as planning hypotheses only; direct customer validation remains an explicit separate task under P0.04/P0.05. No interviews or paid pilot commitments are claimed.
 
 ## 11. Research sources and limits
 
@@ -238,4 +239,4 @@ See [P0.02 evidence log](p0-02-evidence.md) for links and supported factual stat
 - Clover partner resources: https://partners.clover.com/bankeredu/home/ (POS and online merchant enrollment).
 - Stripe PayFac guide: https://stripe.com/guides/payfacs (PayFac onboarding/compliance responsibilities).
 
-**Next phase after approval:** P0.03 - Competitive Capability Matrix.
+**Next active phase:** P0.03 - Competitive Capability Matrix (GitHub issue #5).
