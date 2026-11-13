@@ -1,7 +1,7 @@
 # P1.07 — Domain Relationships, Referential Integrity and Tenant-Safe Joins
 
-**Version:** 0.1 — owner-review draft · 2026-11-13  
-**Status:** Planning only; **no schema/migrations/SQL policies/code or relationship tests exist yet**.  
+**Version:** 1.0 — OWNER-APPROVED PROVISIONAL RELATIONSHIP DESIGN · 2026-11-13  
+**Status:** P1.07 owner-approved provisional planning design only; **no schema/migrations/SQL policies/code or relationship tests exist yet**.  
 **Source:** [31-entity Glossary](domain-glossary.md), [230-field dictionary](domain-dictionary.csv), [P1.06 access matrix](../security/permission-matrix.md).  
 **External use:** NOT authorized; only synthetic sample records permitted.
 
@@ -113,4 +113,4 @@ This diagram shows **conceptual relationships**, not actual database tables or a
 
 ## 6. Verification gate
 
-The companion [domain-validation-cases.csv](domain-validation-cases.csv) defines future tests, including tenant FK mismatches, revocation, state independence, forbidden field rejection and safe serialization. **No tests have run.** P1.07 is pending owner approval as a design baseline; P1.08 API/Event Contracts follows.
+The companion [domain-validation-cases.csv](domain-validation-cases.csv) defines future tests, including tenant FK mismatches, revocation, state independence, forbidden field rejection and safe serialization. **No tests have run.** P1.07 owner-approved as provisional domain design on 2026-11-13; P1.08 API/Event Contracts is active in issue #21.
