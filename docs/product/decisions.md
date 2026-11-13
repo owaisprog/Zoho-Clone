@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.03 NFR targets OWNER-APPROVED as design only; P1.04 Personas and Journeys active, owner review pending
+**Current roadmap checkpoint:** P1.04 Personas and Journeys OWNER-APPROVED as provisional design; P1.05 Feature Hierarchy and Release Gates active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -49,8 +49,11 @@
 | DEC-033 | P1.03 measurable nonfunctional requirements (performance, reliability, security, accessibility) | **OWNER-APPROVED DESIGN TARGETS 2026-11-13; issue #16 CLOSED** | 46 NFRs and 52 unexecuted cases; 25 VU benchmark profile, 99.9% uptime and 24h RPO / 4h RTO design targets NOT measured/guaranteed |
 | DEC-034 | Production/data safety release gates | **REMAIN MANDATORY despite internal GO** | Verified tenant authorization, forbidden data rejection, legal/processor contracts, accessibility and real backups required before external data; P1.03 does not certify a system |
 
-| DEC-035 | P1.04 primary ISO user personas and journeys | **DRAFT IN PROGRESS; owner review pending** | 12 hypothesis-based personas, 18 synthetic journeys, 72 mapped steps, 36 future tests, 26 UC covered; issue #17 |
+| DEC-035 | P1.04 primary ISO user personas and journeys | **OWNER-APPROVED PROVISIONAL DESIGN BASELINE on 2026-11-13; issue #17 CLOSED** | 12 hypothesis-based personas, 18 synthetic journeys, 72 steps, 36 future tests, 26 UC covered; no real customer evidence |
 | DEC-036 | P1.03 approval scope | **CONFIRMED DESIGN ONLY** | No performance benchmark, backup restore, accessibility conformance, implemented access control or compliance certification is claimed; external release safety obligations remain mandatory |
+
+| DEC-037 | P1.05 R0 shared platform, R1 sales CRM, R2 merchant operations and deferred full suite feature backlog | **DRAFT IN PROGRESS; owner approval pending** | 36 planned features (24 MUST, 6 SHOULD, 6 DEFERRED), mapped to all 26 UC and 49 FR; issue #18 |
+| DEC-038 | P1.05 distribution gate distinction | **PROPOSED / NOT YET APPROVED** | R0/R1/R2 internal synthetic demo is separate from unauthorized external pilot and paid production; no real integrations or live payment processing |
 
 ## Change control
 
@@ -74,5 +77,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.01 sign-off: Owner approved PRD and R0/R1/R2 prioritized release baseline on 2026-11-13; issue #14 closed
 - P1.02 owner sign-off: Owner expressly approved Functional SRS and provisional behavior/state rules on 2026-11-13; issue #15 closed
 - P1.03 sign-off: Product owner explicitly approved NFR target numbers and mandatory security gates AS DESIGN REQUIREMENTS, not verified outcomes, on 2026-11-13; issue #16 closed
-- Current sub-phase: **P1.04 User Personas and Journeys**; owner review of 12 personas and 18 synthetic task flows pending
+- P1.04 signoff: Owner explicitly approved 12 personas and 18 journeys as a PROVISIONAL planning baseline on 2026-11-13, not customer-validated evidence; issue #17 closed
+- Current sub-phase: **P1.05 Feature Hierarchy and Release Gates**, 36 proposed feature priorities and explicit internal/external safety gates await owner approval
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
