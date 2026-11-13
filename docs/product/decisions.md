@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.08 API and Event Contracts OWNER-APPROVED as provisional design only; P1.09 Acceptance and Traceability Map active, owner review pending
+**Current roadmap checkpoint:** P1.09 Acceptance and Traceability Map OWNER-APPROVED as PLANNING ONLY; P1.10 Risk and Decision Register active, owner review pending; all 14 source gaps remain OPEN
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -64,8 +64,11 @@
 | DEC-043 | P1.08 versioned REST/OpenAPI endpoints and auth/error contracts | **OWNER-APPROVED PROVISIONAL DESIGN 2026-11-13; issue #21 CLOSED** | 67 proposed OpenAPI 3.1 operations, 44 paths, 72 schemas, and 164 future tests NOT RUN; no implemented Express endpoint |
 | DEC-044 | P1.08 internal event and external provider boundary | **OWNER-APPROVED PROVISIONAL DESIGN ONLY; NO EVENT DELIVERY IMPLEMENTED** | 16 internal event types, restrictive envelope schema, transactional outbox proposal; no live processors, provider webhooks, payouts, real card/bank/KYC or production |
 
-| DEC-045 | P1.09 planned acceptance traceability and test inventory | **DRAFT ACTIVE — owner review pending** | 26 UC + 49 FR + 46 NFR = 121 planned requirements mapped; 36 features, 67 API operations, 16 events, 286 permission decisions; 727 future test cases, 0 executed; issue #22 |
-| DEC-046 | P1.09 implementation vs external release evidence gates | **DRAFT — NOT A PRODUCT RELEASE APPROVAL** | 14 documented evidence/coverage gaps remain open; P0.10 synthetic internal sequencing only; G-EXT/G-COM blocked |
+| DEC-045 | P1.09 planned acceptance traceability and test inventory | **OWNER-APPROVED PLANNING BASELINE 2026-11-13; issue #22 CLOSED** | 26 UC + 49 FR + 46 NFR = 121 requirement mappings; 36 features; 727 future test cases, **0 executed / 0 passed**; not runtime quality evidence |
+| DEC-046 | P1.09 implementation vs external release evidence gates | **OWNER-APPROVED PLANNING RULE; NOT A PRODUCT RELEASE APPROVAL** | **ALL 14 G-001..G-014 remain OPEN**, P0.10 synthetic internal sequencing only; G-EXT/G-COM blocked; no requirement/quality pass implied |
+
+| DEC-047 | P1.10 risk register and provisional mitigation ranking | **DRAFT ACTIVE — owner review pending** | All 14 P1.09 gaps mapped one-to-one to OPEN risks in `docs/product/p1-risk-register.csv`; proposed impact/likelihood/owner/actions only; issue #23 |
+| DEC-048 | P1.10 unresolved architecture, domain, vendor and release decisions | **OPEN / NOT OWNER-APPROVED** | 12 tracked choices in `docs/product/p1-decision-backlog.csv`; prior P0/P1 design approvals retained, none assumed implemented or commercial GO |
 
 ## Change control
 
@@ -94,5 +97,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.06 signoff: Owner approved least-privilege, default deny, tenant isolation, row/field sharing rules as DESIGN REQUIREMENTS on 2026-11-13; issue #19 closed; no implemented controls claimed
 - P1.07 signoff: Owner expressly approved 31-entity provisional glossary, 230 classified fields, 33 relationships and 68 synthetic records as DESIGN ONLY on 2026-11-13; issue #20 closed
 - P1.08 signoff: Owner explicitly approved versioned API and internal event contracts as PROVISIONAL DESIGN ONLY on 2026-11-13; issue #21 closed; no running endpoints/event services
-- Current sub-phase: **P1.09 Acceptance and Traceability Map**, 727 future tests all NOT RUN; owner review pending
+- P1.09 signoff: Owner explicitly approved acceptance/traceability map as **internal planning only** on 2026-11-13; 727 future tests remain NOT RUN, 14 gaps remain OPEN; issue #22 closed
+- Current sub-phase: **P1.10 Risk and Decision Register** — 14 OPEN gap-mapped risks and 12 OPEN decisions; owner review pending
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
