@@ -2,7 +2,7 @@
 
 **Project:** Zoho Clone
 **Date:** 2026-11-13
-**Status:** RESEARCH PACKAGE PREPARED; **0/5 qualified pricing interviews** and **no approved selling prices**.
+**Status:** Research package prepared; owner explicitly WAIVED five-buyer research for internal sequencing on 2026-11-13. **0/5 interviews; no approved selling prices**.
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/11
 **Dependency:** P0.07's measurable value hypothesis not verified. This document is parallel preparation at owner's request, not evidence of passed P0.07.
 
@@ -86,4 +86,4 @@ Compute at 5, 15, 30, 75 internal seats, different active merchant volumes and s
 - [ ] Owner decides publicly sellable price/seat plans after evidence: **not approved**.
 - [ ] Evidence reviewed or explicit owner risk waiver recorded.
 
-**Status: PREPARED / NOT VALIDATED.** Private buyer names/spend/quotes must not be committed to public GitHub.
+**Status: P0.08 CLOSED AS WAIVED FOR INTERNAL SEQUENCING / NOT VALIDATED.** Private buyer names/spend/quotes must not be committed to public GitHub.
