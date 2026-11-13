@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zoho-clone:domain-event-envelope:1.0-draft",
+  "title": "P1.08 internal event envelope (DRAFT, no events emitted)",
+  "description": "Synthetic internal references only. No raw identity, bank/card, KYC or provider secrets. Do not infer external processor approval.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "eventType",
+    "organizationId",
+    "aggregate",
+    "occurredAt",
+    "correlationId",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0-draft"
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.-]+$"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "org.created",
+        "membership.invited",
+        "membership.revoked",
+        "role.grant_changed",
+        "entitlement.changed_mock",
+        "crm.lead.created",
+        "crm.deal.stage_changed",
+        "crm.task.assigned",
+        "merchant.agent.reassigned",
+        "merchant.application.created",
+        "merchant.application.stage_changed",
+        "merchant.next_action_updated",
+        "merchant.checklist.completed",
+        "security.authorization_denied",
+        "crm.import_job.completed",
+        "crm.export_job.created"
+      ]
+    },
+    "organizationId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.-]+$"
+    },
+    "aggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Organization",
+            "Membership",
+            "Invitation",
+            "RoleGrant",
+            "AppEntitlement",
+            "Lead",
+            "Deal",
+            "Task",
+            "AgentAssignment",
+            "MerchantApplication",
+            "ChecklistItem",
+            "AuditEvent",
+            "ImportJob",
+            "ExportJob"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "ref"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "member",
+            "service"
+          ]
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        }
+      }
+    },
+    "correlationId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.-]+$"
+    },
+    "causationId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_.-]+$"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "fromStageKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        "toStageKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        "reasonKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        "entityRef": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "assignmentRef": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "previousAssignmentRef": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "assigneeMembershipId": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "appKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        "jobRef": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "roleKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        },
+        "statusKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_.-]+$"
+        }
+      }
+    }
+  }
+}
