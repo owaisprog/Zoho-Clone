@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -76,7 +76,12 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.05 prioritized MVP backlog](docs/product/mvp-backlog.csv) — 24 MUST, 6 SHOULD, 6 DEFERRED features; not implemented.
 - [P1.05 UC/FR traceability](docs/product/feature-traceability.csv) — all 26 approved PRD use cases and 49 Functional SRS requirements covered.
 - [P1.05 release gates](docs/product/release-gates.md) — synthetic-only internal acceptance versus external pilot/commercial hard blockers.
-- [P1.05 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/18) — open for owner review.
+- [P1.05 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/18) — closed after owner approval as an internal planning baseline.
+- [P1.06 Permission Matrix](docs/security/permission-matrix.md) — roles, access scopes, field restrictions and default deny.
+- [P1.06 Matrix CSV](docs/security/permission-matrix.csv) — 286 proposed role/resource decisions across 13 actors and 22 resources.
+- [P1.06 Policy Rules](docs/security/permission-policy-rules.md) — safe authorization order, revocation and tenant/record checks.
+- [P1.06 Negative Cases](docs/security/permission-negative-cases.csv) — 52 future access tests, none executed.
+- [P1.06 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/19) — open for owner review.
 
 ## Development approach
 
