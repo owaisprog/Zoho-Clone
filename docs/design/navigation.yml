@@ -217,7 +217,7 @@ groups:
         href_pattern: "/app/o/:orgId/settings/general"
         entitlement: "platform"
         resource_policy: "ORGANIZATION"
-        primary_action: "R,U"
+        primary_action: "R"
         visibility: "FILTER_BY_VERIFIED_SERVER_POLICY"
       - route_id: "ORG-004"
         label: "Members"
