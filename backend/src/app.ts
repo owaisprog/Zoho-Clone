@@ -1,5 +1,6 @@
 import express, { type ErrorRequestHandler, type RequestHandler } from "express";
 import helmet from "helmet";
+import { demoApplications, demoLeads } from "./demo-fixtures.js";
 
 export const API_VERSION = "v1" as const;
 
@@ -15,8 +16,7 @@ export function createApp() {
     next();
   };
 
-  // This is the ONLY public endpoint in P3.01. It checks process health,
-  // not database readiness, permission enforcement, or external integrations.
+  // Process liveness only: NOT readiness, authorization, or database health.
   app.get("/api/v1/health", noStore, (_req, res) => {
     res.status(200).json({
       status: "ok",
@@ -27,7 +27,17 @@ export function createApp() {
     });
   });
 
-  // Explicitly no /api/v1/organizations, CRM, payments, KYC or merchant API yet.
+  // P3.02: Fixed, publicly readable, FICTIONAL demo fixtures. No protected CRUD.
+  // Local bind restrictions in config.ts remain required; this is not a real CRM API.
+  app.get("/api/v1/demo/leads", noStore, (_req, res) => {
+    res.status(200).json({ scope: "synthetic-only", dataset: "leads", records: demoLeads });
+  });
+
+  app.get("/api/v1/demo/applications", noStore, (_req, res) => {
+    res.status(200).json({ scope: "synthetic-only", dataset: "applications", records: demoApplications });
+  });
+
+  // No /api/v1/organizations, real CRM, merchant, payments, KYC, or write API.
   app.use(noStore, (_req, res) => {
     res.status(404).json({
       error: { code: "NOT_FOUND", message: "Endpoint is not available" },

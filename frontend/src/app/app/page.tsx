@@ -3,15 +3,18 @@ import {
   Activity, ArrowRight, ArrowUpRight, ClipboardCheck, Clock3, Database, Server,
 } from "lucide-react";
 import { getBackendStatus } from "@/lib/backend-status";
+import { getDemoApplications, getDemoLeads } from "@/lib/demo-api";
 import {
-  DEMO_APPLICATIONS, DEMO_LEADS, getApplicationSummary,
+  getApplicationSummary,
 } from "@/lib/synthetic-data";
 
 export const dynamic = "force-dynamic";
 
 export default async function WorkspaceHome() {
-  const summary = getApplicationSummary(DEMO_APPLICATIONS);
-  const api = await getBackendStatus();
+  const [applications, leads, api] = await Promise.all([
+    getDemoApplications(), getDemoLeads(), getBackendStatus(),
+  ]);
+  const summary = getApplicationSummary(applications.records);
 
   return (
     <>
@@ -31,7 +34,7 @@ export default async function WorkspaceHome() {
       <div className="demo-banner" role="note">
         <Database size={18} aria-hidden="true" />
         <div>
-          <strong>All records are fictional and local to this prototype.</strong>
+          <strong>All records are fictional, from local Express or fallback fixtures.</strong>
           <span>No tenant authentication, database, processor onboarding, paid billing, or real merchant records are connected. Navigation is illustrative, not permission enforcement.</span>
         </div>
       </div>
@@ -60,7 +63,7 @@ export default async function WorkspaceHome() {
             <div><h2>Internal work queue</h2><p>Safe synthetic records requiring a human next step</p></div>
             <Link href="/app/operations/applications" className="text-link">Open queue <ArrowRight size={14} aria-hidden="true" /></Link>
           </div>
-          {DEMO_APPLICATIONS.filter((record) => record.stage !== "active_internal").slice(0, 4).map((record) => (
+          {applications.records.filter((record) => record.stage !== "active_internal").slice(0, 4).map((record) => (
             <div className="work-item" key={record.id}>
               <span className="work-item-icon"><Activity size={17} aria-hidden="true" /></span>
               <div className="work-item-main">
@@ -77,7 +80,7 @@ export default async function WorkspaceHome() {
           </div>
           <div className="module-card">
             <strong>Sales CRM</strong>
-            <span>{DEMO_LEADS.length} fictional leads available for UI review</span>
+            <span>{leads.records.length} fictional leads available for UI review</span>
             <Link href="/app/sales/leads" className="text-link">Review leads <ArrowRight size={13} aria-hidden="true" /></Link>
           </div>
           <div className="module-card">

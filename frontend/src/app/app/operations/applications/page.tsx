@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft, CircleHelp, Plus } from "lucide-react";
 import { ApplicationTable } from "@/components/record-tables";
+import { getDemoApplications } from "@/lib/demo-api";
 
-export default function ApplicationsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ApplicationsPage() {
+  const demo = await getDemoApplications();
   return (
     <>
       <div className="page-header">
@@ -22,10 +26,10 @@ export default function ApplicationsPage() {
         <CircleHelp size={18} aria-hidden="true" />
         <div>
           <strong>Internal demo only · external status unverified.</strong>
-          <span>All five records are fictional. “Active internally” is not processing approval, real activation, charge capability, or a verified provider event.</span>
+          <span>All five records are fictional. Source: {demo.source === "express-demo-api" ? "local Express fictional API" : "local fictional fallback"}. “Active internally” is not processor approval or live payment capability.</span>
         </div>
       </div>
-      <ApplicationTable />
+      <ApplicationTable records={demo.records} />
     </>
   );
 }
