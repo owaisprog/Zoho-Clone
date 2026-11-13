@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getBackendStatus } from "../src/lib/backend-status.ts";
+import { getBackendStatus } from "../src/lib/backend-status";
 
 describe("P3.01 Next.js server-only process health adapter", () => {
   it("recognizes explicitly synthetic healthy process responses", async () => {

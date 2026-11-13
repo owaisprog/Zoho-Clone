@@ -9,7 +9,7 @@ import {
   filterApplications,
   filterLeads,
   getApplicationSummary,
-} from "../src/lib/synthetic-data.ts";
+} from "../src/lib/synthetic-data";
 
 describe("P3.01 synthetic-only frontend data", () => {
   it("uses a fictional organization and unique, nonempty demo identifiers", () => {
