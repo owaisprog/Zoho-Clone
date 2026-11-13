@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.06 Permission and Sharing Matrix OWNER-APPROVED as design only; P1.07 Domain Glossary and Synthetic Sample Records active, owner review pending
+**Current roadmap checkpoint:** P1.07 Domain Glossary and Synthetic Records OWNER-APPROVED as provisional design only; P1.08 API and Event Contract Specification active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -58,8 +58,11 @@
 | DEC-039 | P1.06 permission/sharing security baseline | **OWNER-APPROVED DESIGN REQUIREMENTS 2026-11-13, issue #19 CLOSED** | 13 roles, 22 resource families, 286 rule decisions (217 denied), 52 future tests NOT RUN; not an implemented policy engine or security certification |
 | DEC-040 | P1.06 admin/owner and system access boundary | **OWNER-APPROVED POLICY DESIGN, NOT IMPLEMENTED** | Org owner/admin has no automatic CRM/merchant row access; revoked agent/members lose access on next request; platform support/external actors/workers get no automatic tenant privileges |
 
-| DEC-041 | P1.07 domain glossary and provisional entity model | **DRAFT ACTIVE, owner review pending** | 31 candidate entities, 230 classified fields, 33 tenant-safe relationship rules; no Prisma schema or real operator validation; issue #20 |
-| DEC-042 | P1.07 sample record privacy/processor boundary | **SYNTHETIC-ONLY DESIGN** | 68 fictional records across Orchid/Juniper demo orgs; no raw bank/card/identity/KYC/MID/credentials; external demo status unverified |
+| DEC-041 | P1.07 domain glossary and provisional entity model | **OWNER-APPROVED PROVISIONAL DESIGN 2026-11-13; issue #20 CLOSED** | 31 candidate entities, 230 classified fields, 33 relationship rules; NO implemented database schema, Prisma migration or real operator validation |
+| DEC-042 | P1.07 sample record privacy/processor boundary | **OWNER-APPROVED SYNTHETIC-ONLY DESIGN 2026-11-13** | 68 fictional Orchid/Juniper demo records; no raw bank/card/identity/KYC/MID/credentials; external demo status unverified; NOT database seed code |
+
+| DEC-043 | P1.08 versioned REST/OpenAPI endpoints and auth/error contracts | **DRAFT IN PROGRESS; owner review pending** | 67 proposed OpenAPI 3.1 operations, 44 paths, 72 schemas; server-verifiable tenant/role/record/field checks, idempotency/errors and 164 future tests; issue #21 |
+| DEC-044 | P1.08 internal event and external provider boundary | **DRAFT IN PROGRESS; NO EVENT DELIVERY IMPLEMENTED** | 16 internal event types, restrictive envelope schema, transactional outbox proposal; no live processors, provider webhooks, payouts, real card/bank/KYC or production |
 
 ## Change control
 
@@ -86,5 +89,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.04 signoff: Owner explicitly approved 12 personas and 18 journeys as a PROVISIONAL planning baseline on 2026-11-13, not customer-validated evidence; issue #17 closed
 - P1.05 signoff: Owner approved feature hierarchy, priority/dependency and R0/R1/R2 vs external gates as internal planning baseline on 2026-11-13; issue #18 closed
 - P1.06 signoff: Owner approved least-privilege, default deny, tenant isolation, row/field sharing rules as DESIGN REQUIREMENTS on 2026-11-13; issue #19 closed; no implemented controls claimed
-- Current sub-phase: **P1.07 Domain Glossary and Synthetic Sample Records**; field/relationship hypotheses require owner review
+- P1.07 signoff: Owner expressly approved 31-entity provisional glossary, 230 classified fields, 33 relationships and 68 synthetic records as DESIGN ONLY on 2026-11-13; issue #20 closed
+- Current sub-phase: **P1.08 API and Event Contract Specification**; versioned REST and internal event proposals require separate owner approval
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
