@@ -1,0 +1,147 @@
+{
+  "status": "SYNTHETIC PLANNING FIXTURES ONLY - NOT RUNNING SEED DATA",
+  "version": "0.1",
+  "privacy_rules": [
+    "Use example.com addresses only",
+    "Do not add real merchant, card, banking, ID, KYC, or provider credentials",
+    "No invented record represents a real processor response"
+  ],
+  "organizations": [
+    {
+      "id": "org_demo_orchid",
+      "name": "Orchid Payments Demo",
+      "users": [
+        {
+          "id": "usr_orch_owner",
+          "name": "Orchid Owner",
+          "email": "owner@orchid.example.com",
+          "role": "org_owner"
+        },
+        {
+          "id": "usr_orch_ops",
+          "name": "Orchid Ops",
+          "email": "ops@orchid.example.com",
+          "role": "onboarding_coordinator"
+        },
+        {
+          "id": "usr_orch_sales",
+          "name": "Orchid Sales",
+          "email": "sales@orchid.example.com",
+          "role": "sales_rep"
+        }
+      ],
+      "agents": [
+        {
+          "id": "AG-DEMO-01",
+          "name": "Orchid Demo Referral"
+        }
+      ],
+      "merchants": [
+        {
+          "id": "M-DEMO-001",
+          "name": "Demo River Retail"
+        },
+        {
+          "id": "M-DEMO-002",
+          "name": "Demo Pine Market"
+        },
+        {
+          "id": "M-DEMO-003",
+          "name": "Demo Cedar Books"
+        },
+        {
+          "id": "M-DEMO-004",
+          "name": "Demo Birch Bakery"
+        },
+        {
+          "id": "M-DEMO-005",
+          "name": "Demo Lantern Cafe"
+        }
+      ],
+      "applications": [
+        {
+          "id": "APP-DEMO-001",
+          "merchant_id": "M-DEMO-001",
+          "internal_status": "draft",
+          "owner": "usr_orch_ops",
+          "next_action": "complete permitted intake checklist",
+          "synthetic_external_status": null
+        },
+        {
+          "id": "APP-DEMO-002",
+          "merchant_id": "M-DEMO-002",
+          "internal_status": "pending_more_info",
+          "owner": "usr_orch_ops",
+          "next_action": "request missing non-sensitive checklist item",
+          "synthetic_external_status": null
+        },
+        {
+          "id": "APP-DEMO-003",
+          "merchant_id": "M-DEMO-003",
+          "internal_status": "pending_external",
+          "owner": "usr_orch_ops",
+          "next_action": "verify processor response through approved channel",
+          "synthetic_external_status": "DEMO_ONLY_PENDING"
+        },
+        {
+          "id": "APP-DEMO-004",
+          "merchant_id": "M-DEMO-004",
+          "internal_status": "activation_pending",
+          "owner": "usr_orch_ops",
+          "next_action": "confirm activation independently",
+          "synthetic_external_status": "DEMO_ONLY_APPROVED_NOT_ACTIVATED"
+        },
+        {
+          "id": "APP-DEMO-005",
+          "merchant_id": "M-DEMO-005",
+          "internal_status": "active",
+          "owner": "usr_orch_ops",
+          "next_action": "support handoff",
+          "synthetic_external_status": "DEMO_ONLY_ACTIVE"
+        }
+      ]
+    },
+    {
+      "id": "org_demo_juniper",
+      "name": "Juniper Merchant Services Demo",
+      "users": [
+        {
+          "id": "usr_jun_owner",
+          "name": "Juniper Owner",
+          "email": "owner@juniper.example.com",
+          "role": "org_owner"
+        }
+      ],
+      "agents": [],
+      "merchants": [
+        {
+          "id": "M-JUN-001",
+          "name": "Demo Juniper Retail"
+        }
+      ],
+      "applications": []
+    }
+  ],
+  "negative_tests": [
+    {
+      "id": "P1-NEG-001",
+      "scenario": "Orchid user requests Juniper application by id",
+      "expected": "Access denied without existence disclosure"
+    },
+    {
+      "id": "P1-NEG-002",
+      "scenario": "Unsupported card/bank/identity field supplied",
+      "expected": "Reject safely; no logging or persistence"
+    },
+    {
+      "id": "P1-NEG-003",
+      "scenario": "Agent loses merchant assignment",
+      "expected": "Old access revoked and reassignment audited"
+    },
+    {
+      "id": "P1-NEG-004",
+      "scenario": "Internal stage says approved but external state pending",
+      "expected": "Do not mark processor-authorized or activated"
+    }
+  ]
+}
