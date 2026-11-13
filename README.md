@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** P0.01–P0.04 approved/closed; P0.05 skipped by owner with 0/3 real workflows validated; **P0.06 Data Sensitivity Inventory in progress**.
+**Status:** P0.01–P0.04 approved/closed; P0.05 skipped by owner with 0/3 real workflows validated; **P0.06 design rules owner-approved and closed; P0.07 MVP Value Proposition in progress**.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -29,11 +29,16 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [docs/product/p0-06-data-sensitivity-prework.md](docs/product/p0-06-data-sensitivity-prework.md) - archived P0.06 preliminary notes; replaced by active draft inventory.
 
 - [docs/product/p0-05-validation-waiver.md](docs/product/p0-05-validation-waiver.md) - owner-directed P0.05 skip (not completed).
-- [docs/product/data_classification.md](docs/product/data_classification.md) - P0.06 data classification review draft.
+- [docs/product/data_classification.md](docs/product/data_classification.md) - P0.06 owner-approved data classification design (not implemented certification).
 - [docs/product/data-inventory.csv](docs/product/data-inventory.csv) - 36 candidate data categories.
 - [docs/product/prohibited-fields.md](docs/product/prohibited-fields.md) - initial CRM sensitive-data exclusions.
 - [docs/product/file-handling-policy.md](docs/product/file-handling-policy.md) - future private-file safety policy.
-- [docs/product/p0-06-security-review.md](docs/product/p0-06-security-review.md) - P0.06 risks, open decisions and acceptance.
+- [docs/product/p0-06-security-review.md](docs/product/p0-06-security-review.md) - P0.06 risk/design review; jurisdiction and security implementation remain open.
+
+- [docs/product/positioning.md](docs/product/positioning.md) - P0.07 MVP positioning draft.
+- [docs/product/landing-copy.md](docs/product/landing-copy.md) - P0.07 two landing copy concepts (not published).
+- [docs/product/value-validation-plan.md](docs/product/value-validation-plan.md) - P0.07 measurable customer value test.
+- [docs/product/value-claims.csv](docs/product/value-claims.csv) - proposed marketing claims and evidence restrictions.
 
 ## Development approach
 
