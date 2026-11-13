@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.07 Domain Glossary and Synthetic Records OWNER-APPROVED as provisional design only; P1.08 API and Event Contract Specification active, owner review pending
+**Current roadmap checkpoint:** P1.08 API and Event Contracts OWNER-APPROVED as provisional design only; P1.09 Acceptance and Traceability Map active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -61,8 +61,11 @@
 | DEC-041 | P1.07 domain glossary and provisional entity model | **OWNER-APPROVED PROVISIONAL DESIGN 2026-11-13; issue #20 CLOSED** | 31 candidate entities, 230 classified fields, 33 relationship rules; NO implemented database schema, Prisma migration or real operator validation |
 | DEC-042 | P1.07 sample record privacy/processor boundary | **OWNER-APPROVED SYNTHETIC-ONLY DESIGN 2026-11-13** | 68 fictional Orchid/Juniper demo records; no raw bank/card/identity/KYC/MID/credentials; external demo status unverified; NOT database seed code |
 
-| DEC-043 | P1.08 versioned REST/OpenAPI endpoints and auth/error contracts | **DRAFT IN PROGRESS; owner review pending** | 67 proposed OpenAPI 3.1 operations, 44 paths, 72 schemas; server-verifiable tenant/role/record/field checks, idempotency/errors and 164 future tests; issue #21 |
-| DEC-044 | P1.08 internal event and external provider boundary | **DRAFT IN PROGRESS; NO EVENT DELIVERY IMPLEMENTED** | 16 internal event types, restrictive envelope schema, transactional outbox proposal; no live processors, provider webhooks, payouts, real card/bank/KYC or production |
+| DEC-043 | P1.08 versioned REST/OpenAPI endpoints and auth/error contracts | **OWNER-APPROVED PROVISIONAL DESIGN 2026-11-13; issue #21 CLOSED** | 67 proposed OpenAPI 3.1 operations, 44 paths, 72 schemas, and 164 future tests NOT RUN; no implemented Express endpoint |
+| DEC-044 | P1.08 internal event and external provider boundary | **OWNER-APPROVED PROVISIONAL DESIGN ONLY; NO EVENT DELIVERY IMPLEMENTED** | 16 internal event types, restrictive envelope schema, transactional outbox proposal; no live processors, provider webhooks, payouts, real card/bank/KYC or production |
+
+| DEC-045 | P1.09 planned acceptance traceability and test inventory | **DRAFT ACTIVE — owner review pending** | 26 UC + 49 FR + 46 NFR = 121 planned requirements mapped; 36 features, 67 API operations, 16 events, 286 permission decisions; 727 future test cases, 0 executed; issue #22 |
+| DEC-046 | P1.09 implementation vs external release evidence gates | **DRAFT — NOT A PRODUCT RELEASE APPROVAL** | 14 documented evidence/coverage gaps remain open; P0.10 synthetic internal sequencing only; G-EXT/G-COM blocked |
 
 ## Change control
 
@@ -90,5 +93,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.05 signoff: Owner approved feature hierarchy, priority/dependency and R0/R1/R2 vs external gates as internal planning baseline on 2026-11-13; issue #18 closed
 - P1.06 signoff: Owner approved least-privilege, default deny, tenant isolation, row/field sharing rules as DESIGN REQUIREMENTS on 2026-11-13; issue #19 closed; no implemented controls claimed
 - P1.07 signoff: Owner expressly approved 31-entity provisional glossary, 230 classified fields, 33 relationships and 68 synthetic records as DESIGN ONLY on 2026-11-13; issue #20 closed
-- Current sub-phase: **P1.08 API and Event Contract Specification**; versioned REST and internal event proposals require separate owner approval
+- P1.08 signoff: Owner explicitly approved versioned API and internal event contracts as PROVISIONAL DESIGN ONLY on 2026-11-13; issue #21 closed; no running endpoints/event services
+- Current sub-phase: **P1.09 Acceptance and Traceability Map**, 727 future tests all NOT RUN; owner review pending
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
