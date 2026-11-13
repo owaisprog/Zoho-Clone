@@ -1,6 +1,6 @@
 # P1.04 — User Personas and Jobs-to-be-Done
 
-**Version:** 0.1 — OWNER-REVIEW DRAFT
+**Version:** 1.0 — OWNER-APPROVED PROVISIONAL PERSONA BASELINE (2026-11-13)
 **Prepared:** 2026-11-13
 **Phase:** P1.04 User Personas and Journeys
 **Issue:** https://github.com/owaisprog/Zoho-Clone/issues/17
@@ -217,7 +217,7 @@
 - [x] Roles describe goal, context, pain hypothesis, data restrictions, future metrics and relevant PRD/SRS traces.
 - [x] Deferred personas are explicitly separate from initial R0-R2 external-access assumptions.
 - [x] User journeys contain critical path, error, recovery and no-sensitive-data checkpoints.
-- [ ] Owner reviews and **approves personas and journey assumptions as a planning baseline**.
+- [x] Owner **approved personas and journey assumptions as a provisional planning baseline** on 2026-11-13; no customer research validation implied.
 - [ ] Actual customer interview validation remains outstanding and cannot be claimed from approval.
 
-**P1.04 remains OPEN. No customer interviews, production usage or functional accessibility tests have occurred.**
+**P1.04 COMPLETE — OWNER-APPROVED PROVISIONAL DESIGN BASELINE (2026-11-13).** No customer interviews, production usage or functional accessibility tests have occurred.
