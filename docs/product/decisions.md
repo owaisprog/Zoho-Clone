@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.02 Functional SRS OWNER-APPROVED; P1.03 Nonfunctional SRS active, owner review pending
+**Current roadmap checkpoint:** P1.03 NFR targets OWNER-APPROVED as design only; P1.04 Personas and Journeys active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -46,8 +46,11 @@
 | DEC-031 | P1.02 Functional SRS behavior/validation/exception specification | **OWNER-APPROVED 2026-11-13, issue #15 CLOSED** | 49 numbered FRs mapped to 26 PRD use cases, 59 future unexecuted acceptance cases; provisional state transitions remain editable |
 | DEC-032 | P1.01 approval scope | **Owner-approved as internal release prioritization ONLY** | No payment processor integration, paid production, real customer data, market validation or security certification implied |
 
-| DEC-033 | P1.03 measurable nonfunctional requirements (performance, reliability, security, accessibility) | **DRAFT IN PROGRESS; owner approval pending** | 46 NFRs, 52 future acceptance cases; 25 VU synthetic benchmark proposal, 99.9% uptime and 24h RPO / 4h RTO candidate targets — not achieved or promised |
+| DEC-033 | P1.03 measurable nonfunctional requirements (performance, reliability, security, accessibility) | **OWNER-APPROVED DESIGN TARGETS 2026-11-13; issue #16 CLOSED** | 46 NFRs and 52 unexecuted cases; 25 VU benchmark profile, 99.9% uptime and 24h RPO / 4h RTO design targets NOT measured/guaranteed |
 | DEC-034 | Production/data safety release gates | **REMAIN MANDATORY despite internal GO** | Verified tenant authorization, forbidden data rejection, legal/processor contracts, accessibility and real backups required before external data; P1.03 does not certify a system |
+
+| DEC-035 | P1.04 primary ISO user personas and journeys | **DRAFT IN PROGRESS; owner review pending** | 12 hypothesis-based personas, 18 synthetic journeys, 72 mapped steps, 36 future tests, 26 UC covered; issue #17 |
+| DEC-036 | P1.03 approval scope | **CONFIRMED DESIGN ONLY** | No performance benchmark, backup restore, accessibility conformance, implemented access control or compliance certification is claimed; external release safety obligations remain mandatory |
 
 ## Change control
 
@@ -70,5 +73,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P0.09: Owner elected continue internal work without two partners (0 commitments); no external pilot
 - P1.01 sign-off: Owner approved PRD and R0/R1/R2 prioritized release baseline on 2026-11-13; issue #14 closed
 - P1.02 owner sign-off: Owner expressly approved Functional SRS and provisional behavior/state rules on 2026-11-13; issue #15 closed
-- Current sub-phase: **P1.03 Nonfunctional SRS**; 46 proposed targets and 52 unexecuted future tests await owner approval
+- P1.03 sign-off: Product owner explicitly approved NFR target numbers and mandatory security gates AS DESIGN REQUIREMENTS, not verified outcomes, on 2026-11-13; issue #16 closed
+- Current sub-phase: **P1.04 User Personas and Journeys**; owner review of 12 personas and 18 synthetic task flows pending
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
