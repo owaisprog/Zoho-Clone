@@ -1,11 +1,11 @@
 # P1.01 — Master Product Requirements Document (PRD)
 
 **Project:** Zoho Clone — internal code name only; public brand TBD  
-**Version:** 0.1 — owner-review draft  
+**Version:** 1.0 — OWNER-APPROVED P1.01 RELEASE BASELINE (2026-11-13)  
 **Prepared:** 2026-11-13  
 **Roadmap:** P1 Requirements, Specifications and Acceptance Contracts → **P1.01 Master PRD**  
 **Tracking:** https://github.com/owaisprog/Zoho-Clone/issues/14  
-**Approval:** Product-owner conditional GO for **internal P1 planning, future synthetic-data-only sandbox development** on 2026-11-13. **This document's release priorities still require owner review before P1.01 closes.**
+**Approval:** Product owner explicitly approved P1.01 Master PRD, its R0 Shared Platform / R1 Sales CRM / R2 Merchant Operations order, and the scoped/deferred feature boundaries in project conversation on 2026-11-13. This is an **internal synthetic-only requirements baseline**, not commercial validation or external software release.
 
 ## 1. Decision and evidence context
 
@@ -161,7 +161,7 @@ P1.01's documentary acceptance:
 5. No market-facing effectiveness, price, partner integration, compliance or production availability is misrepresented.
 6. Owner confirms the bounded first product **and** long-term suite remains in later tracks.
 7. Implementation details are delegated to P1.02–P1.10, P2 and P3/P4 as the roadmap requires.
-8. Product owner **explicitly approves P1.01 PRD/release priorities** before marking P1.01 complete and beginning P1.02.
+8. Product owner **approved P1.01 PRD/release priorities on 2026-11-13**; P1.02 Functional SRS is now active.
 
 ### Future measured business/quality outcomes (NOT verified)
 - Correct owner/status/next action lookup; candidate >=30% median task time improvement, compared against real baseline.
@@ -191,4 +191,4 @@ P1.01 Master PRD (**ACTIVE**); P1.02 Functional SRS; P1.03 Nonfunctional SRS; P1
 
 Do not advance P1.02 until P1.01's owner review. P1's final exit requires versioned PRD/SRS, traceability matrix, glossary and approved MVP backlog.
 
-**P1.01 status: DRAFT PREPARED, OWNER REVIEW PENDING.**
+**P1.01 status: COMPLETE — OWNER APPROVED on 2026-11-13.** The P1.02 functional SRS is an unapproved follow-on draft, not implemented code.
