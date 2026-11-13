@@ -53,9 +53,9 @@ These 13 tests are additional scaffold tests and do not establish security, DB o
 tenant RBAC, database, commercial billing or processor connection**. They are not
 safe for real customer/card/bank/identity/KYC data or external production. P2.02
 remains open; its final route architecture can change the temporary preview routes.
-All 14 evidence risks and 12 open decisions remain outstanding. GitHub CI currently
-uses \`npm install\` without a checked-in lockfile; lockfile/fully reproducible install
-is a near-term improvement.
+All 14 evidence risks and 12 open decisions remain outstanding. P3.03 introduces a
+checked-in Node 22 npm workspace lockfile with reproducible `npm ci` installs.
+The original P3.01 CI evidence above remains historically accurate and separate.
 
 ## Repository structure
 
