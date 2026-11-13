@@ -1,8 +1,8 @@
 # P1.06 — Authorization Decision Rules and Policy Engine Contract
 
-**Version:** 0.1 — P1.06 owner-review DRAFT
+**Version:** 1.0 — OWNER-APPROVED P1.06 POLICY DESIGN (2026-11-13)
 **Prepared:** 2026-11-13
-**Status:** Proposed design only, not actual implemented RBAC, ABAC, database RLS, endpoint guards or test evidence.
+**Status:** Owner-approved **DESIGN RULES** (2026-11-13), NOT implemented RBAC, ABAC, database RLS, endpoint guards or tested security evidence.
 **Source of truth:** [Permission matrix](permission-matrix.csv) and [human review](permission-matrix.md)
 **Restricted operation:** Synthetic-only internal development. No live payments, real customer data, external pilot or processor integration authorized.
 
@@ -90,4 +90,4 @@ Each named function requires explicit error, transaction, concurrency and privac
 - P1.10: owner reviews open risk about owner role vs delegated data read, direct exports, stage history and support JIT access.
 - P2/P3/P4/P12: actual UI, backend policy enforcement, integration/E2E tests, code review and independent external-release safeguards.
 
-**No executable authorization or security tests have been produced in P1.06. Product-owner approval remains pending.**
+**P1.06 approved and closed as design requirements.** No executable authorization or security tests have been produced; P1.07 domain glossary/field definitions are next.
