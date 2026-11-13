@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P2.01 — Brand and Design Tokens (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P2.02 — Information Architecture (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -128,11 +128,11 @@
 
 | Sub-phase | Status / evidence |
 |---|---|
-| **P2.01 Brand and Design Tokens** | **IN PROGRESS — owner-review draft**: [brand guidance](design/brand-and-tokens.md), [154-token design JSON](design/design_tokens.json), [27 sampled contrast formula checks](design/color-contrast-review.csv), [component examples](design/component-examples.md), [static theme/density preview](design/token-preview.html). [Issue #24](https://github.com/owaisprog/Zoho-Clone/issues/24) OPEN. No browser a11y/usability tests or running app. |
-| P2.02 Information Architecture | NOT STARTED — after P2.01 owner approval. |
+| P2.01 Brand and Design Tokens | **COMPLETE — owner-approved provisional original internal UX baseline (2026-11-13)**. [Brand guidance](design/brand-and-tokens.md), [154-token JSON](design/design_tokens.json), [27 sampled contrast formula checks](design/color-contrast-review.csv), [component rules](design/component-examples.md), [static synthetic preview](design/token-preview.html). [Issue #24](https://github.com/owaisprog/Zoho-Clone/issues/24) CLOSED. Not final brand, certified accessibility or implemented UI. |
+| **P2.02 Information Architecture** | **IN PROGRESS — 64 proposed route patterns, 27 menu entries, 5 intentionally deferred routes and 40 future IA design cases**. [Information Architecture](design/information-architecture.md), [navigation.yml](design/navigation.yml), [route inventory](design/route-inventory.csv), [navigation review cases](design/navigation-review-cases.csv). [Issue #25](https://github.com/owaisprog/Zoho-Clone/issues/25) OPEN; owner review pending. |
 | P2.03–P2.17 UX/screens/usability | NOT STARTED — tracked individually in phase plan. |
 
-**P2.01 owner gate:** Approve original/non-Zoho commercial trade dress, provisional name not final, light/dark palette, density and accessibility token rules; then start P2.02. The 14 risks, 12 decisions and 727 unexecuted tests remain open/unverified.
+**P2.01 owner gate PASSED as provisional design, not final branding or verified accessibility (2026-11-13). P2.02 owner gate PENDING:** Approve proposed original IA, 64 route patterns, visible/hidden permission states, safe direct-link/tenant switch and mobile hierarchy before P2.03. All **14 risks and 12 unresolved decisions remain OPEN**, with **727 P1 tests still NOT RUN**. The 40 additional IA review scenarios are paper-design checks separate from the P1 test inventory.
 
 ## Technical decisions (unchanged)
 
