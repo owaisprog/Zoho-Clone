@@ -30,7 +30,7 @@
 
 **Sequential dependency:** P2.01 design tokens inform P2.02 navigation, then P2.03–P2.17. Approved P1 functional/nonfunctional/permission/domain/API contracts are prerequisites for every UX flow. Owner explicitly approves each design baseline; later mockups must never be described as actual running product or independently validated user research.
 
-## P2.01 — Active scope: Original Brand and Design Tokens
+## P2.01 — Owner-approved provisional original Brand and Design Tokens
 
 - **UI/workflow:** Typography, color semantics, spacing, radii, high-density B2B tables and responsive/light/dark themes.
 - **Backend API:** Define the proposed token package consumption contract only; **no backend endpoint or token service**.
@@ -39,7 +39,18 @@
 - **Permissions:** Owner approves the original brand direction; design cannot use Zoho proprietary logo, colorways or commercial brand name.
 - **Integration later:** Shared shadcn/ui / Tailwind component layer, P2.06 shell, P3 Next.js app and accessible data tables. No existing component package is claimed.
 - **Review evidence:** Design tokens parse, aliases resolve, contrast pairs inspected by numeric calculation, sample component and static preview reviewed, and owner signs off. **No browser, screen-reader, Playwright/axe or real-user usability test executed unless an actual run is recorded separately.**
-- **P2.01 exit:** Owner approves provisional original identity, light/dark palette, typography, density and token usage; issue #24 closed, P2.02 opened. Open P1 risk/decision count unchanged.
+- **P2.01 exit COMPLETE:** Product owner approved provisional original design, light/dark palette, typography, density and usage on 2026-11-13; issue #24 closed. No commercial brand or browser/a11y verification claim. Open P1 risk/decision count unchanged.
+
+## P2.02 — Active scope: Information Architecture and Navigation
+
+- **Design artifacts:** [Information Architecture](information-architecture.md), [64-route inventory](route-inventory.csv), [27-item navigation YAML](navigation.yml), [40 design-review scenarios](navigation-review-cases.csv).
+- **Route families:** Public concepts 5; identity/global/org R0 19; Sales CRM R1 20; Merchant Operations R2 15; deferred specialist paths 5 — unlinked. **Every route is a proposal, none runs as a Next.js page.**
+- **Context model:** Verified identity → active organization membership → module entitlement → precise role/action → owner/team/agent record sharing and field projection. Org owner/admin is not automatically authorized for CRM or merchant records.
+- **Direct URL security:** Safe denial/concealed existence; never expose hidden rows in search/breadcrumb/count/error/SSR. Authenticated organization switching requires cache and pending-request invalidation and renewed permission check.
+- **Mobile information hierarchy:** 320px drawer/list-first layouts; labels and keyboard focus, no color-only status. Browser and screen-reader checks are future P2.16/P3 evidence, **not performed now**.
+- **Sensitive-data and status boundary:** Internal applications and DEMO_ONLY status unverified; no bank/card/KYC capture, real billing or external processor authorization.
+- **Review cases:** 40 new IA *design-review proposals* marked NOT_RUN; they do NOT alter the existing **727** P1.09 planned implementation-test inventory.
+- **P2.02 exit:** Owner approves provisional route taxonomy, topbar/sidebar/grouping, permission-aware states and responsive navigation; then close issue #25 and begin P2.03 marketing wireframes. Do not infer route implementation or usability verification.
 
 ## P2 overall exit criteria (after P2.17, NOT YET MET)
 
