@@ -1,8 +1,8 @@
 # P1.03 — Nonfunctional Verification, Baseline and Evidence Plan
 
-**Version:** v0.1 · Prepared 2026-11-13 · **NOT EXECUTED**
+**Version:** v1.0 — Owner-approved P1.03 test/measurement design on 2026-11-13 · **NOT EXECUTED**
 **Source:** [P1.03 NFR](nfr.md) and [46-item matrix](nfr-matrix.csv)
-**Owner approval:** Pending. All numeric thresholds are *proposed*, not observed or contractual.
+**Owner approval:** Product owner approved the proposed NFR targets and release gates as DESIGN REQUIREMENTS on 2026-11-13. All numeric thresholds are approved for later verification, **not observed or contractual**.
 
 ## 1. Synthetic benchmark profile (initial draft)
 - Environment: document Node/Express build hash, Next.js build, Node runtime, Prisma/Postgres versions, server sizing, hosting region, worker count, DB index/connection pool and cache status.
