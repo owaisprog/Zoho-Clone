@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.05 — Feature Hierarchy and Release Gates (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P1.06 — Permission and Sharing Matrix (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -43,8 +43,8 @@
 | P1.02 Functional SRS | **COMPLETE — OWNER APPROVED 2026-11-13**, [Issue #15](https://github.com/owaisprog/Zoho-Clone/issues/15) closed; 49 requirements / 59 future tests |
 | P1.03 Nonfunctional SRS | **COMPLETE — OWNER APPROVED DESIGN TARGETS on 2026-11-13**, [Issue #16](https://github.com/owaisprog/Zoho-Clone/issues/16) closed; 46 unmeasured targets / 52 future tests |
 | P1.04 Personas and Journeys | **COMPLETE — owner-approved provisional baseline on 2026-11-13**, [Issue #17](https://github.com/owaisprog/Zoho-Clone/issues/17) closed; 12 synthetic personas, 18 journeys, 72 steps, 36 future tests NOT RUN |
-| **P1.05 Feature Hierarchy and Release Gates** | **IN PROGRESS — 36 prioritized features, complete 26 UC/49 FR trace, R0/R1/R2 and external gates**, [Issue #18](https://github.com/owaisprog/Zoho-Clone/issues/18) open; owner review pending |
-| P1.06 Permission and Sharing Matrix | NOT STARTED |
+| P1.05 Feature Hierarchy and Release Gates | **COMPLETE — OWNER APPROVED INTERNAL PLANNING BASELINE on 2026-11-13**, [Issue #18](https://github.com/owaisprog/Zoho-Clone/issues/18) closed; 36 features and R0/R1/R2 vs external gate design approved as requirements |
+| **P1.06 Permission and Sharing Matrix** | **IN PROGRESS — 286 proposed role/resource decisions for 13 actors and 22 resource types; 52 future negative-access tests**, [Issue #19](https://github.com/owaisprog/Zoho-Clone/issues/19) open; owner review pending |
 | P1.07 Domain Glossary and Sample Records | NOT STARTED |
 | P1.08 API and Event Contract Spec | NOT STARTED |
 | P1.09 Acceptance and Traceability Map | NOT STARTED |
@@ -78,14 +78,21 @@
 - [x] [36 future journey acceptance cases](product/journey-acceptance-cases.csv), **NOT RUN**.
 - [x] Owner approved P1.04 personas/journeys **only as provisional design assumptions** on 2026-11-13; issue #17 closed. No customer interview validation implied.
 
-### P1.05 deliverables prepared for owner review
+### P1.05 owner-approved planning baseline
 - [x] [Feature hierarchy](product/features.md) — 36 planned features across R0, R1, R2, cross-cutting and deferred full-suite modules.
 - [x] [MVP backlog](product/mvp-backlog.csv) — 24 MUST, 6 SHOULD and 6 DEFERRED, with dependencies, phases and acceptance conditions.
 - [x] [Feature traceability](product/feature-traceability.csv) — all 26 approved PRD use cases and 49 SRS functional requirements assigned.
 - [x] [Release gates](product/release-gates.md) — product-slice internal sandbox, external pilot and commercial readiness separated.
-- [ ] Owner approves P1.05 priorities, exclusions, dependencies and gates before P1.06 Permission and Sharing Matrix.
+- [x] Owner approved P1.05 priorities, exclusions, dependency order and internal-vs-external gates as DESIGN/PLANNING on 2026-11-13; issue #18 closed. No software implemented or release gate passed.
 
-**No executable software or runtime tests were added for these documentation phases.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
+### P1.06 deliverables prepared for owner review
+- [x] [Permission matrix](security/permission-matrix.md) — 13 actor roles, 22 resource families, deny by default and explicit field/row access.
+- [x] [Permission matrix CSV](security/permission-matrix.csv) — 286 draft role/resource decisions; 217 default-denied.
+- [x] [Authorization policy rules](security/permission-policy-rules.md) — server authorization order, active membership, role/record/field scopes, revocation, audit and safe worker restrictions.
+- [x] [52 proposed negative access scenarios](security/permission-negative-cases.csv) — **NOT RUN**.
+- [ ] Owner approves P1.06 as a proposed permissions/sharing design before P1.07 Domain Glossary.
+
+**No executable software, RBAC/ABAC policy engine, actual permission tests or runtime controls exist yet.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
 ## Technical decisions (unchanged)
 
