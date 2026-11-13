@@ -2,7 +2,7 @@
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
-**Current sub-phase:** **P1.03 — Nonfunctional SRS (DRAFT PREPARED, OWNER REVIEW PENDING)**
+**Current sub-phase:** **P1.04 — User Personas and Journeys (DRAFT PREPARED, OWNER REVIEW PENDING)**
 **Current authorization:** P0.10 owner-approved **CONDITIONAL GO** for P1/P2 requirements/design and later internal P3 sandbox engineering, **synthetic data only**. Not commercial GO.
 **GitHub:** https://github.com/owaisprog/Zoho-Clone
 
@@ -41,8 +41,8 @@
 |---|---|
 | P1.01 Master PRD | **COMPLETE — OWNER APPROVED 2026-11-13**, [Issue #14](https://github.com/owaisprog/Zoho-Clone/issues/14) closed |
 | P1.02 Functional SRS | **COMPLETE — OWNER APPROVED 2026-11-13**, [Issue #15](https://github.com/owaisprog/Zoho-Clone/issues/15) closed; 49 requirements / 59 future tests |
-| **P1.03 Nonfunctional SRS** | **IN PROGRESS — 46 proposed NFR targets / 52 future test cases authored**, [Issue #16](https://github.com/owaisprog/Zoho-Clone/issues/16) OPEN, awaiting owner review |
-| P1.04 Personas and Journeys | NOT STARTED |
+| P1.03 Nonfunctional SRS | **COMPLETE — OWNER APPROVED DESIGN TARGETS on 2026-11-13**, [Issue #16](https://github.com/owaisprog/Zoho-Clone/issues/16) closed; 46 unmeasured targets / 52 future tests |
+| **P1.04 Personas and Journeys** | **IN PROGRESS — 12 synthetic personas, 18 journeys, 72 steps, 36 future tests**, [Issue #17](https://github.com/owaisprog/Zoho-Clone/issues/17) open; owner review pending |
 | P1.05 Feature Hierarchy and Release Gates | NOT STARTED |
 | P1.06 Permission and Sharing Matrix | NOT STARTED |
 | P1.07 Domain Glossary and Sample Records | NOT STARTED |
@@ -65,12 +65,18 @@
 - [x] [Acceptance cases](product/srs-acceptance-cases.csv) — 59 future test cases, **NOT EXECUTED**.
 - [x] Product owner approved P1.02 functional behavior, permissions, errors and provisional state rules on 2026-11-13; issue #15 closed.
 
-### P1.03 deliverables prepared for owner review
+### P1.03 owner-approved requirements
 - [x] [Nonfunctional SRS](product/nfr.md): **46** proposed measurable requirements across 10 domains.
 - [x] [NFR matrix](product/nfr-matrix.csv): metric, verification, phase/owner and hard gate.
 - [x] [Synthetic benchmark/verification plan](product/nfr-verification-plan.md): 25 VU/10 demo organizations, performance profile, backup/restore, security and accessibility checks.
 - [x] [NFR acceptance cases](product/nfr-acceptance-cases.csv): **52 future tests, NONE EXECUTED**.
-- [ ] Owner approves P1.03 proposed response time, RPO/RTO, accessibility and security gates before P1.04.
+- [x] Owner approved P1.03 performance, RPO/RTO, accessibility and mandatory security gates as DESIGN REQUIREMENTS only, on 2026-11-13; issue #16 closed. **No performance or security tests run.**
+
+### P1.04 deliverables prepared for owner review
+- [x] [12 personas](product/personas.md), including ISO buyer, internal admin/sales/onboarding/agent manager and future external roles.
+- [x] [18 journeys](product/journeys.md) and [72 synthetic mapped steps](product/journey-map.csv) covering all 26 PRD use cases.
+- [x] [36 future journey acceptance cases](product/journey-acceptance-cases.csv), **NOT RUN**.
+- [ ] Owner approves P1.04 persona/journey design assumptions before P1.05 Feature Hierarchy.
 
 **No executable software or runtime tests were added for these documentation phases.** `frontend/` and `backend/` remain placeholder folders, not running Next.js/Express applications.
 
