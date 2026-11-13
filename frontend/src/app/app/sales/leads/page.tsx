@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, CircleHelp, Plus } from "lucide-react";
-import { LeadTable } from "@/components/record-tables";
+import { ArrowLeft, CircleHelp } from "lucide-react";
+import { LeadWorkbench } from "@/components/lead-workbench";
 import { getDemoLeads } from "@/lib/demo-api";
 
 export const dynamic = "force-dynamic";
@@ -17,16 +17,13 @@ export default async function LeadsPage() {
         </div>
         <div className="action-row">
           <Link href="/app" className="btn"><ArrowLeft size={15} aria-hidden="true" /> Overview</Link>
-          <button type="button" className="btn btn-disabled" disabled title="Create lead is not implemented">
-            <Plus size={15} aria-hidden="true" /> New lead · unavailable
-          </button>
         </div>
       </div>
       <div className="demo-banner" role="note">
         <CircleHelp size={18} aria-hidden="true" />
-        <div><strong>Read-only synthetic CRM view.</strong><span>Source: {demo.source === "express-demo-api" ? "local Express fictional API" : "local fictional fallback"}. Search is client-side only. Authentication, tenant security, writes, imports and exports are not implemented.</span></div>
+        <div><strong>Read-only synthetic CRM view.</strong><span>Source: {demo.source === "express-demo-api" ? "local Express fictional API" : "local fictional fallback"}. Search and in-browser create/edit are temporary fictional UI actions. Authentication, tenant security, API writes, imports and exports are not implemented.</span></div>
       </div>
-      <LeadTable records={demo.records} />
+      <LeadWorkbench initialRecords={demo.records} />
     </>
   );
 }

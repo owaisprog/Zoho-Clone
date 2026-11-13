@@ -158,3 +158,23 @@ Frontend Next.js + React + TypeScript + Tailwind/shadcn; backend Node.js + Expre
 ## Operating boundary
 
 No real merchant/card/bank/identity/KYC data; no live processor credentials, payment collection, production deployment or external pilot without fresh explicit approvals and verified controls. Public GitHub must contain synthetic/anonymized-only examples, no secrets or identifiable interview material.
+
+
+## Parallel P3 batch 01 — Five real-code subphases (P3.03–P3.07)
+
+**Implemented 2026-11-14; owner feature/UX review pending.** These are an authorized
+synthetic-only engineering batch in parallel with open P2.02. Code is on
+[draft stacked PR #28](https://github.com/owaisprog/Zoho-Clone/pull/28),
+which depends on draft P3.02 PR #27. Neither is merged into `main`.
+
+| Engineering subphase | Actual GitHub evidence | Review status |
+|---|---|---|
+| [P3.03 #29](https://github.com/owaisprog/Zoho-Clone/issues/29) — build hardening | Node 22 `package-lock.json`, `npm ci` CI, localhost-only demo URL tests | Code/CI passed; owner review pending |
+| [P3.04 #30](https://github.com/owaisprog/Zoho-Clone/issues/30) — synthetic contract | New shared `@zoho-clone/demo-contracts` npm workspace, exact canonical record validation in Express/Next adapter | Code/CI passed; owner review pending |
+| [P3.05 #31](https://github.com/owaisprog/Zoho-Clone/issues/31) — UI | Improved breadcrumbs, derived demo pipeline and responsive metrics | Code/CI passed; owner review pending |
+| [P3.06 #32](https://github.com/owaisprog/Zoho-Clone/issues/32) — lead interaction | Search/filter and fictional in-memory create/edit; no API writes or persistence | Code/CI passed; owner review pending |
+| [P3.07 #33](https://github.com/owaisprog/Zoho-Clone/issues/33) — error/QA | Generic error, loading/not-found, HTTP safety and adapter tests | Code/CI passed; owner review pending |
+
+**Independent CI result:** [run #43499956192](https://github.com/owaisprog/Zoho-Clone/actions/runs/43499956192) SUCCESS at `8f181cab93d735d68f07a5e915350744194e040b`. **21 frontend + 11 backend + 4 shared tests = 36 passed / 0 failed**, npm ci from committed lockfile, both TypeScript checks and Next.js/Express builds passed. Actual manual browser UX, accessibility, security, production operations and integration with real data were NOT exercised.
+
+**Unchanged gates:** 727 original P1.09 future acceptance/security cases remain NOT RUN; 40 P2.02 IA design cases remain NOT RUN; all 14 original evidence risks and 12 unresolved product decisions remain OPEN. P3.01 #26 and P2.02 #25 are not approved/closed. G-EXT and G-COM remain BLOCKED. No real credentials, customer data, tenant auth, protected CRM CRUD, PostgreSQL/Prisma, live processor/boarding/payments or public deployment. This batch is a CI-verified internal prototype, not production-complete functionality.

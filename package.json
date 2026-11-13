@@ -5,7 +5,8 @@
   "description": "Original synthetic-only Business OS scaffold; not a production service",
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "shared/demo-contracts"
   ],
   "engines": {
     "node": ">=22.0.0"

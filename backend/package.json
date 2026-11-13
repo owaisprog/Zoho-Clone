@@ -15,6 +15,7 @@
     "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
+    "@zoho-clone/demo-contracts": "*",
     "express": "^5.3.0",
     "helmet": "^8.1.0"
   },

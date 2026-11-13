@@ -26,3 +26,13 @@ The health endpoint establishes **process health only**, not database readiness,
 security compliance or a working customer platform. CI/local execution evidence
 must be recorded separately, and unexecuted tests must not be called passing.
 Default bind is 127.0.0.1; it is not internet-exposed.
+
+## P3 batch 01: fictional GET endpoints only
+
+The API additionally exposes `GET /api/v1/demo/leads` and
+`GET /api/v1/demo/applications` from fixed, invented demo arrays. They include
+a versioned synthetic contract and are checked against shared allowlisted
+fixtures. No POST/PATCH/DELETE endpoints exist. The API binds locally only;
+do not use it for real merchant, client, employee, financial or identity data.
+
+See [batch notes](../docs/engineering/p3-batch-01.md).

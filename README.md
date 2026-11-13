@@ -4,12 +4,24 @@
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
+## P3 Batch 01: five related development subphases (in review)
+
+P3.03–P3.07 code (draft PR #28; GitHub CI 36/36 PASS) adds deterministic dependency installation, a shared synthetic-only
+Express/Next contract, fictional dashboard pipeline analytics, local-only lead
+create/edit interactions, and broader error/contract tests. See
+[implementation and gate notes](docs/engineering/p3-batch-01.md).
+
+**Read-only GET demo routes are not real CRM services.** New lead drafts exist
+in browser memory only and disappear on refresh. The original 727 acceptance/
+security tests, 14 risks and 12 decisions remain unclosed; P2.02 and P3.01
+owner review remain pending. No real customer data or external/production use.
+
 ## Run the first real frontend and backend
 
 **P3.01 is now actual source code, not documentation.** Use Node.js **22+** and npm. From this repository's root:
 
 ~~~sh
-npm install
+npm ci
 npm run dev:api
 ~~~
 
@@ -41,9 +53,9 @@ These 13 tests are additional scaffold tests and do not establish security, DB o
 tenant RBAC, database, commercial billing or processor connection**. They are not
 safe for real customer/card/bank/identity/KYC data or external production. P2.02
 remains open; its final route architecture can change the temporary preview routes.
-All 14 evidence risks and 12 open decisions remain outstanding. GitHub CI currently
-uses \`npm install\` without a checked-in lockfile; lockfile/fully reproducible install
-is a near-term improvement.
+All 14 evidence risks and 12 open decisions remain outstanding. P3.03 introduces a
+checked-in Node 22 npm workspace lockfile with reproducible `npm ci` installs.
+The original P3.01 CI evidence above remains historically accurate and separate.
 
 ## Repository structure
 
