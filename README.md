@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -57,11 +57,16 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.01 release/use-case matrix](docs/product/prd-release-matrix.csv) — 26 scoped use cases.
 - [P1.01 synthetic-only fixture examples](docs/product/prd-synthetic-fixtures.json) — fictional organizations and merchant cases, NOT a running database seed.
 - [P1.01 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/14) — closed after owner approval.
-- [P1.02 Functional SRS](docs/product/srs.md) — 49 testable requirements (draft for owner review).
+- [P1.02 Functional SRS](docs/product/srs.md) — 49 requirements (owner-approved 2026-11-13).
 - [P1.02 requirements CSV](docs/product/srs-requirements.csv) — traceability to all 26 approved use cases.
 - [P1.02 state transitions](docs/product/srs-state-transitions.md) — provisional status flows, actor restrictions and recovery.
 - [P1.02 acceptance cases](docs/product/srs-acceptance-cases.csv) — 59 planned future test cases, not executed.
-- [P1.02 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/15) — active owner review gate.
+- [P1.02 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/15) — closed after owner approval.
+- [P1.03 Nonfunctional SRS](docs/product/nfr.md) — 46 proposed targets, owner review pending.
+- [P1.03 requirements matrix](docs/product/nfr-matrix.csv) — measurable budgets and release gates.
+- [P1.03 verification plan](docs/product/nfr-verification-plan.md) — synthetic benchmark/security/backup protocols.
+- [P1.03 acceptance cases](docs/product/nfr-acceptance-cases.csv) — 52 planned future tests, not executed.
+- [P1.03 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/16) — active owner review gate.
 
 ## Development approach
 
