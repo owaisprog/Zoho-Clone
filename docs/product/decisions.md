@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.03 (competitive comparison research in progress)
+**Current roadmap checkpoint:** P0.04 (Customer Interview Playbook in progress)
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -20,7 +20,8 @@
 | DEC-013 | P0.01 business vision charter acceptance | **Approved 2026-11-13** | Product owner explicitly approved mission and proposed order; P0.01 closed |
 
 | DEC-014 | P0.02 segment order ISO -> POS reseller -> PayFac | **Approved 2026-11-13 as research priority** | Ranking is authorized; scores and pain hypotheses still need interviews in P0.04/P0.05 |
-| DEC-015 | P0.03 must compare specialist and general CRM competitors with documented evidence, without claiming unknown features are missing | **In progress** | `docs/product/competitive-capability-matrix.md` + evidence register; owner review pending |
+| DEC-015 | P0.03 competitive matrix and differentiation hypotheses | **Approved 2026-11-13 as research baseline** | Six competitors, 29 feature dimensions; buyer validation still required |
+| DEC-016 | P0.04 research protocol will be non-leading, privacy-preserving, and disconfirmable | **Draft; owner review pending** | Interview scripts, participant quotas, anonymized notes, qualification/pilot evidence and signed-off recruiting plan |
 
 ## Change control
 
@@ -32,4 +33,5 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - Approved by: Product owner, in ChatGPT conversation
 - Date: 2026-11-13
 - P0.02 segment priority approval: Approved by product owner on 2026-11-13; customer evidence still outstanding
-- Current phase: P0.03 - Competitive Capability Matrix (active)
+- P0.03 competitor research approval: Approved by product owner on 2026-11-13; external product testing and buyer discovery remain open
+- Current phase: P0.04 - Customer Interview Playbook (active)
