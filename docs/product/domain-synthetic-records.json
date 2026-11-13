@@ -1,0 +1,658 @@
+{
+  "kind": "P1.07 SYNTHETIC DOMAIN RECORD SHAPES - NOT EXECUTABLE PRISMA SEED",
+  "version": "0.1",
+  "prepared": "2026-11-13",
+  "privacy": [
+    "All organizations/people/businesses are fictional",
+    "Only example.com email addresses",
+    "No PAN/CVV/bank/routing/ID/KYC/credentials/MID/provider real data",
+    "External DEMO_ONLY_* statuses are synthetic_unverified and cannot authorize anything",
+    "No actual deployed DB/API/tenancy enforcement"
+  ],
+  "id_contract": "Human-readable demo IDs are illustrative; production ID encoding not decided",
+  "data": {
+    "organizations": [
+      {
+        "id": "org_demo_orchid",
+        "display_name": "Orchid Payments Demo",
+        "state": "active",
+        "timezone": "Asia/Karachi",
+        "created_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "org_demo_juniper",
+        "display_name": "Juniper Merchant Services Demo",
+        "state": "active",
+        "timezone": "Asia/Karachi",
+        "created_at": "2026-11-13T09:00:00Z"
+      }
+    ],
+    "identityUsers": [
+      {
+        "id": "user_demo_orchid_owner",
+        "provider_subject_ref": "DEMO_OIDC_SUBJECT_001",
+        "display_name": "Orchid Demo Owner",
+        "email": "owner@orchid.example.com",
+        "account_state": "active"
+      },
+      {
+        "id": "user_demo_orchid_sales",
+        "provider_subject_ref": "DEMO_OIDC_SUBJECT_002",
+        "display_name": "Orchid Demo Sales",
+        "email": "sales@orchid.example.com",
+        "account_state": "active"
+      },
+      {
+        "id": "user_demo_orchid_ops",
+        "provider_subject_ref": "DEMO_OIDC_SUBJECT_003",
+        "display_name": "Orchid Demo Operations",
+        "email": "ops@orchid.example.com",
+        "account_state": "active"
+      },
+      {
+        "id": "user_demo_juniper_owner",
+        "provider_subject_ref": "DEMO_OIDC_SUBJECT_004",
+        "display_name": "Juniper Demo Owner",
+        "email": "owner@juniper.example.com",
+        "account_state": "active"
+      }
+    ],
+    "memberships": [
+      {
+        "id": "mem_orch_owner",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "user_id": "user_demo_orchid_owner",
+        "status": "active",
+        "role_key": "ORG_OWNER",
+        "joined_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "mem_orch_sales",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "user_id": "user_demo_orchid_sales",
+        "status": "active",
+        "role_key": "SALES_REP",
+        "joined_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "mem_orch_ops",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "user_id": "user_demo_orchid_ops",
+        "status": "active",
+        "role_key": "ONBOARDING_COORDINATOR",
+        "joined_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "mem_jun_owner",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "user_id": "user_demo_juniper_owner",
+        "status": "active",
+        "role_key": "ORG_OWNER",
+        "joined_at": "2026-11-13T09:00:00Z"
+      }
+    ],
+    "teams": [
+      {
+        "id": "team_orch_sales",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo Sales",
+        "domain": "sales",
+        "state": "active"
+      },
+      {
+        "id": "team_orch_ops",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo Onboarding",
+        "domain": "onboarding",
+        "state": "active"
+      }
+    ],
+    "teamMemberships": [
+      {
+        "id": "team_mem_sales",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "team_id": "team_orch_sales",
+        "membership_id": "mem_orch_sales",
+        "team_role": "member",
+        "state": "active"
+      },
+      {
+        "id": "team_mem_ops",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "team_id": "team_orch_ops",
+        "membership_id": "mem_orch_ops",
+        "team_role": "member",
+        "state": "active"
+      }
+    ],
+    "roleGrants": [
+      {
+        "id": "grant_orch_owner",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "membership_id": "mem_orch_owner",
+        "role_key": "ORG_OWNER",
+        "assigned_by_membership_id": "mem_orch_owner",
+        "state": "active"
+      },
+      {
+        "id": "grant_orch_sales",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "membership_id": "mem_orch_sales",
+        "role_key": "SALES_REP",
+        "assigned_by_membership_id": "mem_orch_owner",
+        "state": "active"
+      },
+      {
+        "id": "grant_orch_ops",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "membership_id": "mem_orch_ops",
+        "role_key": "ONBOARDING_COORDINATOR",
+        "assigned_by_membership_id": "mem_orch_owner",
+        "state": "active"
+      },
+      {
+        "id": "grant_jun_owner",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "membership_id": "mem_jun_owner",
+        "role_key": "ORG_OWNER",
+        "assigned_by_membership_id": "mem_jun_owner",
+        "state": "active"
+      }
+    ],
+    "appEntitlements": [
+      {
+        "id": "grant_app_orch_crm",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "app_key": "sales_crm",
+        "state": "enabled",
+        "seat_limit": 5,
+        "effective_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "grant_app_orch_merchant",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "app_key": "merchant_ops",
+        "state": "enabled",
+        "seat_limit": 5,
+        "effective_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "grant_app_jun_crm",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "app_key": "sales_crm",
+        "state": "enabled",
+        "seat_limit": 3,
+        "effective_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "grant_app_jun_merchant",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "app_key": "merchant_ops",
+        "state": "disabled",
+        "seat_limit": 0,
+        "effective_at": "2026-11-13T09:00:00Z"
+      }
+    ],
+    "pipelines": [
+      {
+        "id": "pipeline_orch_lead",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo Lead Pipeline",
+        "scope": "lead",
+        "state": "active"
+      },
+      {
+        "id": "pipeline_orch_deal",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo Deal Pipeline",
+        "scope": "deal",
+        "state": "active"
+      },
+      {
+        "id": "pipeline_jun_deal",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Juniper Deal Pipeline",
+        "scope": "deal",
+        "state": "active"
+      }
+    ],
+    "stages": [
+      {
+        "id": "stage_orch_new",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "pipeline_id": "pipeline_orch_lead",
+        "stage_key": "new",
+        "sort_order": 1,
+        "terminal": false
+      },
+      {
+        "id": "stage_orch_won",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "pipeline_id": "pipeline_orch_deal",
+        "stage_key": "won",
+        "sort_order": 5,
+        "terminal": true
+      },
+      {
+        "id": "stage_jun_open",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "pipeline_id": "pipeline_jun_deal",
+        "stage_key": "open",
+        "sort_order": 1,
+        "terminal": false
+      }
+    ],
+    "accounts": [
+      {
+        "id": "account_orch_river",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo River Retail",
+        "owner_membership_id": "mem_orch_sales",
+        "state": "active"
+      },
+      {
+        "id": "account_jun_rock",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo Juniper Supplies",
+        "owner_membership_id": "mem_jun_owner",
+        "state": "active"
+      }
+    ],
+    "contacts": [
+      {
+        "id": "contact_orch_demo",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Contact One",
+        "email": "contact.one@orchid.example.com",
+        "account_id": "account_orch_river",
+        "owner_membership_id": "mem_orch_sales"
+      }
+    ],
+    "leads": [
+      {
+        "id": "lead_orch_demo",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "name": "Demo River Retail Interest",
+        "company_label": "Demo River Retail",
+        "contact_email": "lead@orchid.example.com",
+        "owner_membership_id": "mem_orch_sales",
+        "pipeline_stage_id": "stage_orch_new",
+        "source_key": "demo_web"
+      }
+    ],
+    "deals": [
+      {
+        "id": "deal_orch_demo",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "title": "Demo River Retail Sale",
+        "account_id": "account_orch_river",
+        "pipeline_id": "pipeline_orch_deal",
+        "stage_id": "stage_orch_won",
+        "owner_membership_id": "mem_orch_sales",
+        "version": 1
+      },
+      {
+        "id": "deal_jun_demo",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "title": "Demo Juniper Pipeline Case",
+        "account_id": "account_jun_rock",
+        "pipeline_id": "pipeline_jun_deal",
+        "stage_id": "stage_jun_open",
+        "owner_membership_id": "mem_jun_owner",
+        "version": 1
+      }
+    ],
+    "agents": [
+      {
+        "id": "agent_orch_demo",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Referral Partner",
+        "state": "active",
+        "managed_by_membership_id": "mem_orch_owner",
+        "public_agent_reference": "AG-DEMO-01"
+      }
+    ],
+    "merchants": [
+      {
+        "id": "merchant_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo River Retail",
+        "account_id": "account_orch_river",
+        "owner_membership_id": "mem_orch_ops",
+        "state": "onboarding"
+      },
+      {
+        "id": "merchant_orch_2",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Pine Market",
+        "account_id": null,
+        "owner_membership_id": "mem_orch_ops",
+        "state": "onboarding"
+      },
+      {
+        "id": "merchant_orch_3",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Cedar Books",
+        "account_id": null,
+        "owner_membership_id": "mem_orch_ops",
+        "state": "onboarding"
+      },
+      {
+        "id": "merchant_orch_4",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Birch Bakery",
+        "account_id": null,
+        "owner_membership_id": "mem_orch_ops",
+        "state": "onboarding"
+      },
+      {
+        "id": "merchant_orch_5",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Lantern Cafe",
+        "account_id": null,
+        "owner_membership_id": "mem_orch_ops",
+        "state": "active_internal"
+      },
+      {
+        "id": "merchant_jun_1",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "display_name": "Demo Juniper Supplies",
+        "account_id": "account_jun_rock",
+        "owner_membership_id": "mem_jun_owner",
+        "state": "prospect"
+      }
+    ],
+    "agentAssignments": [
+      {
+        "id": "assignment_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "agent_id": "agent_orch_demo",
+        "merchant_id": "merchant_orch_1",
+        "state": "active",
+        "assigned_by_membership_id": "mem_orch_owner",
+        "assigned_at": "2026-11-13T09:00:00Z"
+      }
+    ],
+    "merchantLocations": [
+      {
+        "id": "location_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_orch_1",
+        "label": "Demo Main Location",
+        "region_label": "Demo Region"
+      }
+    ],
+    "externalStatusReferences": [
+      {
+        "id": "external_orch_3",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "reference_kind": "demo_only",
+        "status_key": "DEMO_ONLY_PENDING",
+        "observed_at": "2026-11-13T09:00:00Z",
+        "verification_state": "synthetic_unverified",
+        "source_ref": "DEMO_SOURCE_NOT_REAL"
+      },
+      {
+        "id": "external_orch_4",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "reference_kind": "demo_only",
+        "status_key": "DEMO_ONLY_APPROVED_NOT_ACTIVATED",
+        "observed_at": "2026-11-13T09:00:00Z",
+        "verification_state": "synthetic_unverified",
+        "source_ref": "DEMO_SOURCE_NOT_REAL"
+      },
+      {
+        "id": "external_orch_5",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "reference_kind": "demo_only",
+        "status_key": "DEMO_ONLY_ACTIVE",
+        "observed_at": "2026-11-13T09:00:00Z",
+        "verification_state": "synthetic_unverified",
+        "source_ref": "DEMO_SOURCE_NOT_REAL"
+      }
+    ],
+    "merchantApplications": [
+      {
+        "id": "app_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_orch_1",
+        "owner_membership_id": "mem_orch_ops",
+        "internal_stage_key": "draft",
+        "next_action": "Review non-sensitive intake checklist",
+        "version": 1,
+        "external_status_reference_id": null
+      },
+      {
+        "id": "app_orch_2",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_orch_2",
+        "owner_membership_id": "mem_orch_ops",
+        "internal_stage_key": "pending_more_info",
+        "next_action": "Request synthetic follow-up category",
+        "version": 2,
+        "external_status_reference_id": null
+      },
+      {
+        "id": "app_orch_3",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_orch_3",
+        "owner_membership_id": "mem_orch_ops",
+        "internal_stage_key": "pending_external",
+        "next_action": "Check status using approved channel (demo only)",
+        "version": 3,
+        "external_status_reference_id": "external_orch_3"
+      },
+      {
+        "id": "app_orch_4",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_orch_4",
+        "owner_membership_id": "mem_orch_ops",
+        "internal_stage_key": "activation_pending",
+        "next_action": "Verify activation separately (demo only)",
+        "version": 4,
+        "external_status_reference_id": "external_orch_4"
+      },
+      {
+        "id": "app_orch_5",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_orch_5",
+        "owner_membership_id": "mem_orch_ops",
+        "internal_stage_key": "active_internal",
+        "next_action": "Internal team handoff only",
+        "version": 5,
+        "external_status_reference_id": "external_orch_5"
+      },
+      {
+        "id": "app_jun_1",
+        "organization_id": "org_demo_juniper",
+        "created_at": "2026-11-13T09:00:00Z",
+        "merchant_id": "merchant_jun_1",
+        "owner_membership_id": "mem_jun_owner",
+        "internal_stage_key": "draft",
+        "next_action": "Demo lead follow-up",
+        "version": 1,
+        "external_status_reference_id": null
+      }
+    ],
+    "applicationStageHistory": [
+      {
+        "id": "history_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_1",
+        "from_stage": null,
+        "to_stage": "draft",
+        "actor_membership_id": "mem_orch_ops",
+        "reason_key": "synthetic_initial_state",
+        "changed_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "history_orch_2",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_2",
+        "from_stage": null,
+        "to_stage": "pending_more_info",
+        "actor_membership_id": "mem_orch_ops",
+        "reason_key": "synthetic_initial_state",
+        "changed_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "history_orch_3",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_3",
+        "from_stage": null,
+        "to_stage": "pending_external",
+        "actor_membership_id": "mem_orch_ops",
+        "reason_key": "synthetic_initial_state",
+        "changed_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "history_orch_4",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_4",
+        "from_stage": null,
+        "to_stage": "activation_pending",
+        "actor_membership_id": "mem_orch_ops",
+        "reason_key": "synthetic_initial_state",
+        "changed_at": "2026-11-13T09:00:00Z"
+      },
+      {
+        "id": "history_orch_5",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_5",
+        "from_stage": null,
+        "to_stage": "active_internal",
+        "actor_membership_id": "mem_orch_ops",
+        "reason_key": "synthetic_initial_state",
+        "changed_at": "2026-11-13T09:00:00Z"
+      }
+    ],
+    "checklistItems": [
+      {
+        "id": "check_orch_2",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_2",
+        "item_key": "safe_operational_followup",
+        "status": "pending",
+        "completed_by_membership_id": null,
+        "completed_at": null
+      },
+      {
+        "id": "check_orch_4",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "application_id": "app_orch_4",
+        "item_key": "activation_followup",
+        "status": "pending",
+        "completed_by_membership_id": null,
+        "completed_at": null
+      }
+    ],
+    "tasks": [
+      {
+        "id": "task_orch_case_2",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "title": "Request demo follow-up",
+        "parent_kind": "merchant_application",
+        "parent_ref": "app_orch_2",
+        "assignee_membership_id": "mem_orch_ops",
+        "status": "blocked",
+        "due_at": "2026-11-20T12:00:00Z"
+      },
+      {
+        "id": "task_orch_deal",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "title": "Handoff synthetic deal",
+        "parent_kind": "deal",
+        "parent_ref": "deal_orch_demo",
+        "assignee_membership_id": "mem_orch_sales",
+        "status": "done",
+        "due_at": "2026-11-13T09:00:00Z"
+      }
+    ],
+    "auditEvents": [
+      {
+        "id": "audit_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "actor_user_id": "user_demo_orchid_ops",
+        "action_key": "demo_case_created",
+        "subject_ref": "app_orch_1",
+        "outcome": "allowed",
+        "occurred_at": "2026-11-13T09:00:00Z",
+        "request_id": "req_demo_1"
+      }
+    ],
+    "activityEntries": [
+      {
+        "id": "activity_orch_1",
+        "organization_id": "org_demo_orchid",
+        "created_at": "2026-11-13T09:00:00Z",
+        "parent_kind": "deal",
+        "parent_ref": "deal_orch_demo",
+        "activity_key": "status_changed",
+        "summary": "Demo deal moved to won, no processor submission implied",
+        "actor_membership_id": "mem_orch_sales"
+      }
+    ]
+  },
+  "not_implemented": [
+    "Actual Prisma schema",
+    "Actual permissions and tenant isolation",
+    "Real processor integration",
+    "Authentication provider configuration",
+    "Backup and production app"
+  ]
+}
