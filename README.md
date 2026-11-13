@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map in progress.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -94,7 +94,14 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P1.08 Internal Event Contracts](docs/api/event-contracts.md) — 16 events and outbox design, NOT RUNNING.
 - [P1.08 Event Catalog](docs/api/event-catalog.csv) and [Envelope JSON Schema](docs/api/event-envelope.schema.json) — safe proposed message definitions.
 - [P1.08 Contract Acceptance Cases](docs/api/api-contract-cases.csv) — 164 planned future tests, none executed.
-- [P1.08 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/21) — open for owner review.
+- [P1.08 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/21) — closed after owner-approved provisional design; no API/events running.
+- [P1.09 Acceptance & Traceability](docs/qa/acceptance-traceability.md) — all 121 UC/FR/NFR have planned tests; no execution.
+- [P1.09 Requirement Coverage](docs/qa/requirements-coverage.csv) and [Feature Coverage](docs/qa/feature-coverage.csv) — 121 requirements and 36 features mapped.
+- [P1.09 Test Inventory](docs/qa/test-inventory.csv) — 727 future tests (all NOT RUN).
+- [P1.09 Permission Decision Cases](docs/qa/permission-decision-cases.csv) — 286 proposed policy tests.
+- [P1.09 Event Acceptance Cases](docs/qa/event-acceptance-cases.csv) — 32 proposed event tests.
+- [P1.09 Release Acceptance Gates](docs/qa/release-acceptance-gates.md) and [Coverage Gap Register](docs/qa/coverage-gaps.md) — real evidence/production boundaries.
+- [P1.09 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/22) — active for owner review.
 
 ## Development approach
 
