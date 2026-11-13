@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P0.07 (MVP Value Proposition — draft, real prospect validation pending)
+**Current roadmap checkpoint:** All P0.01–P0.10 decision/document packages prepared; P0 commercial validation and owner P0.10 signoff pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -33,6 +33,13 @@
 | DEC-021 | P0.07 merchant operations CRM value proposition | **Working hypothesis; P0.07 active** | ISO buyer; measurable time to identify owner/status/next action on stalled case; no actual buyer validation yet |
 | DEC-022 | Market-facing name, pricing, processor integrations, regulated data jurisdiction | **OPEN** | No unsupported product, customer ROI, live integration or certification claims permitted |
 
+| DEC-023 | P0.07 proposed ISO first-product value: identify stalled application owner and next action | **RESEARCH HYPOTHESIS / NOT VALIDATED** | Positioning and landing copy drafted; 0 prospect reviews and timed tests |
+| DEC-024 | P0.08 pricing hypotheses: proposed $149/$399/from $999 organization plans to test | **NOT APPROVED SELLING PRICES** | 0/5 qualified price interviews; fair comparable quotes outstanding |
+| DEC-025 | P0.09 design-partner program and two-partner target | **DOCUMENTED / UNCOMMITTED** | 0/2 partners, owner has not elected explicit no-partner path |
+| DEC-026 | P0.10 decision recommendation | **CONDITIONAL INTERNAL-GO / COMMERCIAL NO-GO RECOMMENDED, NOT OWNER-SIGNED** | See `phase0_gate.md`: synthetic-data-only engineering is materially different from deploying to customers |
+| DEC-027 | P0 overall status | **DOCUMENTS PREPARED; VALIDATED P0 EXIT NOT MET** | No evidence-backed customer problem validation, no approved P0.10 build decision |
+| DEC-028 | User request to complete all P0 work in one pass | **AUTHORIZED DOCUMENT PREPARATION** | It does not falsely establish prospect calls, commercial contracts, pilot commitments, or consent to accept every security/commercial risk |
+
 ## Change control
 
 Add a dated entry before changing architecture, product order or launch scope. Separate **confirmed owner decisions**, **engineering recommendations**, and **unvalidated hypotheses**. Never describe a proposed price, legal choice or deployment status as approved.
@@ -48,4 +55,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P0.05 provisional draft approval: Product owner approved planning diagrams in conversation on 2026-11-13; not evidence of customer validation
 - P0.05 waiver: Owner explicitly requested to skip validation and proceed on 2026-11-13; unvalidated 0/3, issue #7 closed as not planned
 - P0.06 owner sign-off: Product owner explicitly approved the five classes and initial CRM raw card/bank/identity/KYC/credential exclusions as design requirements on 2026-11-13; no certification implied; issue #9 closed
-- Current phase: **P0.07 — MVP Value Proposition**, draft concepts and real prospect validation outstanding
+- P0.07–P0.10 artifact preparation: Completed in one pass at user direction, with unvalidated gates explicitly open
+- Current decision: P0.10 product-owner conditional GO/NO-GO signoff outstanding
+- No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
