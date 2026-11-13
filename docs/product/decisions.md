@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.04 Personas and Journeys OWNER-APPROVED as provisional design; P1.05 Feature Hierarchy and Release Gates active, owner review pending
+**Current roadmap checkpoint:** P1.05 Feature Hierarchy and Release Gates OWNER-APPROVED as internal planning; P1.06 Permission and Sharing Matrix active, owner review pending
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -52,8 +52,11 @@
 | DEC-035 | P1.04 primary ISO user personas and journeys | **OWNER-APPROVED PROVISIONAL DESIGN BASELINE on 2026-11-13; issue #17 CLOSED** | 12 hypothesis-based personas, 18 synthetic journeys, 72 steps, 36 future tests, 26 UC covered; no real customer evidence |
 | DEC-036 | P1.03 approval scope | **CONFIRMED DESIGN ONLY** | No performance benchmark, backup restore, accessibility conformance, implemented access control or compliance certification is claimed; external release safety obligations remain mandatory |
 
-| DEC-037 | P1.05 R0 shared platform, R1 sales CRM, R2 merchant operations and deferred full suite feature backlog | **DRAFT IN PROGRESS; owner approval pending** | 36 planned features (24 MUST, 6 SHOULD, 6 DEFERRED), mapped to all 26 UC and 49 FR; issue #18 |
-| DEC-038 | P1.05 distribution gate distinction | **PROPOSED / NOT YET APPROVED** | R0/R1/R2 internal synthetic demo is separate from unauthorized external pilot and paid production; no real integrations or live payment processing |
+| DEC-037 | P1.05 R0 shared platform, R1 sales CRM, R2 merchant operations and deferred full suite feature backlog | **OWNER-APPROVED INTERNAL PLANNING BASELINE 2026-11-13; issue #18 CLOSED** | 36 planned features (24 MUST, 6 SHOULD, 6 DEFERRED), all 26 UC and 49 FR mapped; NOT implemented |
+| DEC-038 | P1.05 distribution gate distinction | **OWNER-APPROVED PLANNING POLICY 2026-11-13** | R0/R1/R2 internal synthetic demo is separate from external pilot/production; G-EXT/G-COM remain BLOCKED and require separate evidence and owner signoff |
+
+| DEC-039 | P1.06 permission/sharing security baseline | **DRAFT IN PROGRESS; owner review pending** | 13 role types, 22 resource families, 286 default-deny rules (217 denied) and 52 future negative tests; issue #19 |
+| DEC-040 | P1.06 admin/owner and system access boundary | **PROPOSED / NOT IMPLEMENTED** | Org owner/admin has no automatic CRM/merchant row access; revoked agent/members lose access on next request; platform support/external actors/workers get no automatic tenant privileges |
 
 ## Change control
 
@@ -78,5 +81,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.02 owner sign-off: Owner expressly approved Functional SRS and provisional behavior/state rules on 2026-11-13; issue #15 closed
 - P1.03 sign-off: Product owner explicitly approved NFR target numbers and mandatory security gates AS DESIGN REQUIREMENTS, not verified outcomes, on 2026-11-13; issue #16 closed
 - P1.04 signoff: Owner explicitly approved 12 personas and 18 journeys as a PROVISIONAL planning baseline on 2026-11-13, not customer-validated evidence; issue #17 closed
-- Current sub-phase: **P1.05 Feature Hierarchy and Release Gates**, 36 proposed feature priorities and explicit internal/external safety gates await owner approval
+- P1.05 signoff: Owner approved feature hierarchy, priority/dependency and R0/R1/R2 vs external gates as internal planning baseline on 2026-11-13; issue #18 closed
+- Current sub-phase: **P1.06 Permission and Sharing Matrix**; 286 proposed rules and 52 future negative tests await owner approval
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
