@@ -1,7 +1,7 @@
 # Zoho Clone - Product and Technical Decision Log
 
 **Date:** 2026-11-13  
-**Current roadmap checkpoint:** P1.09 Acceptance and Traceability Map OWNER-APPROVED as PLANNING ONLY; P1.10 Risk and Decision Register active, owner review pending; all 14 source gaps remain OPEN
+**Current roadmap checkpoint:** P1.10 Risk and Decision Register OWNER-APPROVED as TRACKING ONLY; **P2.01 Brand and Design Tokens DRAFT active**. All 14 risks, 12 decisions and 727 unexecuted tests stay open/unverified.
 
 | ID | Decision | Status | Rationale / next check |
 | --- | --- | --- | --- |
@@ -67,8 +67,11 @@
 | DEC-045 | P1.09 planned acceptance traceability and test inventory | **OWNER-APPROVED PLANNING BASELINE 2026-11-13; issue #22 CLOSED** | 26 UC + 49 FR + 46 NFR = 121 requirement mappings; 36 features; 727 future test cases, **0 executed / 0 passed**; not runtime quality evidence |
 | DEC-046 | P1.09 implementation vs external release evidence gates | **OWNER-APPROVED PLANNING RULE; NOT A PRODUCT RELEASE APPROVAL** | **ALL 14 G-001..G-014 remain OPEN**, P0.10 synthetic internal sequencing only; G-EXT/G-COM blocked; no requirement/quality pass implied |
 
-| DEC-047 | P1.10 risk register and provisional mitigation ranking | **DRAFT ACTIVE — owner review pending** | All 14 P1.09 gaps mapped one-to-one to OPEN risks in `docs/product/p1-risk-register.csv`; proposed impact/likelihood/owner/actions only; issue #23 |
-| DEC-048 | P1.10 unresolved architecture, domain, vendor and release decisions | **OPEN / NOT OWNER-APPROVED** | 12 tracked choices in `docs/product/p1-decision-backlog.csv`; prior P0/P1 design approvals retained, none assumed implemented or commercial GO |
+| DEC-047 | P1.10 risk register and provisional mitigation ranking | **OWNER-APPROVED INTERNAL TRACKING ONLY 2026-11-13; issue #23 CLOSED** | All 14 P1.09 gaps mapped to OPEN risks; provisional impact/likelihood/owners/actions recorded; **NO mitigations or test passes implied** |
+| DEC-048 | P1.10 unresolved architecture, domain, vendor and release decisions | **OWNER-APPROVED TRACKING; ALL 12 CHOICES STILL OPEN** | 12 tracked options in `docs/product/p1-decision-backlog.csv`; approval of register does NOT select providers, authorize commercial GO, or resolve actual implementation gaps |
+
+| DEC-049 | P2.01 original B2B brand direction and light/dark design tokens | **DRAFT — owner review pending** | 154 proposed tokens with navy/indigo/neutral palette, 27 calculated contrast pair checks; accessible table-first UX and static HTML preview; [issue #24](https://github.com/owaisprog/Zoho-Clone/issues/24); not a final brand or running UI |
+| DEC-050 | P2 commercial name/domain/logo selection | **UNRESOLVED — NO PRODUCT-OWNER SELECTION** | "Zoho Clone" stays internal repo name and "Workspace OS" is a descriptive concept label; no copied Zoho assets/trade dress; original legal/trademark-safe name/domain remains OPEN pending future owner selection |
 
 ## Change control
 
@@ -98,5 +101,6 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - P1.07 signoff: Owner expressly approved 31-entity provisional glossary, 230 classified fields, 33 relationships and 68 synthetic records as DESIGN ONLY on 2026-11-13; issue #20 closed
 - P1.08 signoff: Owner explicitly approved versioned API and internal event contracts as PROVISIONAL DESIGN ONLY on 2026-11-13; issue #21 closed; no running endpoints/event services
 - P1.09 signoff: Owner explicitly approved acceptance/traceability map as **internal planning only** on 2026-11-13; 727 future tests remain NOT RUN, 14 gaps remain OPEN; issue #22 closed
-- Current sub-phase: **P1.10 Risk and Decision Register** — 14 OPEN gap-mapped risks and 12 OPEN decisions; owner review pending
+- P1.10 signoff: Owner explicitly approved P1.10 **as internal risk/decision tracking only** on 2026-11-13, not as resolved risks/implementation; issue #23 closed, all 14 risks and 12 decisions still OPEN
+- Current sub-phase: **P2.01 Brand and Design Tokens**; provisional original visual directions and contrast formula checks await separate owner approval; issue #24 OPEN
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
