@@ -1,7 +1,7 @@
 # P1 — Requirements and Acceptance Contracts: Phase Plan
 
 **Initiated:** 2026-11-13
-**Status:** P1 active. P1.01, P1.02 and P1.03 OWNER-APPROVED and closed; P1.04 Personas and Journeys drafted, owner review pending.
+**Status:** P1 active. P1.01–P1.04 OWNER-APPROVED and closed; P1.05 Feature Hierarchy and Release Gates drafted, owner review pending.
 **Authorization:** P0.10 owner-signed conditional GO for P1/P2 and future P3 **synthetic-data-only** internal development. Real customer data and external launch **not** authorized.
 **P1 exit:** Versioned owner-approved PRD/SRS, a traceability matrix, domain glossary and approved bounded MVP backlog.
 
@@ -12,8 +12,8 @@
 | **P1.01** | **Master PRD** — users, success metrics, scope, prioritized releases | `docs/product/prd.md`, `prd-release-matrix.csv`, `prd-synthetic-fixtures.json` | **COMPLETE — owner-approved 2026-11-13; issue #14 closed** |
 | P1.02 | Functional SRS — validations, states, errors and recovery | `docs/product/srs.md`, `srs-requirements.csv`, `srs-state-transitions.md`, `srs-acceptance-cases.csv` | **COMPLETE — owner-approved 2026-11-13; 49 requirements and 59 future acceptance cases; issue #15 closed** |
 | P1.03 | Nonfunctional SRS — latency, reliability, backups, accessibility, security | `docs/product/nfr.md`, `nfr-matrix.csv`, `nfr-verification-plan.md`, `nfr-acceptance-cases.csv` | **COMPLETE — owner-approved design targets on 2026-11-13; 46 unmeasured NFRs, 52 unexecuted test cases; issue #16 closed** |
-| **P1.04** | **User personas and journeys** | `docs/product/personas.md`, `docs/product/journeys.md`, `docs/product/journey-map.csv`, `docs/product/journey-acceptance-cases.csv` | **IN PROGRESS — 12 synthetic personas, 18 journeys, 72 steps, 36 future tests; owner review pending; issue #17 open** |
-| P1.05 | Feature hierarchy and release gates | `docs/product/features.md`, MVP backlog | NOT STARTED |
+| P1.04 | User personas and journeys | `docs/product/personas.md`, `docs/product/journeys.md`, `docs/product/journey-map.csv`, `docs/product/journey-acceptance-cases.csv` | **COMPLETE — owner-approved provisional baseline 2026-11-13; 12 personas, 18 synthetic journeys, 72 steps and 36 unexecuted future tests; issue #17 closed** |
+| **P1.05** | **Feature hierarchy and release gates** | `docs/product/features.md`, `docs/product/mvp-backlog.csv`, `docs/product/feature-traceability.csv`, `docs/product/release-gates.md` | **IN PROGRESS — 36 features, 26 UC and 49 FR covered; internal vs external release gates drafted; owner review pending; issue #18 open** |
 | P1.06 | Permission and sharing matrix | `docs/security/permission-matrix.md` | NOT STARTED |
 | P1.07 | Domain glossary and synthetic sample records | `docs/product/domain-glossary.md`, synthetic examples | NOT STARTED |
 | P1.08 | API and event contract specification | `docs/api/api-contracts.md`, versioned OpenAPI after design | NOT STARTED |
@@ -45,6 +45,14 @@
 - [x] [Journey acceptance cases](product/journey-acceptance-cases.csv): **36** future experience/security scenarios, **not run**.
 - [ ] Owner reviews and approves P1.04 persona and journey priorities before P1.05.
 
+## P1.04 approval and P1.05 feature/release gate review
+
+- [x] Product owner approved P1.04 synthetic personas and journeys as a **provisional internal planning baseline** on 2026-11-13; not customer-validated evidence.
+- [x] 12 persona profiles, 18 journeys, 72 mapped steps and 36 unexecuted journey acceptance cases delivered; issue #17 closed.
+- [x] P1.05 [feature taxonomy](product/features.md), [36-row priority backlog](product/mvp-backlog.csv), [complete UC/FR traceability](product/feature-traceability.csv), [release gates](product/release-gates.md) drafted.
+- [ ] Product owner reviews and approves feature priorities, dependencies and **R0/R1/R2 internal vs external release gates**.
+- [ ] Following approval close P1.05 and open P1.06 Permission and Sharing Matrix.
+
 ## Release gating (separate from documentation)
 
 - **Internal sandbox:** synthetic data and no real processor/billing/merchant data.
@@ -59,7 +67,8 @@ Open market evidence debt: https://github.com/owaisprog/Zoho-Clone/issues/8
 P1.01 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/14  
 P1.02 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/15  
 P1.03 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/16  
-P1.04 active issue: https://github.com/owaisprog/Zoho-Clone/issues/17
+P1.04 completed issue: https://github.com/owaisprog/Zoho-Clone/issues/17  
+P1.05 active issue: https://github.com/owaisprog/Zoho-Clone/issues/18
 
 **No Next.js or Express application has yet been scaffolded.** The top-level `frontend/` and `backend/` folders contain README placeholders. No P1 code tests were run because the deliverables are specifications.
 
