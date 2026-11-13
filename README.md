@@ -1,6 +1,6 @@
 # Zoho Clone
 
-**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register owner-approved for tracking only; Phase P2.01 Brand and Design Tokens in progress. All 14 risks and 12 decisions remain OPEN; 727 tests NOT RUN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
+**Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register owner-approved for tracking only; P2.01 Brand and Design Tokens owner-approved as provisional internal UX; P2.02 Information Architecture in progress. All 14 risks and 12 decisions remain OPEN; 727 P1 tests NOT RUN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
 
 Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosystem designed to provide integrated business applications. The long-term scope is comparable in breadth to the Zoho ecosystem, but the software, code, branding, and user experience will be independently developed.
 
@@ -115,7 +115,12 @@ Zoho Clone is the working name of an original, AI-led, multi-tenant SaaS ecosyst
 - [P2.01 Sample Contrast Review](docs/design/color-contrast-review.csv) — 27 calculated light/dark token pair checks; NOT browser-based WCAG certification.
 - [P2.01 Component Usage Examples](docs/design/component-examples.md) — dense CRM tables, merchant application context, permissions and failure states.
 - [P2.01 Standalone Static UX Preview](docs/design/token-preview.html) — fictional merchant queue, theme and density toggles; no backend, auth, real data or deployment.
-- [P2.01 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/24) — OPEN for owner review. P2.02 Information Architecture begins after design approval.
+- [P2.01 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/24) — CLOSED after owner approval as provisional original internal UX; **not** final commercial branding or accessibility certification.
+- [P2.02 Information Architecture](docs/design/information-architecture.md) — product sitemap, safe org switching, responsive navigation and tenant/record/field restrictions.
+- [P2.02 Navigation YAML](docs/design/navigation.yml) — proposed 27-entry permission-aware menu structure in five groups (not runtime RBAC).
+- [P2.02 Route Inventory](docs/design/route-inventory.csv) — 64 conceptual patterns: 5 public, 19 R0, 20 R1, 15 R2, 5 deferred/unlinked.
+- [P2.02 Navigation Review Cases](docs/design/navigation-review-cases.csv) — 40 unexecuted paper-design cases, **separate** from the existing 727-case P1 test inventory.
+- [P2.02 GitHub issue](https://github.com/owaisprog/Zoho-Clone/issues/25) — OPEN pending owner approval before P2.03 marketing wireframes.
 
 ## Development approach
 
