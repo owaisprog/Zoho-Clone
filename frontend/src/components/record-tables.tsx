@@ -6,13 +6,15 @@ import {
   DEMO_APPLICATIONS,
   DEMO_LEADS,
   STAGE_LABELS,
+  type DemoApplication,
+  type DemoLead,
   filterApplications,
   filterLeads,
 } from "@/lib/synthetic-data";
 
-export function ApplicationTable() {
+export function ApplicationTable({ records = DEMO_APPLICATIONS }: { records?: readonly DemoApplication[] }) {
   const [query, setQuery] = useState("");
-  const rows = filterApplications(DEMO_APPLICATIONS, query);
+  const rows = filterApplications(records, query);
   return (
     <div className="data-card">
       <div className="data-card-header">
@@ -57,16 +59,16 @@ export function ApplicationTable() {
         </table>
       </div>
       <div className="data-card-footer" role="status" aria-live="polite">
-        {rows.length} of {DEMO_APPLICATIONS.length} synthetic application records
+        {rows.length} of {records.length} synthetic application records
         <span> No real processor verification</span>
       </div>
     </div>
   );
 }
 
-export function LeadTable() {
+export function LeadTable({ records = DEMO_LEADS }: { records?: readonly DemoLead[] }) {
   const [query, setQuery] = useState("");
-  const rows = filterLeads(DEMO_LEADS, query);
+  const rows = filterLeads(records, query);
   return (
     <div className="data-card">
       <div className="data-card-header">
@@ -93,7 +95,7 @@ export function LeadTable() {
           </tbody>
         </table>
       </div>
-      <div className="data-card-footer" role="status" aria-live="polite">{rows.length} of {DEMO_LEADS.length} fictional leads</div>
+      <div className="data-card-footer" role="status" aria-live="polite">{rows.length} of {records.length} fictional leads</div>
     </div>
   );
 }
