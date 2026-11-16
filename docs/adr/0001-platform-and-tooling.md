@@ -1,24 +1,30 @@
 # ADR 0001 — Express modular monolith and engineering toolchain
 
-Status: **PROVISIONAL / OWNER REVIEW REQUIRED** — 2026-11-16
+Status: **OWNER APPROVED — STACK, PACKAGE MANAGER AND MODULAR MONOLITH ONLY** — 2026-11-17
 Source: master PDF P3.01–P3.14 and Appendix I.
 
-## Decision already fixed by owner
+## Owner-approved architecture (2026-11-17)
 
-Use Next.js + React + TypeScript + Tailwind/shadcn on web, Node.js +
-Express 5 + TypeScript (NO NestJS) on API, PostgreSQL + Prisma with
-reviewed RLS SQL, Redis/BullMQ when workers are needed. Use a modular
-monolith with versioned REST contracts; avoid premature microservices.
+The product owner explicitly approved:
+- Frontend: Next.js + React + TypeScript.
+- UI system: Tailwind CSS + shadcn/ui.
+- Backend: Node.js + Express.js + TypeScript (not NestJS).
+- Primary database / ORM: PostgreSQL + Prisma.
+- Background job technology: Redis + BullMQ, added in its planned phase.
+- Package manager / workspace tool: **npm workspaces**, retaining the committed npm lockfile.
+- Application structure: **modular monolith**, with versioned REST contracts.
+
+This is an architecture/technology choice, **not** approval of a specific cloud vendor, identity provider, final tenant key model, record permission rules, database residency, actual deployment or production release. The intended PostgreSQL RLS approach remains a prior design requirement awaiting verified implementation.
 
 ## Current delivery and deviation
 
-Repository currently uses npm workspaces and a committed lockfile with
-`npm ci` CI. Master PDF proposes pnpm workspace and Turborepo. Changing
-package managers without regenerating/verifying the lockfile would break
-reproducible builds, so **npm remains the functioning interim toolchain**.
-Decision: choose either an explicit owner-approved deviation (npm) or
-perform a verified pnpm/Turbo migration with lockfile and tests.
-Do not claim official P3.02 compliance from an unapproved substitution.
+Repository uses npm workspaces and a committed lockfile with `npm ci` CI.
+The master PDF proposes pnpm + Turborepo for P3.02. On 2026-11-17 the
+owner **explicitly approved npm workspaces as the permanent package-manager
+choice for this baseline**, an intentional documented deviation from the PDF.
+No migration to pnpm/Turborepo is planned without a later owner decision.
+This resolves the package-manager choice, but P3.02 still needs its separate
+install/build/typecheck and package-boundary acceptance evidence.
 
 Source layout: `frontend/`, `backend/`, `shared/demo-contracts/`.
 Future worker and reusable UI package boundary should be established
@@ -33,5 +39,7 @@ transactional outbox for reliable cross-module events in P7.
 ## Consequences and verification
 
 Current frontend/backend builds and synthetic tests exist. Database and
-authorization policies remain provisional. Branch rules and staging
-environment require owner GitHub/cloud configuration.
+authorization policies remain provisional. GitHub required-check enforcement,
+actual staging deployment, security reviews, and approval of the other ADRs
+are separate P3 gates. The owner-approved technology choices do not close
+any of the 12 P1.10 open decisions unless separately and explicitly resolved.
