@@ -8,7 +8,7 @@ export interface Auth0WebConfiguration {
 }
 const AUTH0_DOMAIN_RE = /^[a-z0-9-]+(?:\.[a-z0-9-]+)*\.auth0\.com$/i;
 
-export function readAuth0WebConfiguration(env: NodeJS.ProcessEnv = process.env): Auth0WebConfiguration | null {
+export function readAuth0WebConfiguration(env: Readonly<Record<string, string | undefined>> = process.env): Auth0WebConfiguration | null {
   const domain = env.AUTH0_DOMAIN?.trim() ?? "";
   const audience = env.AUTH0_AUDIENCE?.trim() ?? "";
   if (!domain && !audience && !env.AUTH0_CLIENT_ID && !env.AUTH0_CLIENT_SECRET && !env.AUTH0_SECRET) {
