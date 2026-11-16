@@ -32,7 +32,7 @@ describe("master roadmap P3.04 and P3.11 baseline", () => {
       .set("X-Request-Id", "ATTACKER-CHOSEN-ID")
       .set("Authorization", "Bearer very-secret");
     const second = await request(app).get("/health/live");
-    const id = first.headers["x-request-id"];
+    const id = String(first.headers["x-request-id"] ?? "");
     assert.match(id, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
     assert.notEqual(id, "ATTACKER-CHOSEN-ID");
     assert.notEqual(id, second.headers["x-request-id"]);
