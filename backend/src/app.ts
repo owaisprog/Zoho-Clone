@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { demoApplications, demoLeads, demoTasks } from "./demo-fixtures.js";
 import { DEMO_CONTRACT } from "@zoho-clone/demo-contracts";
 import { createInternalPreviewRouter, type InternalPreviewTestAdapter } from "./internal/routes.js";
+import { auth0IdentityCheckMiddleware } from "./auth/auth0-api.js";
 
 export const API_VERSION = "v1" as const;
 
@@ -91,6 +92,17 @@ export function createApp(options: {
     res.status(200).json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "tasks", records: demoTasks });
   });
 
+  // P3.13: verified Auth0 API access-token endpoint. Authentication is NOT
+  // membership or record authorization; never mount business CRUD on this path.
+  // Missing Auth0 configuration fails closed with 503.
+  app.get("/api/v1/auth/check", noStore, auth0IdentityCheckMiddleware(), (_req, res) => {
+    res.status(200).json({
+      status: "authenticated",
+      scope: "identity-only",
+      organizationAccess: false,
+    });
+  });
+
   // P3.16: PRODUCTION SERVER MUST NEVER MOUNT THIS internal test route.
   // A future verified provider, tenant policy and Prisma adapter require
   // owner-approved OPEN-001/002/003 choices and separate release gates.
@@ -114,6 +126,12 @@ export function createApp(options: {
       ? (error as { type?: unknown }).type : undefined;
     if (code === "entity.too.large") {
       res.status(413).json({ error: { code: "PAYLOAD_TOO_LARGE", message: "Request exceeds size limit" } });
+      return;
+    }
+    // Do not reveal token verification or JWKS details to the caller.
+    if (typeof error === "object" && error !== null && "status" in error &&
+        (error as { status: unknown }).status === 401) {
+      res.status(401).json({ error: { code: "UNAUTHENTICATED", message: "Authentication required" } });
       return;
     }
     if (error instanceof SyntaxError && "body" in error) {
