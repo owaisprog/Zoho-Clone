@@ -12,7 +12,7 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | Master ID | Item | Current evidence | Gate |
 | --- | --- | --- | --- |
 | P3.01 | GitHub repo baseline | README, CONTRIBUTING, CODEOWNERS and PR CI | PARTIAL: owner must enable protected main + required checks and clean clone test |
-| P3.02 | Monorepo workspace | npm workspace with reproducible lockfile, Next/Express/shared | PARTIAL: proposed pnpm/Turbo convention not reconciled/approved; worker/UI package split deferred |
+| P3.02 | Monorepo workspace | npm workspace with reproducible lockfile, Next/Express/shared; owner approved npm instead of PDF pnpm/Turbo on 2026-11-17 | PARTIAL: package-manager decision APPROVED; remaining module/package boundaries and clean build acceptance need review |
 | P3.03 | Next.js foundation | App Router synthetic preview, themes and build CI | PARTIAL: owner P2 IA + UI review and smoke evidence |
 | P3.04 | Modular Express backend | health/live, health/ready (fail closed), structured 404, existing internal seams | PARTIAL: status verified only after CI; no real dependency readiness |
 | P3.05 | PostgreSQL and migrations | synthetic SQL and disposable CI/Compose | PARTIAL: no approved staging DB, runtime restricted identity or production migration |
@@ -24,7 +24,16 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.11 | Observability | server-owned request ID, structured redacted finish log | PARTIAL: owner error tracker, OTel and managed log sink pending |
 | P3.12 | Object storage design | private adapter contract and policy, deny-by-default | PARTIAL: requires design review; live object storage intentionally disabled |
 | P3.13 | Identity provider selection | OIDC contract and threat ADR, synthetic seam | BLOCKED: owner has not chosen/provisioned provider or verified quota/region |
-| P3.14 | Architecture decision records | ADR 0001–0004 cover modularity, tenancy, identity, ops/storage | PARTIAL: owner signoff pending |
+| P3.14 | Architecture decision records | ADR 0001–0004 cover modularity, tenancy, identity, ops/storage; ADR 0001 stack/workspaces choice approved 2026-11-17 | PARTIAL: ADR 0002–0004 and overall P3 acceptance still require owner review |
+
+## Owner decision recorded (2026-11-17)
+
+Owner approved Next.js/React/TypeScript, Tailwind/shadcn, Node/Express/TypeScript,
+PostgreSQL/Prisma, Redis/BullMQ when required, a modular monolith, and **npm
+workspaces instead of pnpm/Turbo**. This accepts the documented P3.02 toolchain
+deviation; it does **not** approve identity vendor, real database/tenant keys,
+row/field permissions, hosting region, cloud spend, staging or production.
+For evidence and scope see [ADR 0001](../adr/0001-platform-and-tooling.md).
 
 ## Explicit unchanged gates
 
