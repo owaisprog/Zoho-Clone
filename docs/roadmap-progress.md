@@ -1,3 +1,5 @@
+> **P3 implementation checkpoint, 2026-11-16:** [Draft PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53) aligns engineering work with the **14 original P3 requirements of the Express.js master PDF**. See [official P3 ledger](engineering/p3-official-completion-ledger.md). P3 still requires protected main, owner-reviewed ADRs, approved OIDC/provider/key decisions, real staging verification and signoff. Current P2.02 status and the 14 open risks, 12 decisions and 727 not-run P1 cases are preserved below. The earlier timestamps represent the prior baseline, not current P3 code status.
+
 # Zoho Clone — Master Roadmap Progress
 
 **Updated:** 2026-11-13
