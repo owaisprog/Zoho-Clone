@@ -34,3 +34,56 @@ jobs:
 
       - name: Build frontend and backend
         run: npm run build
+
+
+  synthetic-postgres-isolation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: zoho_clone_synthetic_ci
+          POSTGRES_USER: demo_ci
+          POSTGRES_PASSWORD: fake_ci_not_for_real_accounts
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U demo_ci -d zoho_clone_synthetic_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGDATABASE: zoho_clone_synthetic_ci
+      PGUSER: demo_ci
+      PGPASSWORD: fake_ci_not_for_real_accounts
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify psql client
+        run: |
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Apply provisional synthetic schema and fictional fixtures
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/migrations/001_synthetic_foundation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/fixtures/001_synthetic_seed.sql
+      - name: Execute PostgreSQL RLS and relational-isolation assertions
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/001_synthetic_isolation.sql
+
+  prisma-schema-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # P3.18: pinned CLI for validation only; no customer database used.
+      # Runtime Prisma dependencies and migrations are deliberately NOT
+      # installed/applied pending OPEN-001/002/003 approvals.
+      - name: Validate provisional Prisma 7 schema without connecting to a database
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/schema.prisma

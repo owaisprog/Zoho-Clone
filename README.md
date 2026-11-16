@@ -1,3 +1,17 @@
+## P3.18–P3.22: candidate PostgreSQL, Prisma and managed identity foundations (owner review pending)
+
+Code includes a provisional PostgreSQL/Prisma schema (not applied to real data),
+strictly fictional multi-tenant relational constraints, disposable Postgres CI
+isolation checks, a parameterized scoped read adapter and a fail-closed managed
+identity provider boundary. **None is mounted as real authenticated CRM.**
+See [PR #46](https://github.com/owaisprog/Zoho-Clone/pull/46), [verified 75-test + PostgreSQL + Prisma CI](https://github.com/owaisprog/Zoho-Clone/actions/runs/43918514061) and [Batch 04 engineering implementation](docs/engineering/p3-batch-04.md)
+and [evidence-based P3 completion audit](docs/engineering/p3-completion-audit.md).
+
+P3 is **NOT fully complete** while real identity, data model, permission, production
+DB integration and original security/acceptance gates remain open. Do not enter
+real user/customer/financial/identity data. The 14 original risks and 12 decisions
+remain open and the 727 original P1 acceptance/security tests are NOT RUN.
+
 # Zoho Clone
 
 **Status:** **P0.10 owner-approved CONDITIONAL INTERNAL GO; P1.01 Master PRD approved; P1.02 Functional SRS approved; P1.03 Nonfunctional SRS approved as design; P1.04 Personas and Journeys approved provisionally; P1.05 Feature Hierarchy and Release Gates approved as planning; P1.06 Permission and Sharing Matrix approved as design; P1.07 Domain Glossary and Synthetic Sample Records owner-approved as provisional design; P1.08 API and Event Contract Specification owner-approved as design; P1.09 Acceptance and Traceability Map owner-approved as internal planning; P1.10 Risk and Decision Register owner-approved for tracking only; P2.01 Brand and Design Tokens owner-approved as provisional internal UX; P2.02 Information Architecture in progress; **P3.01 actual Next.js and Express.js source started early in parallel**, with 13 new scaffold tests passed in GitHub Actions. All 14 risks and 12 decisions remain OPEN; the original 727 P1 tests remain NOT RUN.** P0.07 and P0.08 market evidence gates were waived **for internal sequencing only**, and P0.09 elected continuation without partners. P0 is **not commercially validated**; only synthetic-data internal development is authorized.
@@ -18,7 +32,7 @@ acceptance/security cases remain unchanged.**
 
 ## P3 Batch 02: lead details, internal operations and fictional tasks (in review)
 
-P3.08–P3.12 ([draft PR #34](https://github.com/owaisprog/Zoho-Clone/pull/34), [52/52 tests CI PASS](https://github.com/owaisprog/Zoho-Clone/actions/runs/43502348085)) adds browser-only lead detail/activity, internal MerchantOps stage workbench,
+P3.08–P3.12 ([merged PR #34](https://github.com/owaisprog/Zoho-Clone/pull/34), [52/52 tests CI PASS](https://github.com/owaisprog/Zoho-Clone/actions/runs/43502348085)) adds browser-only lead detail/activity, internal MerchantOps stage workbench,
 a strictly fictional read-only Express task endpoint with local task board, stable
 sorting/pagination and additional negative tests. See
 [Batch 02 engineering notes](docs/engineering/p3-batch-02.md).
@@ -29,7 +43,7 @@ original test cases, 14 risks, 12 decisions and all production gates remain open
 
 ## P3 Batch 01: five related development subphases (in review)
 
-P3.03–P3.07 code (draft PR #28; GitHub CI 36/36 PASS) adds deterministic dependency installation, a shared synthetic-only
+P3.03–P3.07 code (merged PR #28; GitHub CI 36/36 PASS) adds deterministic dependency installation, a shared synthetic-only
 Express/Next contract, fictional dashboard pipeline analytics, local-only lead
 create/edit interactions, and broader error/contract tests. See
 [implementation and gate notes](docs/engineering/p3-batch-01.md).

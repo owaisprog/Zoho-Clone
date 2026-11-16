@@ -1,0 +1,71 @@
+// P3.18 candidate Prisma 7 schema, NOT a verified production tenant model.
+// Final opaque keys, identity provider and record permission scheme remain
+// OPEN-001/002/003. This schema is not connected to the running Express app.
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["synthetic"]
+}
+
+model Organization {
+  id          String       @id @db.Text
+  displayName String       @map("display_name") @db.Text
+  active      Boolean      @default(true)
+  memberships Membership[]
+  leads       Lead[]
+
+  @@map("organizations")
+  @@schema("synthetic")
+}
+
+model Membership {
+  orgId       String       @map("org_id") @db.Text
+  userId      String       @map("user_id") @db.Text
+  role        String       @db.Text
+  recordScope String       @map("record_scope") @db.Text
+  active      Boolean      @default(true)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Restrict)
+  ownedLeads  Lead[]       @relation("LeadOwner")
+  replays     IdempotencyRecord[] @relation("ReplayActor")
+
+  @@id([orgId, userId])
+  @@map("memberships")
+  @@schema("synthetic")
+}
+
+model Lead {
+  orgId        String       @map("org_id") @db.Text
+  id           String       @db.Text
+  ownerId      String       @map("owner_id") @db.Text
+  organization String       @db.Text
+  contact      String       @db.Text
+  email        String       @db.Text
+  stage        String       @default("new") @db.Text
+  version      Int          @default(1)
+  tenant       Organization @relation(fields: [orgId], references: [id], onDelete: Restrict)
+  owner        Membership   @relation("LeadOwner", fields: [orgId, ownerId], references: [orgId, userId], onDelete: Restrict)
+
+  @@id([orgId, id])
+  @@index([orgId, ownerId, stage], map: "synthetic_leads_owner_lookup")
+  @@map("leads")
+  @@schema("synthetic")
+}
+
+model IdempotencyRecord {
+  orgId        String       @map("org_id") @db.Text
+  actorId      String       @map("actor_id") @db.Text
+  operation    String       @db.Text
+  requestKey   String       @map("request_key") @db.Text
+  fingerprint  String       @db.Text
+  responseData Json         @map("response_data")
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  actor        Membership   @relation("ReplayActor", fields: [orgId, actorId], references: [orgId, userId], onDelete: Restrict)
+
+  @@id([orgId, actorId, operation, requestKey])
+  @@map("idempotency_records")
+  @@schema("synthetic")
+}
