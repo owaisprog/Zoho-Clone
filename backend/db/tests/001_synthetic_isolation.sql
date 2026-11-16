@@ -105,6 +105,40 @@ BEGIN
 END $$;
 ROLLBACK;
 
+-- Revoked membership must not see tenant data even with valid-looking context.
+BEGIN;
+SET LOCAL ROLE p3_preview_runtime;
+SET LOCAL app.tenant_id = 'org_demo_orchid';
+SET LOCAL app.actor_id = 'user_demo_eve';
+DO $
+DECLARE n integer;
+BEGIN
+  SELECT count(*) INTO n FROM synthetic.leads;
+  IF n <> 0 THEN RAISE EXCEPTION 'Revoked member still read leads via RLS'; END IF;
+END $;
+ROLLBACK;
+
+-- Optimistic updates in a tenant+owner-scoped transaction reject stale versions.
+BEGIN;
+SET LOCAL ROLE p3_preview_runtime;
+SET LOCAL app.tenant_id = 'org_demo_orchid';
+SET LOCAL app.actor_id = 'user_demo_alice';
+DO $
+DECLARE n integer;
+BEGIN
+  UPDATE synthetic.leads SET stage='contacted', version=version+1
+    WHERE org_id='org_demo_orchid' AND id='LEAD-DEMO-201'
+      AND owner_id='user_demo_alice' AND version=1;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'Expected exactly one scoped update'; END IF;
+  UPDATE synthetic.leads SET stage='qualified', version=version+1
+    WHERE org_id='org_demo_orchid' AND id='LEAD-DEMO-201'
+      AND owner_id='user_demo_alice' AND version=1;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 0 THEN RAISE EXCEPTION 'Stale version should not update'; END IF;
+END $;
+ROLLBACK;
+
 -- RLS enforces tenant-scoped writes for non-owner runtime role.
 BEGIN;
 SET LOCAL ROLE p3_preview_runtime;

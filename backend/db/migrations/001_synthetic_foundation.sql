@@ -75,8 +75,20 @@ CREATE POLICY synthetic_membership_context ON synthetic.memberships
 -- DB policy is TENANT isolation; approved role+record scopes must still be
 -- verified by the application on EVERY read/write with scoped SQL predicates.
 CREATE POLICY synthetic_lead_tenant ON synthetic.leads
-  USING (org_id = nullif(current_setting('app.tenant_id',true),''))
-  WITH CHECK (org_id = nullif(current_setting('app.tenant_id',true),''));
+  USING (org_id = nullif(current_setting('app.tenant_id',true),'')
+    AND EXISTS (
+      SELECT 1 FROM synthetic.memberships m
+      WHERE m.org_id = nullif(current_setting('app.tenant_id',true),'')
+        AND m.user_id = nullif(current_setting('app.actor_id',true),'')
+        AND m.active = true
+    ))
+  WITH CHECK (org_id = nullif(current_setting('app.tenant_id',true),'')
+    AND EXISTS (
+      SELECT 1 FROM synthetic.memberships m
+      WHERE m.org_id = nullif(current_setting('app.tenant_id',true),'')
+        AND m.user_id = nullif(current_setting('app.actor_id',true),'')
+        AND m.active = true
+    ));
 
 CREATE POLICY synthetic_replay_context ON synthetic.idempotency_records
   USING (org_id = nullif(current_setting('app.tenant_id',true),'')
