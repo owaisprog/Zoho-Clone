@@ -4,7 +4,7 @@ Code includes a provisional PostgreSQL/Prisma schema (not applied to real data),
 strictly fictional multi-tenant relational constraints, disposable Postgres CI
 isolation checks, a parameterized scoped read adapter and a fail-closed managed
 identity provider boundary. **None is mounted as real authenticated CRM.**
-See [Batch 04 engineering implementation](docs/engineering/p3-batch-04.md)
+See [PR #46](https://github.com/owaisprog/Zoho-Clone/pull/46), [verified 75-test + PostgreSQL + Prisma CI](https://github.com/owaisprog/Zoho-Clone/actions/runs/43918514061) and [Batch 04 engineering implementation](docs/engineering/p3-batch-04.md)
 and [evidence-based P3 completion audit](docs/engineering/p3-completion-audit.md).
 
 P3 is **NOT fully complete** while real identity, data model, permission, production

@@ -1,5 +1,7 @@
 # P3 Batch 04 — Synthetic PostgreSQL + Managed Auth Boundaries (P3.18–P3.22)
 
+**Status: source CI-verified, owner architecture/UX/security acceptance pending.**
+
 **Scope:** Owner-directed implementation of remaining P3 foundation work to the extent allowed by the existing **synthetic-only** internal development approval. This does not approve production identity, DB residency, final identifier strategy or a live pilot.
 
 | Slice | Deliverable | Remaining authorization / verification |
@@ -52,3 +54,16 @@ The test SQL runs assertions as a restricted no-login role with enforced RLS. Co
 **Do not mark P3 or 727 original tests complete merely because isolated CI passes.**
 
 All **14 original risks**, **12 open decisions**, and **727 original unexecuted acceptance/security cases** remain as prior, as do 40 additional P2.02 IA design checks. No external or paid launch authorization.
+
+## Verified CI evidence
+
+[GitHub Actions run #43918514061](https://github.com/owaisprog/Zoho-Clone/actions/runs/43918514061) **SUCCESS** at commit `eba15c8204123d3b5e443033705510aac2e6ea36`.
+
+- Locked npm workspace install, backend/frontend typechecks and Next.js/Express builds: PASS.
+- **34 frontend + 36 backend + 5 shared-contract tests = 75 passing scaffold/foundation tests; 0 failures.**
+- PostgreSQL 17 CI service applied fake-data schema/fixtures and executed restricted-role RLS, cross-tenant membership, FK, invalid email, revoked actor and stale-version assertions: PASS.
+- Pinned Prisma 7.9.1 CLI `validate` for the candidate schema: PASS. It did not generate or run a Prisma Client and did not touch a customer database.
+
+The earlier run #43918270704 failed due to a test script delimiter typo; fixed on `eba15c8` and independently rerun green. This was **not** a production DB isolation certification. All 727 original P1 tests remain NOT RUN.
+
+Owner-review tracking issues [P3.18 #47](https://github.com/owaisprog/Zoho-Clone/issues/47), [P3.19 #48](https://github.com/owaisprog/Zoho-Clone/issues/48), [P3.20 #49](https://github.com/owaisprog/Zoho-Clone/issues/49), [P3.21 #50](https://github.com/owaisprog/Zoho-Clone/issues/50), and [P3.22 #51](https://github.com/owaisprog/Zoho-Clone/issues/51) remain OPEN for actual owner signoff.
