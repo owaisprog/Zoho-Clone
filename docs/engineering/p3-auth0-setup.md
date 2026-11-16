@@ -87,7 +87,7 @@ For the Next.js dev process, `frontend/.env.local` is loaded by Next.
 
 - [x] Owner selected Auth0 and the choice is documented.
 - [x] Integration source, configuration gating and negative tests authored.
-- [ ] Dependencies and lockfile installed, CI all green.
+- [x] Dependencies and lockfile synchronized; **86 P3 scaffold/foundation tests passed**, and all four CI jobs green in [GitHub Actions run #43951293062](https://github.com/owaisprog/Zoho-Clone/actions/runs/43951293062). These are not live Auth0 sign-in or original P1 acceptance tests.
 - [ ] Owner created Auth0 tenant + Regular Web App + API and saved URLs.
 - [ ] Secure environment values configured outside GitHub.
 - [ ] Real Auth0 login, refresh, logout and Express JWT validation demonstrated.
