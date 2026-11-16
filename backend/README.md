@@ -44,3 +44,13 @@ See [batch notes](../docs/engineering/p3-batch-01.md).
 shared fictional-only contract and no-store headers as the lead/merchant demos.
 No server-side task mutation or real-user activity is implemented. The endpoint
 remains local-only; no real names, work records, processor information or credentials.
+
+## P3 Batch 03 — gated internal service foundation
+
+The `src/internal/` modules contain testable backend contract, tenant and
+record policy rules, replaceable repository interfaces and an isolated HTTP
+service. **Default `createApp()` deliberately DOES NOT mount the internal
+routes**; only an explicitly injected synthetic test adapter can do so.
+No real login, provider trust, database, protected production CRUD, KYC or
+payment handling has been implemented. See
+[batch documentation](../docs/engineering/p3-batch-03.md).

@@ -2,10 +2,11 @@ import express, { type ErrorRequestHandler, type RequestHandler } from "express"
 import helmet from "helmet";
 import { demoApplications, demoLeads, demoTasks } from "./demo-fixtures.js";
 import { DEMO_CONTRACT } from "@zoho-clone/demo-contracts";
+import { createInternalPreviewRouter, type InternalPreviewTestAdapter } from "./internal/routes.js";
 
 export const API_VERSION = "v1" as const;
 
-export function createApp() {
+export function createApp(options: { internalPreview?: InternalPreviewTestAdapter } = {}) {
   const app = express();
 
   app.disable("x-powered-by");
@@ -43,7 +44,17 @@ export function createApp() {
     res.status(200).json({ contract: DEMO_CONTRACT, scope: "synthetic-only", dataset: "tasks", records: demoTasks });
   });
 
-  // No /api/v1/organizations, real CRM, merchant, payments, KYC, or write API.
+  // P3.16: PRODUCTION SERVER MUST NEVER MOUNT THIS internal test route.
+  // A future verified provider, tenant policy and Prisma adapter require
+  // owner-approved OPEN-001/002/003 choices and separate release gates.
+  if (options.internalPreview) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Internal fictional preview routes cannot run in production");
+    }
+    app.use("/api/v1/internal/organizations", createInternalPreviewRouter(options.internalPreview));
+  }
+
+  // No real /api/v1/organizations, CRM, merchant, payments, KYC or public writes.
   app.use(noStore, (_req, res) => {
     res.status(404).json({
       error: { code: "NOT_FOUND", message: "Endpoint is not available" },
