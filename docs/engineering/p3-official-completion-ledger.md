@@ -23,7 +23,7 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.10 | CD and staging | local smoke and staging/rollback scripts, runbook | BLOCKED: no staging cloud account, credentials or verified deployment |
 | P3.11 | Observability | server-owned request ID, structured redacted finish log | PARTIAL: owner error tracker, OTel and managed log sink pending |
 | P3.12 | Object storage design | private adapter contract and policy, deny-by-default | PARTIAL: requires design review; live object storage intentionally disabled |
-| P3.13 | Identity provider selection | OIDC contract and threat ADR, synthetic seam | BLOCKED: owner has not chosen/provisioned provider or verified quota/region |
+| P3.13 | Identity provider selection | Owner selected Auth0 on 2026-11-17; Next.js/Express Auth0 identity-only source, configuration gates and tests in PR #53 | PARTIAL: vendor APPROVED, actual tenant/secrets, account/region/cost policy and live sign-in, token, logout, revocation checks pending |
 | P3.14 | Architecture decision records | ADR 0001–0004 cover modularity, tenancy, identity, ops/storage; ADR 0001 stack/workspaces choice approved 2026-11-17 | PARTIAL: ADR 0002–0004 and overall P3 acceptance still require owner review |
 
 ## Owner decision recorded (2026-11-17)
@@ -34,6 +34,14 @@ workspaces instead of pnpm/Turbo**. This accepts the documented P3.02 toolchain
 deviation; it does **not** approve identity vendor, real database/tenant keys,
 row/field permissions, hosting region, cloud spend, staging or production.
 For evidence and scope see [ADR 0001](../adr/0001-platform-and-tooling.md).
+
+## Identity vendor approval (2026-11-17)
+
+Owner explicitly approved **Auth0** (not Clerk) as the P3.13 managed
+identity provider. No Auth0 tenant configuration, secrets, real live login,
+organization/permission enforcement or paid account action is approved or
+claimed. See [ADR 0003](../adr/0003-managed-identity.md) and the
+[owner-facing Auth0 setup](p3-auth0-setup.md).
 
 ## Explicit unchanged gates
 
