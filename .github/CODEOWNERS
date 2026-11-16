@@ -1,0 +1,5 @@
+# P3.01: owner-controlled review boundary.
+/ @owaisprog
+/.github/ @owaisprog
+/backend/db/ @owaisprog
+/docs/adr/ @owaisprog
