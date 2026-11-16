@@ -1,3 +1,5 @@
+> **P3 master-PDF alignment (2026-11-16):** [Draft PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53) adds original P3.01–P3.14 status reconciliation, local synthetic Docker Compose, separate health liveness/readiness, request tracing, deny-by-default storage contract, staging/rollback verification tooling, CI hardening and provisional ADRs. The [P3 official ledger](docs/engineering/p3-official-completion-ledger.md) is the completion source for the 14-item PDF. **P3 IS NOT YET EXITED**: provider/owner decisions and a verified real staging path remain open. No real customer data is authorized. The previous P3.01–P3.22 labels are engineering increments, not 22 master P3 gates.
+
 ## P3.18–P3.22: candidate PostgreSQL, Prisma and managed identity foundations (owner review pending)
 
 Code includes a provisional PostgreSQL/Prisma schema (not applied to real data),
