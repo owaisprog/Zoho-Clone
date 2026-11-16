@@ -2,6 +2,8 @@
 
 # Zoho Clone — Master Roadmap Progress
 
+> **Owner approval 2026-11-17:** The architecture/technology stack and the npm-workspaces deviation from the PDF's pnpm/Turbo suggestion are **APPROVED as a design decision**. See [ADR 0001](adr/0001-platform-and-tooling.md) and [the official P3 ledger](engineering/p3-official-completion-ledger.md) in draft PR #53. P3 overall is not closed; all 12 original open decisions, 14 risks, and 727 unexecuted planned P1 acceptance cases remain tracked. No new provider, tenancy/security, cloud-spend or external release approval was given.
+
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`
 **Current sub-phase:** **P2.02 — Information Architecture (DRAFT PREPARED, OWNER REVIEW PENDING)**
