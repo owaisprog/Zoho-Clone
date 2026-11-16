@@ -110,12 +110,12 @@ BEGIN;
 SET LOCAL ROLE p3_preview_runtime;
 SET LOCAL app.tenant_id = 'org_demo_orchid';
 SET LOCAL app.actor_id = 'user_demo_eve';
-DO $
+DO $$
 DECLARE n integer;
 BEGIN
   SELECT count(*) INTO n FROM synthetic.leads;
   IF n <> 0 THEN RAISE EXCEPTION 'Revoked member still read leads via RLS'; END IF;
-END $;
+END $$;
 ROLLBACK;
 
 -- Optimistic updates in a tenant+owner-scoped transaction reject stale versions.
@@ -123,7 +123,7 @@ BEGIN;
 SET LOCAL ROLE p3_preview_runtime;
 SET LOCAL app.tenant_id = 'org_demo_orchid';
 SET LOCAL app.actor_id = 'user_demo_alice';
-DO $
+DO $$
 DECLARE n integer;
 BEGIN
   UPDATE synthetic.leads SET stage='contacted', version=version+1
@@ -136,7 +136,7 @@ BEGIN
       AND owner_id='user_demo_alice' AND version=1;
   GET DIAGNOSTICS n = ROW_COUNT;
   IF n <> 0 THEN RAISE EXCEPTION 'Stale version should not update'; END IF;
-END $;
+END $$;
 ROLLBACK;
 
 -- RLS enforces tenant-scoped writes for non-owner runtime role.
