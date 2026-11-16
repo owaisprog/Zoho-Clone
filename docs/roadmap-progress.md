@@ -2,6 +2,8 @@
 
 # Zoho Clone — Master Roadmap Progress
 
+> **P3.13 owner approval 2026-11-17:** Auth0 selected as the managed identity provider. Auth0 tenant provisioning, private credentials, functional SSO/session checks and organization permission gates remain pending. The [Auth0 setup guide](engineering/p3-auth0-setup.md) and [ADR 0003](adr/0003-managed-identity.md) are recorded in draft PR #53; see the original P3 ledger. This does not authorize real customer data or close the 14 risks/12 open decisions/727 unexecuted acceptance cases.
+
 > **Owner approval 2026-11-17:** The architecture/technology stack and the npm-workspaces deviation from the PDF's pnpm/Turbo suggestion are **APPROVED as a design decision**. See [ADR 0001](adr/0001-platform-and-tooling.md) and [the official P3 ledger](engineering/p3-official-completion-ledger.md) in draft PR #53. P3 overall is not closed; all 12 original open decisions, 14 risks, and 727 unexecuted planned P1 acceptance cases remain tracked. No new provider, tenancy/security, cloud-spend or external release approval was given.
 
 **Updated:** 2026-11-13
