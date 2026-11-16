@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { performance } from "node:perf_hooks";
 import express, { type ErrorRequestHandler, type RequestHandler } from "express";
 import helmet from "helmet";
 import { demoApplications, demoLeads, demoTasks } from "./demo-fixtures.js";
@@ -6,12 +8,37 @@ import { createInternalPreviewRouter, type InternalPreviewTestAdapter } from "./
 
 export const API_VERSION = "v1" as const;
 
-export function createApp(options: { internalPreview?: InternalPreviewTestAdapter } = {}) {
+export function createApp(options: {
+  internalPreview?: InternalPreviewTestAdapter;
+  /** Production readiness is denied until an authorized dependency probe is installed. */
+  readinessProbe?: () => Promise<boolean>;
+  /** Receives JSON with request ID, HTTP method, status and duration ONLY. */
+  logRequest?: (entry: string) => void;
+} = {}) {
   const app = express();
 
   app.disable("x-powered-by");
   app.use(helmet());
   app.use(express.json({ limit: "16kb", strict: true }));
+
+  // P3.11: server-generated ID. Never trust a caller-supplied request ID or log
+  // paths, query strings, payloads, IPs or headers (they may contain secrets).
+  app.use((_req, res, next) => {
+    const requestId = randomUUID();
+    const startedAt = performance.now();
+    res.setHeader("X-Request-Id", requestId);
+    res.once("finish", () => {
+      const entry = JSON.stringify({
+        event: "http.request.finished",
+        requestId,
+        method: _req.method,
+        status: res.statusCode,
+        durationMs: Math.max(0, Math.round(performance.now() - startedAt)),
+      });
+      (options.logRequest ?? console.info)(entry);
+    });
+    next();
+  });
 
   const noStore: RequestHandler = (_req, res, next) => {
     res.setHeader("Cache-Control", "no-store");
@@ -26,6 +53,26 @@ export function createApp(options: { internalPreview?: InternalPreviewTestAdapte
       version: API_VERSION,
       scope: "synthetic-only",
       checks: { process: "up" },
+    });
+  });
+
+  // P3.04: process liveness is not dependency or database readiness.
+  app.get("/health/live", noStore, (_req, res) => {
+    res.status(200).json({ status: "alive", scope: "synthetic-only" });
+  });
+
+  // Fail closed until a real provider/database connectivity probe is supplied.
+  // This MUST NOT be bypassed when preparing an external or paid release.
+  app.get("/health/ready", noStore, async (_req, res) => {
+    let ready = false;
+    try {
+      ready = (await options.readinessProbe?.()) === true;
+    } catch {
+      // Do not leak readiness dependencies, connection strings or error detail.
+    }
+    res.status(ready ? 200 : 503).json({
+      status: ready ? "ready" : "not_ready",
+      scope: "synthetic-only",
     });
   });
 
