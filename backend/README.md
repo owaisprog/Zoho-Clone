@@ -54,3 +54,16 @@ routes**; only an explicitly injected synthetic test adapter can do so.
 No real login, provider trust, database, protected production CRUD, KYC or
 payment handling has been implemented. See
 [batch documentation](../docs/engineering/p3-batch-03.md).
+
+## P3.18–P3.22: candidate database and identity work
+
+The provisional schema is in `db/schema.prisma`. The disposable PostgreSQL
+migration and fictional fixtures live in `db/migrations` and `db/fixtures`.
+GitHub CI now includes a PostgreSQL 17 RLS/foreign-key test job and an independent
+pinned Prisma 7 CLI schema syntax validation job. The runtime PostgreSQL adapter
+(`src/internal/db-session.ts`, `sql-lead-reads.ts`) is dependency-injected
+and **not connected by the server**. The identity verifier boundary is
+provider-neutral and **has no live identity provider**.
+
+See [Batch 04 notes](../docs/engineering/p3-batch-04.md) and
+[P3 completion audit](../docs/engineering/p3-completion-audit.md).
