@@ -58,6 +58,16 @@ No real login, provider trust, database, protected production CRUD, KYC or
 payment handling has been implemented. See
 [batch documentation](../docs/engineering/p3-batch-03.md).
 
+## P3.05–P3.06: Neon PostgreSQL development (owner choice)
+
+The owner selected Neon PostgreSQL instead of running PostgreSQL through
+Docker on their Mac. The source now includes a **cloud Neon synthetic-only
+read-only Prisma smoke**, strict TLS/read-only-role URL checks and
+[Neon setup](../docs/engineering/p3-neon-development-setup.md). Actual
+owner Neon connection and RLS results remain unverified until a fresh
+development database is configured. GitHub CI still uses disposable Postgres
+fixtures for automatic isolation checks; this does not require local Docker.
+
 ## P3.05–P3.06: real Prisma runtime against fake local database only
 
 The owner-authorized development branch now includes a generated Prisma 7
