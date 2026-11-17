@@ -1,9 +1,11 @@
-// P3.18 candidate Prisma 7 schema, NOT a verified production tenant model.
+// P3.05/06 local synthetic Prisma 7 runtime model, NOT a production tenant model.
 // Final opaque keys, identity provider and record permission scheme remain
-// OPEN-001/002/003. This schema is not connected to the running Express app.
+// OPEN-001/002/003. No production Express tenancy or CRM endpoints are connected.
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
+  moduleFormat = "esm"
+  importFileExtension = "js"
 }
 
 datasource db {
