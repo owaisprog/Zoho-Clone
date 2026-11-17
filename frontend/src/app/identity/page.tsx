@@ -24,6 +24,8 @@ export default async function IdentityPreview() {
       <p>Auth0 verified a login session for this browser.</p>
       <p><strong>Organization membership and CRM permissions are not active.</strong></p>
       <p>Future tenancy, invitations and record/field access must pass P4 security gates.</p>
+      <p><a href="/api/identity/check">Check Express API token verification (identity-only)</a></p>
+      <p>If the backend is running and configured, this should return <code>{`{"status":"authenticated","scope":"identity-only","organizationAccess":false}`}</code>.</p>
       <p><a href="/auth/logout">Log out</a></p>
       <p><a href="/app">View the fictional-only demo</a></p>
     </main>
