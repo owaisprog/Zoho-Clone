@@ -6,6 +6,7 @@
  * This script does not seed, migrate, truncate or mutate the database.
  */
 import { requireNeonSyntheticDatabaseUrl } from "../internal/neon-synthetic-db-url.js";
+import { classifyNeonSmokeFailure } from "../internal/neon-smoke-diagnostics.js";
 import { verifySyntheticPrismaReadOnly } from "./p3-prisma-local-smoke.js";
 
 if (process.argv[1]?.endsWith("/p3-prisma-neon-smoke.js")) {
@@ -14,9 +15,11 @@ if (process.argv[1]?.endsWith("/p3-prisma-neon-smoke.js")) {
     await verifySyntheticPrismaReadOnly(url, "p3_neon_reader");
   })()
     .then(() => console.info("P3.05/06 Neon synthetic Prisma read-only RLS smoke: PASS"))
-    .catch(() => {
-      // Never reveal cloud hostname, credentials, data or driver exceptions.
-      console.error("P3.05/06 Neon synthetic Prisma smoke: FAIL (no details logged)");
+    .catch((error: unknown) => {
+      // Fixed, non-sensitive category only. Never print raw driver exception,
+      // cause, SQL, Neon endpoint, database password or stack.
+      console.error("P3.05/06 Neon synthetic Prisma smoke: FAIL [" +
+        classifyNeonSmokeFailure(error) + "]");
       process.exitCode = 1;
     });
 }
