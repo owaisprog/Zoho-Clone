@@ -3,6 +3,15 @@
 -- This SQL is exercised against an isolated throwaway CI database only.
 BEGIN;
 
+-- Never allow a mistaken SQL Editor selection to create fixture tables in
+-- a real/customer database. CI uses a separately named disposable database.
+DO $
+BEGIN
+  IF current_database() NOT IN ('zoho_clone_synthetic', 'zoho_clone_synthetic_ci') THEN
+    RAISE EXCEPTION 'Synthetic migration refused: wrong database';
+  END IF;
+END $;
+
 CREATE SCHEMA IF NOT EXISTS synthetic;
 
 CREATE TABLE synthetic.organizations (
