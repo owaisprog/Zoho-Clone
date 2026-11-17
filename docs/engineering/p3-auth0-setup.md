@@ -65,6 +65,37 @@ For the Next.js dev process, `frontend/.env.local` is loaded by Next.
   signature using the test suite and owner-controlled local tests.
   Verify live login, logout and token refresh/revocation separately.
 
+## Troubleshooting local backend_unavailable (2026-11-17)
+
+User reports working Auth0 browser session; `GET /api/identity/check`
+returns `backend_unavailable`. The Next.js handler intentionally maps
+multiple upstream/SDK failures to this same safe response, so **do not
+assume an invalid token** until the server process is checked.
+
+1. In another local terminal run `curl -i http://127.0.0.1:4000/health/live`.
+   Expected `200` with `status: alive`. Connection refused = backend not
+   running or on wrong port.
+2. From repo root run `npm run build -w backend` then
+   `node --env-file=backend/.env.local backend/dist/server.js`.
+   `npm run dev:api` alone does **not** load backend/.env.local.
+3. Run `curl -i http://127.0.0.1:4000/api/v1/auth/check` WITHOUT
+   a token. Expected `401` / `UNAUTHENTICATED` if backend Auth0
+   configuration is present. A `503` / `AUTH_NOT_CONFIGURED` means
+   AUTH0_DOMAIN or AUTH0_AUDIENCE is missing/invalid in the backend
+   runtime. A `404` means stale API source/process.
+4. Make sure `frontend/.env.local` sets
+   `API_INTERNAL_URL=http://127.0.0.1:4000` and both frontend and
+   backend use the same tenant and exact Auth0 API Identifier
+   `https://zoho-clone.vercel.app` (as chosen by owner).
+5. Restart both servers. If the user changed their API audience since
+   login, log out and log back in to request a new correctly-audienced
+   token. Auth0 v4 `getAccessToken()` is invoked server-side by the BFF.
+6. If backend is healthy and responds `401` with no token but BFF
+   still says `backend_unavailable`, inspect Next.js **server terminal**
+   without disclosing any token, code/state cookie, secret, personal ID,
+   or full authorization URL. Consider safe diagnostic event labels instead
+   of printing raw SDK errors.
+
 ## Security boundaries (not yet completed)
 
 - Existing `/app` is a **public fictional prototype**. It is NOT protected
@@ -91,8 +122,8 @@ For the Next.js dev process, `frontend/.env.local` is loaded by Next.
 - [x] Dependencies and lockfile synchronized; **86 P3 scaffold/foundation tests passed**, and all four CI jobs green in [GitHub Actions run #43951293062](https://github.com/owaisprog/Zoho-Clone/actions/runs/43951293062). These are not live Auth0 sign-in or original P1 acceptance tests.
 - [x] Owner configured an Auth0 development application and API: Auth0 Universal Login was reached; user reported that email/password sign-up works (2026-11-17). **This is user-reported setup progress, not a verified successful server session or JWT check.**
 - [ ] Secure local environment values validated on both frontend and backend. The frontend reached Universal Login; backend configuration remains unverified.
-- [ ] Confirm `/identity` shows `Authenticated session` following email/password signup and subsequent login.
-- [ ] Run `/api/identity/check` to verify an Auth0 API access token against local Express; refresh and logout remain unverified.
+- [x] User reported `/identity` displaying **Authenticated session** after Auth0 email/password signup and sign-in on 2026-11-17; browser login/session works in local development (owner-reported verification; no server CI integration with owner tenant).
+- [ ] Local `/api/identity/check` currently returns `{"status":"backend_unavailable"}` in owner testing (2026-11-17): the Next.js-to-Express or server token retrieval path is not yet verified. Check backend `/health/live`, missing Auth0 backend environment, local API URL, and access token retrieval. Refresh/logout remain unverified.
 - [ ] MFA/invitations, membership mapping, revocation and security signoff.
 - [ ] Final P3 owner gate approval.
 
