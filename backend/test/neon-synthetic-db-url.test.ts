@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { requireNeonSyntheticDatabaseUrl } from "../src/internal/neon-synthetic-db-url.js";
 
-const good = "postgresql://p3_neon_reader:long-fake-test-password@ep-example-pooler.us-east-2.aws.neon.tech/zoho_clone_synthetic?sslmode=require";
+const good = "postgresql://p3_neon_reader:long-fake-test-password@ep-testfixture-pooler.us-east-2.aws.neon.tech/zoho_clone_synthetic?sslmode=require";
 
 describe("P3.05 restricted Neon development Postgres connection guard", () => {
   it("only accepts Neon PostgreSQL endpoint with synthetic DB, read-only role and TLS", () => {
@@ -19,9 +19,11 @@ describe("P3.05 restricted Neon development Postgres connection guard", () => {
   it("denies privileged, remote non-Neon, non-synthetic, weak TLS and injected values", () => {
     for (const url of [
       good.replace("p3_neon_reader", "neondb_owner"),
+      good.replace("ep-testfixture-pooler", "ep-example-pooler"),
+      good.replace("long-fake-test-password", "REPLACE_WITH_PRIVATE_PASSWORD"),
       good.replace("zoho_clone_synthetic", "neondb"),
       good.replace(".neon.tech", ".example.com"),
-      good.replace("ep-example-pooler.", "other-host."),
+      good.replace("ep-testfixture-pooler.", "other-host."),
       good.replace("sslmode=require", "sslmode=disable"),
       good.replace("?sslmode=require", ""),
       good.replace("sslmode=require", "sslmode=prefer"),
@@ -30,7 +32,7 @@ describe("P3.05 restricted Neon development Postgres connection guard", () => {
       good + "&options=-c%20search_path%3Dpublic",
       good + "#private",
       good.replace("postgresql:", "http:"),
-      good.replace("ep-example-pooler.us-east-2.aws.neon.tech", "127.0.0.1"),
+      good.replace("ep-testfixture-pooler.us-east-2.aws.neon.tech", "127.0.0.1"),
     ]) {
       assert.throws(() => requireNeonSyntheticDatabaseUrl(url), /REJECTED/, url);
     }
