@@ -9,16 +9,21 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "tsx --test test/*.test.ts"
+    "typecheck": "npm run prisma:generate && tsc --noEmit -p tsconfig.json",
+    "test": "tsx --test test/*.test.ts",
+    "prisma:generate": "prisma generate --schema db/schema.prisma",
+    "smoke:synthetic-prisma": "node --env-file=.env.p3.runtime.local dist/scripts/p3-prisma-local-smoke.js"
   },
   "dependencies": {
     "@zoho-clone/demo-contracts": "*",
     "express-oauth2-jwt-bearer": "1.11.0",
     "express": "^5.3.0",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "@prisma/adapter-pg": "7.9.1",
+    "@prisma/client": "7.9.1",
+    "pg": "8.16.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
@@ -26,6 +31,8 @@
     "@types/supertest": "^6.0.0",
     "supertest": "^7.1.0",
     "tsx": "^4.20.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "prisma": "7.9.1",
+    "@types/pg": "8.15.5"
   }
 }
