@@ -91,6 +91,10 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
       - name: Boot disposable Postgres and Redis and verify fictional seed
         shell: bash
         run: |
@@ -101,6 +105,12 @@ jobs:
             psql -U demo_local -d zoho_clone_synthetic -Atc \
             'SELECT count(*) FROM synthetic.organizations' | grep -x '2'
           docker compose -f docker-compose.yml exec -T redis redis-cli PING | grep -x 'PONG'
+          # Real Prisma 7 runtime, read-only restricted role and RLS in an
+          # isolated fake database. NEVER an Auth0 user or production API.
+          npm ci --no-audit --no-fund
+          npm run build -w backend
+          DATABASE_URL='postgresql://p3_preview_runtime:fake_p3_preview_only@127.0.0.1:5433/zoho_clone_synthetic' \
+            node backend/dist/scripts/p3-prisma-local-smoke.js
 
   prisma-schema-validation:
     runs-on: ubuntu-latest
@@ -110,8 +120,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      # P3.18: pinned CLI for validation only; no customer database used.
-      # Runtime Prisma dependencies and migrations are deliberately NOT
-      # installed/applied pending OPEN-001/002/003 approvals.
+      # P3.05/06: schema remains synthetic-only; Prisma runtime is used
+      # only in the disposable Compose smoke job, never production.
       - name: Validate provisional Prisma 7 schema without connecting to a database
         run: npx --yes prisma@7.9.1 validate --schema backend/db/schema.prisma
