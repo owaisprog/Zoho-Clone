@@ -22,6 +22,8 @@ export function requireNeonSyntheticDatabaseUrl(raw: string | undefined): string
       url.port !== "" && url.port !== "5432" ||
       url.pathname !== "/zoho_clone_synthetic" ||
       url.username !== "p3_neon_reader" ||
+      host.startsWith("ep-example") ||
+      url.password.startsWith("REPLACE_WITH_") ||
       url.password.length < 12 ||
       url.hash !== "" ||
       !tlsOnly) {
