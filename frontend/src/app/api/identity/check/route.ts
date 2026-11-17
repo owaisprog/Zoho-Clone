@@ -3,6 +3,7 @@ import { auth0 } from "@/lib/auth0";
 import { safeLocalApiBase } from "@/lib/local-api-url";
 import {
   identityUnavailableBody,
+  classifyIdentityFetchFailure,
   type IdentityDiagnosticReason,
 } from "@/lib/identity-check-diagnostics";
 
@@ -43,10 +44,10 @@ export async function GET() {
     response = await fetch(new URL("/api/v1/auth/check", internalApi), {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
-      signal: AbortSignal.timeout(4000),
+      signal: AbortSignal.timeout(12000),
     });
-  } catch {
-    return unavailable("API_CONNECTION_FAILED");
+  } catch (error: unknown) {
+    return unavailable(classifyIdentityFetchFailure(error));
   }
 
   if (response.status === 401) {
