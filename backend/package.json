@@ -14,7 +14,8 @@
     "typecheck": "npm run prisma:generate && tsc --noEmit -p tsconfig.json",
     "test": "tsx --test test/*.test.ts",
     "prisma:generate": "prisma generate --schema db/schema.prisma",
-    "smoke:synthetic-prisma": "node --env-file=.env.p3.runtime.local dist/scripts/p3-prisma-local-smoke.js"
+    "smoke:synthetic-prisma": "node --env-file=.env.p3.runtime.local dist/scripts/p3-prisma-local-smoke.js",
+    "smoke:synthetic-neon": "node --env-file=.env.neon.local dist/scripts/p3-prisma-neon-smoke.js"
   },
   "dependencies": {
     "@zoho-clone/demo-contracts": "*",
