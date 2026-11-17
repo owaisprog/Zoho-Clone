@@ -70,7 +70,7 @@ from the owner's existing development project connection string, then
 build a URL using the exact same host and database plus the new reader
 role and password (URL-encode special password characters). The URL must
 use `postgresql://`, a Neon `ep-` host ending in `.neon.tech`,
-`?sslmode=require`, role `p3_neon_reader`, and database
+`?sslmode=verify-full`, role `p3_neon_reader`, and database
 `zoho_clone_synthetic`. A `channel_binding=require` parameter is allowed.
 
 On your Mac, from the repo root:
