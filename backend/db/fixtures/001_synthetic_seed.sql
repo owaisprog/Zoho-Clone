@@ -1,5 +1,11 @@
 -- Only fictional fixtures. This file intentionally contains NO customer data.
 BEGIN;
+DO $
+BEGIN
+  IF current_database() NOT IN ('zoho_clone_synthetic', 'zoho_clone_synthetic_ci') THEN
+    RAISE EXCEPTION 'Synthetic fixtures refused: wrong database';
+  END IF;
+END $;
 INSERT INTO synthetic.organizations (id, display_name) VALUES
   ('org_demo_orchid','Demo Orchid Payments'),
   ('org_demo_cedar','Demo Cedar Payments');
