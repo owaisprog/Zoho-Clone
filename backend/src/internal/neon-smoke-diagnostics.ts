@@ -31,7 +31,7 @@ export function classifyNeonSmokeFailure(error: unknown): NeonSmokeDiagnostic {
   if (e.name === "AssertionError") return "NEON_TEST_ASSERTION_FAILED";
   const code = typeof e.code === "string" ? e.code : "";
   const pgCode = typeof e.meta?.code === "string" ? e.meta.code :
-    (typeof e.cause?.code === "string" ? e.cause.code : "");
+    (typeof e.cause?.code === "string" ? e.cause.code : code);
   if (code === "P1000" || pgCode === "28P01" || pgCode === "28000") {
     return "NEON_ROLE_AUTHENTICATION_FAILED";
   }
