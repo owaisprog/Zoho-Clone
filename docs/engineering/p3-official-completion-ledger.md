@@ -15,10 +15,10 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.02 | Monorepo workspace | npm workspace with reproducible lockfile, Next/Express/shared; owner approved npm instead of PDF pnpm/Turbo on 2026-11-17 | PARTIAL: package-manager decision APPROVED; remaining module/package boundaries and clean build acceptance need review |
 | P3.03 | Next.js foundation | App Router synthetic preview, themes and build CI | PARTIAL: owner P2 IA + UI review and smoke evidence |
 | P3.04 | Modular Express backend | health/live, health/ready (fail closed), structured 404, existing internal seams | PARTIAL: status verified only after CI; no real dependency readiness |
-| P3.05 | PostgreSQL and migrations | synthetic SQL and disposable CI/Compose | PARTIAL: no approved staging DB, runtime restricted identity or production migration |
-| P3.06 | ORM and SQL conventions | candidate Prisma schema, scoped SQL adapter, SQL CI | PARTIAL: unapproved keys and no live Prisma transactional integration/drift test |
+| P3.05 | PostgreSQL and migrations | synthetic SQL, fixtures, disposable CI/Compose, read-only restricted PostgreSQL login and live local Prisma smoke (PR #53) | PARTIAL: no approved staging DB, secure production roles, migration drift or backup/restore proof |
+| P3.06 | ORM and SQL conventions | pinned Prisma 7 client/adapter generated at build; actual transaction-scoped RLS Prisma reads and negative isolation pass in disposable Compose CI | PARTIAL: final key/ACL design not approved; no real staged migration drift, writes or production ORM use |
 | P3.07 | Environment configuration | strict PORT/HOST and secret-free source, .env.p3.example | PARTIAL: secret manager and approved production env not configured |
-| P3.08 | Docker local developer stack | local-only PostgreSQL + Redis with fictional seed | PARTIAL: not yet run on owner machine |
+| P3.08 | Docker local developer stack | disposable local-only PostgreSQL + Redis with fictional seed and read-only Prisma smoke pass in GitHub CI | PARTIAL: owner-machine cold boot still not evidenced |
 | P3.09 | CI pipeline | node typecheck, test, build, isolated PG test and Prisma validation | PARTIAL: owner must configure required status checks; lint/supply-chain policy pending |
 | P3.10 | CD and staging | local smoke and staging/rollback scripts, runbook | BLOCKED: no staging cloud account, credentials or verified deployment |
 | P3.11 | Observability | server-owned request ID, structured redacted finish log | PARTIAL: owner error tracker, OTel and managed log sink pending |
@@ -44,6 +44,13 @@ Next.js-to-Express identity-only endpoint on 2026-11-17. This does NOT
 verify organization/permission enforcement, account costs/region, MFA,
 revocation, invite acceptance, staging or external release authorization. See [ADR 0003](../adr/0003-managed-identity.md) and the
 [owner-facing Auth0 setup](p3-auth0-setup.md).
+
+## P3.05/P3.06 synthetic runtime evidence (2026-11-17)
+
+PR #53 added `@prisma/client`, `@prisma/adapter-pg`, `pg`, pinned
+Prisma 7 generator and reproducible npm lockfile. Only a **local-only CLI**
+uses a restricted `p3_preview_runtime` role; normal Express endpoints are
+unchanged. In [GitHub Actions run #44135572204](https://github.com/owaisprog/Zoho-Clone/actions/runs/44135572204), **93 unit tests passed** (40 frontend, 48 backend, 5 shared), and all **4/4 jobs** passed, including disposable PostgreSQL RLS/Prisma transaction smoke. The Prisma smoke checked default-deny, cross-tenant and revoked-membership results, owner scoping and transaction cleanup. These are not real-data or original P1 acceptance tests. See [synthetic Prisma runbook](p3-synthetic-prisma-runtime.md).
 
 ## Explicit unchanged gates
 
