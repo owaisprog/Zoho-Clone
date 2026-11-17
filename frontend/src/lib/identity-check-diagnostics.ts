@@ -8,6 +8,7 @@ export const IDENTITY_DIAGNOSTIC_REASONS = [
   "AUTH0_ACCESS_TOKEN_MISSING",
   "AUTH0_TOKEN_REQUEST_FAILED",
   "API_CONNECTION_FAILED",
+  "API_REQUEST_TIMED_OUT",
   "BACKEND_AUTH_NOT_READY",
   "BACKEND_UNEXPECTED_STATUS",
 ] as const;
@@ -23,4 +24,16 @@ export function identityUnavailableBody(
   return environment === "development"
     ? { status: "backend_unavailable", diagnostic: reason }
     : { status: "backend_unavailable" };
+}
+
+/** Reduce failed fetches to non-sensitive, deterministic categories. */
+export function classifyIdentityFetchFailure(error: unknown): IdentityDiagnosticReason {
+  if (typeof error === "object" && error !== null && "name" in error) {
+    const name = (error as { name?: unknown }).name;
+    if (name === "TimeoutError" || name === "AbortError") {
+      return "API_REQUEST_TIMED_OUT";
+    }
+  }
+  // Never return the error message, cause, URL, token or provider stack.
+  return "API_CONNECTION_FAILED";
 }
