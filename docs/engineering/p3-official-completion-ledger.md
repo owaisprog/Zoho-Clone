@@ -23,7 +23,7 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.10 | CD and staging | local smoke and staging/rollback scripts, runbook | BLOCKED: no staging cloud account, credentials or verified deployment |
 | P3.11 | Observability | server-owned request ID, structured redacted finish log | PARTIAL: owner error tracker, OTel and managed log sink pending |
 | P3.12 | Object storage design | private adapter contract and policy, deny-by-default | PARTIAL: requires design review; live object storage intentionally disabled |
-| P3.13 | Identity provider selection | Owner selected Auth0 on 2026-11-17; live local Next.js session and authenticated Express JWT check reported successful; CI source tests in PR #53 | PARTIAL: provider CHOSEN and positive identity path verified locally; logout, MFA, revocation, quota/region, invitations and external staging acceptance pending |
+| P3.13 | Identity provider selection | Owner selected Auth0 on 2026-11-17; owner-reported local login, Next.js session, Express JWT acceptance and post-logout `unauthenticated` check passed; CI source tests in PR #53 | PARTIAL: positive identity and session-logout paths verified locally; MFA, expiry/revocation, quotas/region, invitations, tenant permissions and staging acceptance pending |
 | P3.14 | Architecture decision records | ADR 0001–0004 cover modularity, tenancy, identity, ops/storage; ADR 0001 stack/workspaces choice approved 2026-11-17 | PARTIAL: ADR 0002–0004 and overall P3 acceptance still require owner review |
 
 ## Owner decision recorded (2026-11-17)
