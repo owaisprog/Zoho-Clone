@@ -87,7 +87,10 @@ assume an invalid token** until the server process is checked.
    `API_INTERNAL_URL=http://127.0.0.1:4000` and both frontend and
    backend use the same tenant and exact Auth0 API Identifier
    `https://zoho-clone.vercel.app` (as chosen by owner).
-5. Restart both servers. If the user changed their API audience since
+5. For direct network connectivity, test from the **same terminal/environment** as the Next.js server:
+   `node -e "fetch(\'http://127.0.0.1:4000/health/live\').then(async r=>console.log(r.status,await r.text())).catch(()=>console.log(\'FETCH_FAILED\'))"`.
+   This only checks the unauthenticated health endpoint; a successful result does not prove signed JWT validation.
+   Restart both servers. If the user changed their API audience since
    login, log out and log back in to request a new correctly-audienced
    token. Auth0 v4 `getAccessToken()` is invoked server-side by the BFF.
 6. **Verified owner evidence 2026-11-17:** `/health/live` returned 200
@@ -105,6 +108,7 @@ assume an invalid token** until the server process is checked.
    | `AUTH0_ACCESS_TOKEN_MISSING` | Log out and back in; check audience is set during Auth0 login |
    | `AUTH0_TOKEN_REQUEST_FAILED` | Check Auth0 server-side token retrieval, SDK session and Refresh Token settings; never print tokens |
    | `API_CONNECTION_FAILED` | Confirm Express is reachable **from the Next.js server process**, not just your browser |
+   | `API_REQUEST_TIMED_OUT` | The authenticated API request exceeded 12 seconds; check Auth0 JWKS outbound connectivity and backend logs, without printing tokens |
    | `BACKEND_AUTH_NOT_READY` | Check Express Auth0 environment and ensure it was loaded at process startup |
    | `BACKEND_UNEXPECTED_STATUS` | Confirm Express version/route, inspect status safely without printing authorization headers |
 
