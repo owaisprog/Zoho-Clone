@@ -78,7 +78,12 @@ This confirms the running local Next.js BFF retrieved the Auth0 API access
 token and the Express identity-only endpoint accepted it. It does **not**
 confirm any organization membership, application authorization, record/field
 access, MFA, session revocation, invite acceptance, or a real staging deploy.
-Live logout and expiry/revocation negative checks are still pending.
+**Owner-reported logout check PASS (2026-11-17):** after visiting
+`http://localhost:3000/auth/logout`, `/api/identity/check` returned
+`{"status":"unauthenticated"}`. This confirms the browser's Next.js
+session is no longer authenticated; it does **not** prove previously issued
+API bearer tokens were revoked at the provider. Access token expiry,
+refresh, server-side revocation and MFA negative checks remain pending.
 
 ## Troubleshooting local backend_unavailable (resolved 2026-11-17)
 
@@ -160,10 +165,11 @@ assume an invalid token** until the server process is checked.
 - [x] Integration source, configuration gating and negative tests authored.
 - [x] Dependencies and lockfile synchronized; **90 P3 scaffold/foundation tests passed** (40 frontend + 45 backend + 5 shared), and all four CI jobs green in [GitHub Actions run #44131742865](https://github.com/owaisprog/Zoho-Clone/actions/runs/44131742865). The owner-reported live local authentication result is separate from CI and from the original 727 planned P1 acceptance cases.
 - [x] Owner configured an Auth0 development application and API: Auth0 Universal Login was reached; user reported that email/password sign-up works (2026-11-17). **This is user-reported setup progress, not a verified successful server session or JWT check.**
-- [ ] Secure local environment values validated on both frontend and backend. The frontend reached Universal Login; backend configuration remains unverified.
+- [ ] Audit secure local runtime configuration and secret handling. Frontend login and backend signed-token verification worked with owner's local settings; secret provenance, rotation and staging configuration remain unverified.
 - [x] User reported `/identity` displaying **Authenticated session** after Auth0 email/password signup and sign-in on 2026-11-17; browser login/session works in local development (owner-reported verification; no server CI integration with owner tenant).
 - [x] **Local Next.js → Auth0 access token → Express JWT authentication succeeded** (owner-reported, 2026-11-17): `/api/identity/check` returned `{"status":"authenticated","scope":"identity-only","organizationAccess":false}`. This is identity-only, not organization authorization.
-- [ ] Verify logout, refresh/expiry, post-revocation denial, MFA and negative live token scenarios; these are not demonstrated by the positive check.
+- [x] **Local logout and post-logout session rejection passed** (owner-reported, 2026-11-17): `/api/identity/check` returned `{"status":"unauthenticated"}` after visiting `/auth/logout`.
+- [ ] Verify access-token refresh/expiry, token revocation (logout does not itself prove revocation), MFA and negative live token scenarios.
 - [ ] MFA/invitations, membership mapping, revocation and security signoff.
 - [ ] Final P3 owner gate approval.
 
