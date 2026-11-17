@@ -22,8 +22,10 @@ const cases: Record<"alice" | "bob" | "carla" | "eve" | "wrongOrg", DemoContext>
   wrongOrg: { tenant: "org_demo_cedar", actor: "user_demo_alice", scope: "all" },
 };
 
-export async function verifyLocalSyntheticPrisma(urlInput: string | undefined): Promise<void> {
-  const connectionString = requireLocalSyntheticDatabaseUrl(urlInput);
+export async function verifySyntheticPrismaReadOnly(
+  connectionString: string,
+  expectedRole: "p3_preview_runtime" | "p3_neon_reader",
+): Promise<void> {
   const adapter = new PrismaPg({ connectionString, max: 2 });
   const prisma = new PrismaClient({ adapter });
   try {
@@ -32,9 +34,30 @@ export async function verifyLocalSyntheticPrisma(urlInput: string | undefined): 
       FROM pg_roles WHERE rolname = current_user
     `;
     assert.equal(role.length, 1);
-    assert.equal(role[0]?.role, "p3_preview_runtime");
+    assert.equal(role[0]?.role, expectedRole);
     assert.equal(role[0]?.superuser, false);
     assert.equal(role[0]?.bypassrls, false);
+    // A connected role must not be a database object owner or able to write
+    // even if RLS is accidentally changed. Reject roles with inherited DML.
+    const grants = await prisma.$queryRaw<Array<{
+      canSelect: boolean;
+      canInsert: boolean;
+      canUpdate: boolean;
+      canDelete: boolean;
+    }>>`
+      SELECT
+        has_table_privilege(current_user, 'synthetic.leads', 'SELECT') AS "canSelect",
+        has_table_privilege(current_user, 'synthetic.leads', 'INSERT') AS "canInsert",
+        has_table_privilege(current_user, 'synthetic.leads', 'UPDATE') AS "canUpdate",
+        has_table_privilege(current_user, 'synthetic.leads', 'DELETE') AS "canDelete"
+    `;
+    assert.deepEqual(grants, [{
+      canSelect: true,
+      canInsert: false,
+      canUpdate: false,
+      canDelete: false,
+    }]);
+
 
     // Default deny on a fresh connection with no tenant/actor context.
     assert.equal(await prisma.lead.count(), 0);
@@ -83,6 +106,11 @@ export async function verifyLocalSyntheticPrisma(urlInput: string | undefined): 
   } finally {
     await prisma.$disconnect();
   }
+}
+
+export async function verifyLocalSyntheticPrisma(urlInput: string | undefined): Promise<void> {
+  const connectionString = requireLocalSyntheticDatabaseUrl(urlInput);
+  return verifySyntheticPrismaReadOnly(connectionString, "p3_preview_runtime");
 }
 
 if (process.argv[1]?.endsWith("/p3-prisma-local-smoke.js")) {
