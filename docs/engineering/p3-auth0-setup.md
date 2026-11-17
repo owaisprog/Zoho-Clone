@@ -13,7 +13,7 @@ mapping, org membership/tenant invitation, or approved customer-data release.
 2. **Applications → Applications → Create Application**:
    `Zoho Clone Development`; select **Regular Web Application**.
 3. **Applications → APIs → Create API**:
-   `Zoho Clone API`, Identifier `https://api.zoho-clone.local`,
+   `Zoho Clone API`, actual owner-chosen Identifier `https://zoho-clone.vercel.app`,
    signing algorithm RS256. Use this identifier as `AUTH0_AUDIENCE`
    in both processes. It is only an API audience, not a deployable URL.
 4. Configure the web application **Allowed Callback URLs**:
@@ -38,7 +38,7 @@ Use no NEXT_PUBLIC_ prefix for any secret. The frontend environment needs:
 
 For backend local development, create `backend/.env.local` with
 `AUTH0_DOMAIN=<same-tenant-domain>`,
-`AUTH0_AUDIENCE=https://api.zoho-clone.local`,
+`AUTH0_AUDIENCE=https://zoho-clone.vercel.app`,
 `HOST=127.0.0.1`, `PORT=4000`.
 **Note:** the existing backend server does not automatically read .env
 files; start it with environment variables from your own local shell
@@ -80,6 +80,7 @@ For the Next.js dev process, `frontend/.env.local` is loaded by Next.
 - SDK handles OIDC state, nonce, PKCE and session cookies. Add MFA,
   invitation/claim lifecycle, abuse controls, CSRF/write flows, session
   revocation and backchannel logout testing before real data.
+- Google social login currently fails with Google `invalid_client` in user testing; **defer it** while validating the Auth0 database connection. No Google OAuth secret or client ID is required for the database flow.
 - Publish NO domain secrets, client secrets, session keys, real user IDs,
   tokens, webhooks, logs with credentials, or personal data to this public repo.
 
@@ -88,9 +89,10 @@ For the Next.js dev process, `frontend/.env.local` is loaded by Next.
 - [x] Owner selected Auth0 and the choice is documented.
 - [x] Integration source, configuration gating and negative tests authored.
 - [x] Dependencies and lockfile synchronized; **86 P3 scaffold/foundation tests passed**, and all four CI jobs green in [GitHub Actions run #43951293062](https://github.com/owaisprog/Zoho-Clone/actions/runs/43951293062). These are not live Auth0 sign-in or original P1 acceptance tests.
-- [ ] Owner created Auth0 tenant + Regular Web App + API and saved URLs.
-- [ ] Secure environment values configured outside GitHub.
-- [ ] Real Auth0 login, refresh, logout and Express JWT validation demonstrated.
+- [x] Owner configured an Auth0 development application and API: Auth0 Universal Login was reached; user reported that email/password sign-up works (2026-11-17). **This is user-reported setup progress, not a verified successful server session or JWT check.**
+- [ ] Secure local environment values validated on both frontend and backend. The frontend reached Universal Login; backend configuration remains unverified.
+- [ ] Confirm `/identity` shows `Authenticated session` following email/password signup and subsequent login.
+- [ ] Run `/api/identity/check` to verify an Auth0 API access token against local Express; refresh and logout remain unverified.
 - [ ] MFA/invitations, membership mapping, revocation and security signoff.
 - [ ] Final P3 owner gate approval.
 
