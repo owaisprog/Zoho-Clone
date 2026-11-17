@@ -52,6 +52,26 @@ Prisma 7 generator and reproducible npm lockfile. Only a **local-only CLI**
 uses a restricted `p3_preview_runtime` role; normal Express endpoints are
 unchanged. In [GitHub Actions run #44135572204](https://github.com/owaisprog/Zoho-Clone/actions/runs/44135572204), **93 unit tests passed** (40 frontend, 48 backend, 5 shared), and all **4/4 jobs** passed, including disposable PostgreSQL RLS/Prisma transaction smoke. The Prisma smoke checked default-deny, cross-tenant and revoked-membership results, owner scoping and transaction cleanup. These are not real-data or original P1 acceptance tests. See [synthetic Prisma runbook](p3-synthetic-prisma-runtime.md).
 
+## Owner development database choice (2026-11-17)
+
+Owner explicitly prefers **Neon PostgreSQL** for their development database
+instead of running local PostgreSQL in Docker. PR #53 includes TLS-constrained,
+read-only Neon Prisma smoke code, a development environment example, restricted
+role/SQL setup and [Neon setup runbook](p3-neon-development-setup.md). This
+preserves **Auth0** as the chosen identity provider. Until the owner-controlled
+Neon account and an isolated empty development database are inspected and
+a live Neon smoke passes, a real Neon runtime connection is **NOT verified**.
+
+GitHub Actions continues to use an isolated disposable local PostgreSQL
+container for reliable synthetic negative tests; local developers do not
+need Docker to connect to Neon. Actual Neon region, data residency, account
+budget and credential lifecycle are subject to owner approval.
+
+In [GitHub Actions run #44138900427](https://github.com/owaisprog/Zoho-Clone/actions/runs/44138900427),
+**96 scaffold tests passed** (40 frontend, 51 backend, 5 shared) and
+4/4 jobs passed. Those tests validate the Neon configuration guard, but do
+not claim connected Neon cloud database acceptance.
+
 ## Explicit unchanged gates
 
 All original 14 tracked risks, 12 unresolved decisions and 727
