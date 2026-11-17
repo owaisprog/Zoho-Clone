@@ -90,11 +90,30 @@ assume an invalid token** until the server process is checked.
 5. Restart both servers. If the user changed their API audience since
    login, log out and log back in to request a new correctly-audienced
    token. Auth0 v4 `getAccessToken()` is invoked server-side by the BFF.
-6. If backend is healthy and responds `401` with no token but BFF
-   still says `backend_unavailable`, inspect Next.js **server terminal**
-   without disclosing any token, code/state cookie, secret, personal ID,
-   or full authorization URL. Consider safe diagnostic event labels instead
-   of printing raw SDK errors.
+6. **Verified owner evidence 2026-11-17:** `/health/live` returned 200
+   `alive` and `/api/v1/auth/check` returned 401 `UNAUTHENTICATED`
+   without a token. The backend is running and its authentication guard is
+   behaving correctly. This does **not** yet prove Next.js can forward a JWT.
+7. After pulling the PR branch and restarting the Next.js server, re-open
+   `http://localhost:3000/api/identity/check` while signed in. The JSON now
+   includes a **development-only fixed diagnostic code** when the response
+   remains `backend_unavailable`. The codes mean:
+
+   | Diagnostic | Next action |
+   | --- | --- |
+   | `LOCAL_API_URL_REJECTED` | Correct `API_INTERNAL_URL` in `frontend/.env.local`; restart Next |
+   | `AUTH0_ACCESS_TOKEN_MISSING` | Log out and back in; check audience is set during Auth0 login |
+   | `AUTH0_TOKEN_REQUEST_FAILED` | Check Auth0 server-side token retrieval, SDK session and Refresh Token settings; never print tokens |
+   | `API_CONNECTION_FAILED` | Confirm Express is reachable **from the Next.js server process**, not just your browser |
+   | `BACKEND_AUTH_NOT_READY` | Check Express Auth0 environment and ensure it was loaded at process startup |
+   | `BACKEND_UNEXPECTED_STATUS` | Confirm Express version/route, inspect status safely without printing authorization headers |
+
+   In production, all these cases still return only `backend_unavailable`
+   without a diagnostic field. If API responds 401 with an access token,
+   the BFF returns `unauthenticated`, which may mean expired/wrong-audience
+   or otherwise rejected token. Log out and back in if the API audience
+   was changed. Do **not** share raw tokens, cookies, OAuth codes, or the
+   full callback URL.
 
 ## Security boundaries (not yet completed)
 
