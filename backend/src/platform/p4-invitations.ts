@@ -10,7 +10,7 @@ import {
  * appropriate here ONLY because tokens are generated with 256-bit entropy.
  * Real adapter must use unique constraints, row locks and atomic DB commits.
  */
-export type SyntheticInvitationStatus = "pending" | "accepted" | "revoked";
+export type SyntheticInvitationStatus = "pending" | "accepted" | "revoked" | "expired";
 export interface SyntheticInvitation {
   id: string;
   orgId: string;
@@ -112,8 +112,11 @@ export async function issueSyntheticInvitation(
   return repo.transaction(async tx => {
     await verifyOrgOwner(tx, scopedOrgId, actor);
     const existing = await tx.findPendingByEmail(scopedOrgId, email);
-    if (existing?.status === "pending" && existing.expiresAtMs > nowMs) {
-      throw new SyntheticInvitationConflictError();
+    if (existing?.status === "pending") {
+      if (existing.expiresAtMs > nowMs) throw new SyntheticInvitationConflictError();
+      // Close the old expired row before new issuance; the DB candidate
+      // enforces UNIQUE(org,recipient) for all pending invitations.
+      await tx.replaceInvitation({ ...existing, status: "expired", version: existing.version + 1 });
     }
     if (await tx.countRecentSends(scopedOrgId, actor.userId, nowMs - 60 * 60 * 1000) >= ISSUE_LIMIT_PER_HOUR) {
       throw new SyntheticInvitationRejectedError();
