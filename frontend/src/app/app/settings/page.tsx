@@ -41,6 +41,10 @@ export default function SettingsConceptPage() {
           <span>Auth0 identity-only login exists, but this preview has no verified tenant permissions, organization writes, invitation service or payment connection. Do not use real data.</span>
         </div>
       </div>
+      <div className="action-row" style={{ marginBottom: 18 }}>
+        <Link className="btn" href="/account">Account and security</Link>
+        <Link className="btn" href="/app/organization/new">Fictional organization preview</Link>
+      </div>
       <div className="settings-grid">
         {sections.map(({ title, body, icon: Icon }) => (
           <section className="setting-card" key={title}>
