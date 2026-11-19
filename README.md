@@ -1,3 +1,16 @@
+> **P4 batch 01 development preview (2026-11-20):** The first five
+> official P4 subphases, P4.01–P4.05, now have synthetic-only code,
+> authentication status and onboarding preview screens on a **separate
+> feature branch**, [draft PR #55](https://github.com/owaisprog/Zoho-Clone/pull/55),
+> based on the unmerged P3 branch. [CI #44632379730](https://github.com/owaisprog/Zoho-Clone/actions/runs/44632379730)
+> passed **137 automated tests and 4/4 jobs**, including restricted-role
+> PostgreSQL tenant/slug/transaction checks. Pages after local checkout:
+> `/account` and `/app/organization/new`. **No real tenant is created
+> or persisted, and nothing is deployed to production.** See the
+> [P4 implementation handoff](docs/engineering/p4-batch-01-identity-org.md)
+> and [P4 acceptance blockers](https://github.com/owaisprog/Zoho-Clone/issues/56).
+> The official P3 and P4 release gates remain open.
+>
 > **LATEST P3 ENGINEERING STATUS (2026-11-20):** The official remaining
 > P3.08–P3.14 **implementation batch** is committed to draft
 > [PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53).
