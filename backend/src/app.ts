@@ -6,6 +6,7 @@ import { demoApplications, demoLeads, demoTasks } from "./demo-fixtures.js";
 import { DEMO_CONTRACT } from "@zoho-clone/demo-contracts";
 import { createInternalPreviewRouter, type InternalPreviewTestAdapter } from "./internal/routes.js";
 import { auth0IdentityCheckMiddleware } from "./auth/auth0-api.js";
+import type { SafeRequestMetrics } from "./platform/observability.js";
 
 export const API_VERSION = "v1" as const;
 
@@ -15,6 +16,8 @@ export function createApp(options: {
   readinessProbe?: () => Promise<boolean>;
   /** Receives JSON with request ID, HTTP method, status and duration ONLY. */
   logRequest?: (entry: string) => void;
+  /** Bounded internal-only metrics sink; never available through HTTP routes. */
+  metrics?: SafeRequestMetrics;
 } = {}) {
   const app = express();
 
@@ -29,12 +32,14 @@ export function createApp(options: {
     const startedAt = performance.now();
     res.setHeader("X-Request-Id", requestId);
     res.once("finish", () => {
+      const durationMs = Math.max(0, Math.round(performance.now() - startedAt));
+      options.metrics?.observe(_req.method, res.statusCode, durationMs);
       const entry = JSON.stringify({
         event: "http.request.finished",
         requestId,
         method: _req.method,
         status: res.statusCode,
-        durationMs: Math.max(0, Math.round(performance.now() - startedAt)),
+        durationMs,
       });
       (options.logRequest ?? console.info)(entry);
     });
