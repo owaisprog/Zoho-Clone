@@ -29,7 +29,17 @@ assertions executed as a restricted non-owner CI role.
 The owner can defer all local Mac pulls without interrupting GitHub work.
 
 P4.01–P4.05 product acceptance requirements and live user/org APIs remain
-OPEN. Track them in [issue #56](https://github.com/owaisprog/Zoho-Clone/issues/56).
+OPEN in [issue #56](https://github.com/owaisprog/Zoho-Clone/issues/56).
+
+**P4 batch 02 verified:** [CI run #44637357343](https://github.com/owaisprog/Zoho-Clone/actions/runs/44637357343)
+passed **4/4 jobs, 155 tests**: 48 frontend + 94 backend + 5 shared
++ 8 script, all zero failures. CI-only PostgreSQL synthetic candidate
+tests passed as restricted non-owner role, covering owner-only invites,
+unique pending email, per-tenant access, conditional single-use states and
+deny-by-default policies. This extends engineering coverage of P4.06–P4.10;
+formal acceptance remains OPEN in [issue #57](https://github.com/owaisprog/Zoho-Clone/issues/57).
+No real invitation delivery, tenant membership writes, privileged APIs
+or production migrations were performed.
 
 **Phase exit:** two isolated demo organizations with full identity, teams,
 permissions, files and audit, executed acceptance evidence, explicit owner signoff.
