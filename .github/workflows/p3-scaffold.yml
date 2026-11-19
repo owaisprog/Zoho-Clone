@@ -36,7 +36,10 @@ jobs:
         run: npm run build
 
       - name: Check for accidentally tracked secrets and generated files
-        run: bash scripts/check-tracked-artifacts.sh
+        run: |
+          bash scripts/check-tracked-artifacts.sh
+          node --test scripts/check-tracked-secrets.test.mjs
+          node scripts/check-tracked-secrets.mjs
 
       - name: Verify local synthetic process and fail-closed readiness
         run: bash scripts/verify-synthetic-preview.sh
