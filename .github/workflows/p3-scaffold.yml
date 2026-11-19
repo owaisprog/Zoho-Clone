@@ -90,6 +90,11 @@ jobs:
       - name: Execute PostgreSQL RLS and relational-isolation assertions
         run: psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/001_synthetic_isolation.sql
 
+      - name: Validate P4.01-P4.05 CI-only identity and organization candidate
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/004_p4_synthetic_identity_foundation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/004_p4_synthetic_identity_foundation.sql
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
