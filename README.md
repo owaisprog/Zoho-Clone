@@ -1,3 +1,16 @@
+> **P4 BATCH 02 DEVELOPMENT VERIFIED (2026-11-20):** Synthetic-only
+> P4.06–P4.10 membership, switching, invitation lifecycle and tenant-context
+> code now joins the P4.01–P4.05 foundation in
+> [draft PR #55](https://github.com/owaisprog/Zoho-Clone/pull/55).
+> [CI #44637357343](https://github.com/owaisprog/Zoho-Clone/actions/runs/44637357343)
+> passed **155/155 tests, 4/4 jobs**, including restricted PostgreSQL
+> invitation and tenant-isolation assertions. New fictional screen:
+> `/app/organization/memberships`. No real invites, tenant DB writes,
+> customer data, public member APIs or deployment. Read the
+> [P4 batch 02 report](docs/engineering/p4-batch-02-memberships-invitations.md)
+> and [open acceptance issue #57](https://github.com/owaisprog/Zoho-Clone/issues/57).
+> Formal P3 and P4 release/owner gates remain OPEN.
+>
 > **P4 batch 01 development preview (2026-11-20):** The first five
 > official P4 subphases, P4.01–P4.05, now have synthetic-only code,
 > authentication status and onboarding preview screens on a **separate
