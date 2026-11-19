@@ -26,7 +26,7 @@ describe("P3.07 tracked-source secret guard", () => {
       ["github_pat_" + "A".repeat(80), "GITHUB_FINE_GRAINED_TOKEN"],
       ["AKIA" + "J".repeat(16), "AWS_ACCESS_KEY"],
       ["-----BEGIN " + "PRIVATE KEY-----\nfake\n-----END PRIVATE KEY-----", "PRIVATE_KEY"],
-      ["postgresql://p3_neon_reader:UltraSecureJustForTest@" +
+      ["postgresql://p3_neon_reader:UltraSecureFauxPassword2026@" +
         "ep-icy-water-9999.us-east-2.aws.neon.tech/zoho_clone_synthetic", "NEON_CONNECTION_CREDENTIAL"],
     ];
     for (const [value, expected] of samples) {
