@@ -72,6 +72,41 @@ In [GitHub Actions run #44138900427](https://github.com/owaisprog/Zoho-Clone/act
 4/4 jobs passed. Those tests validate the Neon configuration guard, but do
 not claim connected Neon cloud database acceptance.
 
+## Connected Neon cloud setup and direct SQL acceptance (2026-11-19)
+
+The connected Neon account changed relative to an earlier session: a previous
+project named `zoho-clone-development` was **not visible** in the account
+that this session could access (HTTP 404 for the prior project ID). Rather
+than altering one of its four unrelated existing projects, a **new isolated
+Neon development project** was created in the currently connected account:
+[zoho-clone-development](https://console.neon.tech/app/projects/small-river-48696124),
+project `small-river-48696124`, AWS Ohio `aws-us-east-2`, PostgreSQL 17,
+`development` branch `br-curly-sky-beukwxf9`, database `zoho_clone_synthetic`.
+
+An empty-database preflight passed. The exact SQL for
+`backend/db/migrations/001_synthetic_foundation.sql` and
+`backend/db/fixtures/001_synthetic_seed.sql` was applied in isolated
+transactions. Four `synthetic` tables were created with RLS **enabled and
+forced**; all four have their respective policies. Fictional seed data is
+loaded. A Neon scoped `read_only` role `p3_neon_reader` was created for
+the `synthetic` schema and specific database. Direct Neon SQL queries
+confirmed: role is not a superuser, bypass-RLS role or neon_superuser member;
+has SELECT and schema USAGE; cannot INSERT, UPDATE or DELETE.
+
+Connected to Neon **as p3_neon_reader**, direct SQL verified:
+default deny of all leads/organizations/memberships with no context;
+Alice owner-scoped lead count = 1; Bob tenant-wide count = 2;
+Carla in second tenant count = 1; inactive Eve count = 0;
+cross-tenant actor count = 0; and after transaction scope, count
+returns to zero. **These are live cloud SQL acceptance checks,
+NOT a passing local Prisma CLI smoke.** The owner's
+`backend/.env.neon.local` could not be updated through this integration;
+the developer must point it at this specific new Neon project and
+its restricted role, then rerun `npm run smoke:synthetic-neon -w backend`.
+Neon authentication secrets were never committed to GitHub.
+Account identity, cost limits, region approval, real tenant mapping, staging
+and production remain open. Do not close P3 based on these synthetic tests.
+
 ## Explicit unchanged gates
 
 All original 14 tracked risks, 12 unresolved decisions and 727
