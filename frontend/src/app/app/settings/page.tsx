@@ -4,7 +4,7 @@ import { BadgeCheck, Database, LockKeyhole, ShieldAlert, UsersRound } from "luci
 const sections = [
   {
     title: "Organization context",
-    body: "Only Orchid Payments Demo appears in this preview. Active membership and organization switching are future R0 features.",
+    body: "Only fictional Orchid Payments appears in this preview. Auth0 identity-only login is separate from membership and organization switching.",
     icon: Database,
   },
   {
