@@ -58,6 +58,16 @@ No real login, provider trust, database, protected production CRUD, KYC or
 payment handling has been implemented. See
 [batch documentation](../docs/engineering/p3-batch-03.md).
 
+## P3.07: local environment and secret-handling checks
+
+The actual Express server startup now refuses unapproved `P3_APP_ENV`
+profiles (only `local` or `ci`) and partial Auth0 issuer/audience values.
+The Next.js build blocks secret-like nonempty `NEXT_PUBLIC_*` variables.
+A limited Git-tracked source credential scanner runs in PR CI. See the
+[P3.07 environment and secret management matrix](../docs/engineering/p3-environment-secrets-management.md).
+The owner-reported Neon synthetic Prisma read-only smoke **passed** on
+2026-11-20. Staging vault, provider approvals and production readiness remain blocked.
+
 ## P3.05–P3.06: Neon PostgreSQL development (owner choice)
 
 The owner selected Neon PostgreSQL instead of running PostgreSQL through
