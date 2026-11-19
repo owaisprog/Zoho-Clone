@@ -121,6 +121,9 @@ BEGIN
      (SELECT count(*) FROM p4_synthetic.global_profiles) <> 0 THEN
     RAISE EXCEPTION 'cross-user visibility leak';
   END IF;
+  -- Match Bob's requested tenant context to test email verification,
+  -- not merely the tenant-ID mismatch guard.
+  PERFORM set_config('app.tenant_id', '10000000-0000-4000-8000-000000000005', true);
   BEGIN
     INSERT INTO p4_synthetic.organizations(id,slug,display_name,created_by)
     VALUES ('10000000-0000-4000-8000-000000000005','demo-bob-unverified',
