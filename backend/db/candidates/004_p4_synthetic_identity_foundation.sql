@@ -122,4 +122,15 @@ CREATE POLICY p4_event_self ON p4_synthetic.auth_events FOR ALL
   USING (user_id = nullif(current_setting('app.actor_id',true),''))
   WITH CHECK (user_id = nullif(current_setting('app.actor_id',true),''));
 
+-- Exercise RLS using a NON-OWNER, NON-SUPERUSER effective runtime role.
+-- GitHub CI's POSTGRES_USER is the cluster setup superuser and bypasses RLS,
+-- even FORCE ROW LEVEL SECURITY. Tests MUST use SET ROLE below.
+CREATE ROLE p4_synthetic_ci_runtime NOLOGIN
+  NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+GRANT USAGE ON SCHEMA p4_synthetic TO p4_synthetic_ci_runtime;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA p4_synthetic
+  TO p4_synthetic_ci_runtime;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA p4_synthetic
+  TO p4_synthetic_ci_runtime;
+
 COMMIT;
