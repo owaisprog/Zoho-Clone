@@ -1,3 +1,21 @@
+> **LATEST P3 ENGINEERING STATUS (2026-11-20):** The official remaining
+> P3.08–P3.14 **implementation batch** is committed to draft
+> [PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53).
+> [CI #44626354724](https://github.com/owaisprog/Zoho-Clone/actions/runs/44626354724)
+> passed 4/4 jobs and **121 tests** (42 frontend + 66 backend + 5 shared
+> + 8 script safety tests). The owner reported a successful restricted
+> Neon read-only Prisma RLS smoke. No Docker is needed on the owner's Mac:
+> `npm run dev:check` and `npm run dev:check:neon` verify the local
+> development setup. See the [seven-subphase handoff](docs/engineering/p3-08-to-14-execution.md)
+> and [official P3 tracker](docs/engineering/p3-official-completion-ledger.md).
+> **This does not approve P3 exit, merge, staging deployment or production.**
+> Original 14 risks, 12 decisions, 727 cases and external/commercial release
+> gates remain OPEN.
+>
+> **P3.13 AUTH0 SELECTED (2026-11-17):** The owner approved **Auth0**, replacing the earlier suggested Clerk option. The draft [PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53) now contains an opt-in Next.js 16 login/session flow and Express access-token signature verification for an **identity-only** test route. The owner has **reported successful local Auth0 email/password sessions, identity-only Express access-token checks and post-logout rejection**; this does not verify real tenant authorization, staging, MFA, token revocation or provider cost/region. Read the [Auth0 account and local setup guide](docs/engineering/p3-auth0-setup.md) and [ADR 0003](docs/adr/0003-managed-identity.md). Never paste or commit secrets; this repository is public.
+
+> **P3 master-PDF alignment (2026-11-16):** [Draft PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53) adds original P3.01–P3.14 status reconciliation, local synthetic Docker Compose, separate health liveness/readiness, request tracing, deny-by-default storage contract, staging/rollback verification tooling, CI hardening and provisional ADRs. The [P3 official ledger](docs/engineering/p3-official-completion-ledger.md) is the completion source for the 14-item PDF. **P3 IS NOT YET EXITED**: provider/owner decisions and a verified real staging path remain open. No real customer data is authorized. The previous P3.01–P3.22 labels are engineering increments, not 22 master P3 gates.
+
 ## P3.18–P3.22: candidate PostgreSQL, Prisma and managed identity foundations (owner review pending)
 
 Code includes a provisional PostgreSQL/Prisma schema (not applied to real data),
@@ -97,7 +115,7 @@ The original P3.01 CI evidence above remains historically accurate and separate.
 ## Repository structure
 
 - [frontend/](frontend/README.md) — **working Next.js 16/React/TypeScript App Router source**, Tailwind CSS and original shared token CSS; shadcn component integration is later.
-- [backend/](backend/README.md) — **working Node.js/Express 5/TypeScript health-only source**; PostgreSQL/Prisma/auth/Redis/BullMQ are future, not installed or verified.
+- [backend/](backend/README.md) — **working Node.js/Express 5/TypeScript health-only source**; Neon PostgreSQL and Prisma 7 restricted synthetic dev read tests and Auth0 identity-only checks are locally verified; Redis/BullMQ live workers and real tenant CRUD are future.
 - [docs/product/vision.md](docs/product/vision.md) - P0.01 Business Vision Charter.
 - [docs/product/decisions.md](docs/product/decisions.md) - Product and technical decisions.
 - [docs/roadmap-progress.md](docs/roadmap-progress.md) - Active roadmap checkpoint.

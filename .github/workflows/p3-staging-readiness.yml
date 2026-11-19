@@ -1,0 +1,21 @@
+name: P3 Staging Readiness Gate (owner configured)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging-health:
+    # This workflow does NOT deploy anything.
+    # It requires an owner-provisioned staging environment and HTTPS URL.
+    environment: staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate owner-approved staging health
+        env:
+          STAGING_API_URL: ${{ vars.STAGING_API_URL }}
+        run: bash scripts/verify-staging-health.sh

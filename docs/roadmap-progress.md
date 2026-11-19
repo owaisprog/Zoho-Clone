@@ -1,4 +1,10 @@
+> **P3 implementation checkpoint, 2026-11-16:** [Draft PR #53](https://github.com/owaisprog/Zoho-Clone/pull/53) aligns engineering work with the **14 original P3 requirements of the Express.js master PDF**. See [official P3 ledger](engineering/p3-official-completion-ledger.md). P3 still requires protected main, owner-reviewed ADRs, approved OIDC/provider/key decisions, real staging verification and signoff. Current P2.02 status and the 14 open risks, 12 decisions and 727 not-run P1 cases are preserved below. The earlier timestamps represent the prior baseline, not current P3 code status.
+
 # Zoho Clone — Master Roadmap Progress
+
+> **P3.13 owner approval 2026-11-17:** Auth0 selected as the managed identity provider. Auth0 tenant provisioning, private credentials, functional SSO/session checks and organization permission gates remain pending. The [Auth0 setup guide](engineering/p3-auth0-setup.md) and [ADR 0003](adr/0003-managed-identity.md) are recorded in draft PR #53; see the original P3 ledger. This does not authorize real customer data or close the 14 risks/12 open decisions/727 unexecuted acceptance cases.
+
+> **Owner approval 2026-11-17:** The architecture/technology stack and the npm-workspaces deviation from the PDF's pnpm/Turbo suggestion are **APPROVED as a design decision**. See [ADR 0001](adr/0001-platform-and-tooling.md) and [the official P3 ledger](engineering/p3-official-completion-ledger.md) in draft PR #53. P3 overall is not closed; all 12 original open decisions, 14 risks, and 727 unexecuted planned P1 acceptance cases remain tracked. No new provider, tenancy/security, cloud-spend or external release approval was given.
 
 **Updated:** 2026-11-13
 **Master roadmap:** `Zoho Clone Complete AI Master Roadmap v2.0`

@@ -23,6 +23,12 @@ Approved *design requirements* are not evidence of implemented software, legal r
 
 ## 2. Choices requiring future decisions (no fake owner approvals)
 
+**2026-11-17 P3.13 update:** The owner selected **Auth0** for OPEN-001.
+The provider-choice part is approved, but the decision remains OPEN pending
+verified sessions, MFA, invite acceptance, revocation and security evidence.
+The remaining 11 decision items are unchanged; no other previously open
+technical or commercial decision is implicitly approved.
+
 | Decision ID | Pending decision | Safe current default | Owner / next checkpoint | Gaps |
 |---|---|---|---|---|
 | `OPEN-001` | Managed identity provider and invite acceptance | Do not implement custom password storage by default | Engineering (ChatGPT-led) proposes; owner selects; P3/P4 | G-003;G-004 |
