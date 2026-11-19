@@ -44,8 +44,8 @@ describe("P4.06-07 membership list and tenant switching", () => {
   });
   it("rejects forged actor and wrong-owner rows returned by a compromised adapter", async () => {
     const repo: MembershipLookup = {
-      async listForUser() { return [{ ...rows[0], userId: bob.userId }]; },
-      async findForUserInOrg() { return { ...rows[0], userId: bob.userId }; },
+      async listForUser() { return [{ ...rows[0]!, userId: bob.userId }]; },
+      async findForUserInOrg() { return { ...rows[0]!, userId: bob.userId }; },
     };
     await assert.rejects(listActiveSyntheticMemberships(alice, repo), SyntheticMembershipDeniedError);
     await assert.rejects(resolveSyntheticTenantContext(alice, orchid, repo), SyntheticMembershipDeniedError);
