@@ -76,6 +76,27 @@ organization name/slug validation screen.
 No live tenant database is accessed by those UI routes. The org wizard
 never sends a backend request. No local Docker is required on the Mac.
 
+## Verified GitHub CI evidence (2026-11-20)
+
+[Actions run #44632379730](https://github.com/owaisprog/Zoho-Clone/actions/runs/44632379730)
+completed **4/4 jobs PASS**. Test counts: 46 frontend + 78 backend +
+5 shared + 8 script safety tests = **137 PASS, 0 FAIL**.
+The disposable PostgreSQL job also executed the P4 candidate RLS/
+uniqueness/transaction rollback tests and printed
+`P4 candidate synthetic identity and org SQL acceptance PASS`.
+
+A first CI run caught a false isolation test because CI database setup
+was using a PostgreSQL superuser. The test harness was corrected to
+`SET ROLE p4_synthetic_ci_runtime` (non-owner, no superuser or bypass-RLS
+privileges), and a second run **passed**. This is essential evidence:
+PostgreSQL superusers bypass RLS even on tables with FORCE enabled.
+The corrected CI does not affect Neon or any production database.
+
+Acceptance blockers are tracked in
+[P4 issue #56](https://github.com/owaisprog/Zoho-Clone/issues/56).
+This is CI proof of source-level and disposable synthetic logic only;
+not actual P1 test execution or owner phase approval.
+
 ## Approval and release gates
 
 All original P0/P1/P2/P3 unresolved conditions remain open. The P4 phase
