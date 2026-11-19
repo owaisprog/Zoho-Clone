@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BadgeCheck, Database, LockKeyhole, ShieldAlert, UsersRound } from "lucide-react";
 
 const sections = [
