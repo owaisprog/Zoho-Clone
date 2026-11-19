@@ -91,7 +91,21 @@ The new screen is at `http://localhost:3000/app/organization/memberships`
 when the Next.js dev server is running. No Docker or Neon database writes
 are required for the preview.
 
-## CI evidence
+## Verified CI evidence
 
-CI job/run IDs and exact counts will be recorded after the final
-GitHub Actions run completes. Do not infer passing CI from file creation.
+[GitHub Actions run #44637357343](https://github.com/owaisprog/Zoho-Clone/actions/runs/44637357343)
+finished **4/4 jobs PASS** on 2026-11-20:
+**48 frontend + 94 backend + 5 shared + 8 Node script tests
+= 155 PASS, 0 FAIL**.
+Disposable PostgreSQL 17 tests printed both:
+`P4 candidate synthetic identity and org SQL acceptance PASS`
+and `P4.06-10 CI-only invitation+tenant PostgreSQL restricted-role acceptance PASS`.
+Type checks, builds, disposable Compose/Prisma, limited tracked-secret
+scanner and local-preview checks also passed.
+
+The SQL uses `SET ROLE p4_synthetic_ci_runtime` to avoid PostgreSQL
+superuser bypass of RLS. These are **new** scaffold tests, not execution
+of the original 727 P1.09 product acceptance cases.
+
+Open acceptance blockers: [issue #57](https://github.com/owaisprog/Zoho-Clone/issues/57).
+
