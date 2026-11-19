@@ -31,7 +31,10 @@ function fixture() {
       const invites = new Map([...invitations].map(([k, v]) => [k, { ...v }]));
       const memberships = new Map([...membership].map(([k, v]) => [k, { ...v }]));
       const result = await callback({
-        async getMembership(orgId, userId) { return memberships.get(orgId + "|" + userId) ?? null; },
+        async getMembership(orgId, userId) {
+          const m = memberships.get(orgId + "|" + userId);
+          return m ? { ...m, orgId, userId } : null;
+        },
         async findPendingByEmail(orgId, email) {
           return [...invites.values()].find(x => x.orgId === orgId && x.canonicalEmail === email && x.status === "pending") ?? null;
         },
