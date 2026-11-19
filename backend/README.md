@@ -73,9 +73,9 @@ The owner-reported Neon synthetic Prisma read-only smoke **passed** on
 The owner selected Neon PostgreSQL instead of running PostgreSQL through
 Docker on their Mac. The source now includes a **cloud Neon synthetic-only
 read-only Prisma smoke**, strict TLS/read-only-role URL checks and
-[Neon setup](../docs/engineering/p3-neon-development-setup.md). Actual
-owner Neon connection and RLS results remain unverified until a fresh
-development database is configured. GitHub CI still uses disposable Postgres
+[Neon setup](../docs/engineering/p3-neon-development-setup.md). The owner confirmed
+the live Neon restricted-role Prisma RLS smoke PASS on 2026-11-20;
+this is strictly synthetic development evidence, not staging approval. GitHub CI still uses disposable Postgres
 fixtures for automatic isolation checks; this does not require local Docker.
 
 ## P3.05–P3.06: real Prisma runtime against fake local database only
