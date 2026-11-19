@@ -87,7 +87,7 @@ describe("P4.08-09 owner-only invitations, resend, single-use acceptance and rev
     assert.deepEqual(await acceptSyntheticInvitation(recipient, tokens.one, store.repository, t0 + 15_000),
       { orgId: orchid, role: "MEMBER" });
     assert.deepEqual(store.member(orchid, recipient.userId), { role: "MEMBER", active: true });
-    assert.equal(store.invites()[0].status, "accepted");
+    assert.equal(store.invites()[0]!.status, "accepted");
     await assert.rejects(acceptSyntheticInvitation(recipient, tokens.one, store.repository, t0 + 20_000), SyntheticInvitationRejectedError);
   });
   it("blocks non-owner issuance, duplicate pending email, and user-controlled role or URL", async () => {
@@ -107,7 +107,7 @@ describe("P4.08-09 owner-only invitations, resend, single-use acceptance and rev
     await assert.rejects(resendSyntheticInvitation(bob, orchid, ids.one, store.repository, t0 + 65_000), SyntheticInvitationRejectedError);
     const updated = await resendSyntheticInvitation(alice, orchid, ids.one, store.repository, t0 + 65_000, () => tokens.two);
     assert.equal(updated.tokenForEmailOnly, tokens.two);
-    assert.equal(store.invites()[0].resendCount, 1);
+    assert.equal(store.invites()[0]!.resendCount, 1);
     await assert.rejects(acceptSyntheticInvitation(recipient, tokens.one, store.repository, t0 + 70_000), SyntheticInvitationRejectedError);
     assert.deepEqual(await acceptSyntheticInvitation(recipient, tokens.two, store.repository, t0 + 80_000),
       { orgId: orchid, role: "MEMBER" });
@@ -126,7 +126,7 @@ describe("P4.08-09 owner-only invitations, resend, single-use acceptance and rev
     store.setFailure(true);
     await assert.rejects(acceptSyntheticInvitation(recipient, tokens.one, store.repository, t0 + 1000));
     assert.equal(store.member(orchid, recipient.userId), undefined);
-    assert.equal(store.invites()[0].status, "pending");
+    assert.equal(store.invites()[0]!.status, "pending");
   });
   it("denies revoked owner before issue or revoke, even if they previously had access", async () => {
     const store = fixture();
@@ -134,6 +134,6 @@ describe("P4.08-09 owner-only invitations, resend, single-use acceptance and rev
     store.revokeOwner();
     await assert.rejects(revokeSyntheticInvitation(alice, orchid, ids.one, store.repository, t0 + 1000), SyntheticInvitationRejectedError);
     await assert.rejects(issueSyntheticInvitation(alice, orchid, "dana@example.com", store.repository, t0 + 1000), SyntheticInvitationRejectedError);
-    assert.equal(store.invites()[0].status, "pending");
+    assert.equal(store.invites()[0]!.status, "pending");
   });
 });
