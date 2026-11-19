@@ -2,6 +2,18 @@
 -- Run ONLY in zoho_clone_synthetic_ci after candidate schema.
 \set ON_ERROR_STOP on
 
+-- CI setup is superuser: switch to restricted effective role before any
+-- isolation assertion, otherwise FORCE ROW LEVEL SECURITY is bypassed.
+SET ROLE p4_synthetic_ci_runtime;
+DO $test$
+BEGIN
+  IF current_user <> 'p4_synthetic_ci_runtime'
+     OR (SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user) THEN
+    RAISE EXCEPTION 'P4 SQL isolation test must use a restricted role';
+  END IF;
+END
+$test$;
+
 -- Without trusted server-installed context, no identity data is visible.
 DO $test$
 BEGIN
