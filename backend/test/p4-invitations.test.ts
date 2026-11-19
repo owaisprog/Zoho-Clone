@@ -79,7 +79,7 @@ describe("P4.08-09 owner-only invitations, resend, single-use acceptance and rev
     );
     assert.equal(issued.invitationId, ids.one);
     assert.equal(issued.tokenForEmailOnly, tokens.one);
-    const persisted = store.invites()[0];
+    const persisted = store.invites()[0]!;
     assert.equal(persisted.canonicalEmail, "carla@example.com");
     assert.equal(persisted.role, "MEMBER");
     assert.match(persisted.tokenHash, /^[0-9a-f]{64}$/);
