@@ -26,8 +26,11 @@ choosing a similarly named project from another account.
 the seed includes non-idempotent INSERTs and will fail on duplicates.
 For this already-provisioned project, skip sections 1–3 below and
 follow only section 4 to update your private local connection URL.
-The local Prisma test has NOT yet passed, because this chat cannot edit
-your Mac's `backend/.env.neon.local`.
+**Local Prisma smoke now passed (owner-reported 2026-11-20)** using the
+restricted Neon role. The owner ran `npm run smoke:synthetic-neon -w backend`
+and received `P3.05/06 Neon synthetic Prisma read-only RLS smoke: PASS`.
+Do not share or commit `backend/.env.neon.local`; the successful test does not
+approve production or staging use of this synthetic development database.
 
 ## 1. Create a separate Neon project (owner action)
 
