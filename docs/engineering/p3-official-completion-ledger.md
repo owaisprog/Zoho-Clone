@@ -18,13 +18,13 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.05 | PostgreSQL and migrations | synthetic SQL, fixtures, disposable CI/Compose; real Neon dev project `small-river-48696124` with restricted reader, forced RLS; owner-reported Neon Prisma smoke PASS 2026-11-20 (PR #53) | **SYNTHETIC DEV MILESTONE VERIFIED**; overall PARTIAL: no approved staging DB, secure production roles, migration drift or backup/restore proof |
 | P3.06 | ORM and SQL conventions | pinned Prisma 7; transaction-scoped RLS Prisma reads pass in CI and owner-reported actual Neon restricted-role Prisma CLI smoke PASS 2026-11-20 | **SYNTHETIC DEV MILESTONE VERIFIED**; overall PARTIAL: final key/ACL design not approved; no real staging migration, writes or production ORM use |
 | P3.07 | Environment configuration | strict PORT/HOST, runtime local/CI profile deny, partial Auth0 fail-closed startup, Next.js NEXT_PUBLIC secret guard, tracked-source secret signatures + CI tests, environment/rotation runbook | PARTIAL: source safeguards added; no owner-approved staging secret store, credentials, provider region/cost, rotation or release policy |
-| P3.08 | Docker local developer stack | disposable local-only PostgreSQL + Redis with fictional seed and read-only Prisma smoke pass in GitHub CI | PARTIAL: owner-machine cold boot still not evidenced |
-| P3.09 | CI pipeline | node typecheck, test, build, isolated PG test and Prisma validation | PARTIAL: owner must configure required status checks; lint/supply-chain policy pending |
-| P3.10 | CD and staging | local smoke and staging/rollback scripts, runbook | BLOCKED: no staging cloud account, credentials or verified deployment |
-| P3.11 | Observability | server-owned request ID, structured redacted finish log | PARTIAL: owner error tracker, OTel and managed log sink pending |
-| P3.12 | Object storage design | private adapter contract and policy, deny-by-default | PARTIAL: requires design review; live object storage intentionally disabled |
-| P3.13 | Identity provider selection | Owner selected Auth0 on 2026-11-17; owner-reported local login, Next.js session, Express JWT acceptance and post-logout `unauthenticated` check passed; CI source tests in PR #53 | PARTIAL: positive identity and session-logout paths verified locally; MFA, expiry/revocation, quotas/region, invitations, tenant permissions and staging acceptance pending |
-| P3.14 | Architecture decision records | ADR 0001–0004 cover modularity, tenancy, identity, ops/storage; ADR 0001 stack/workspaces choice approved 2026-11-17 | PARTIAL: ADR 0002–0004 and overall P3 acceptance still require owner review |
+| P3.08 | Developer stack (Neon-first owner deviation) | Real owner-reported Neon Prisma smoke PASS, Docker-free local preflight and npm scripts with CI negative tests; disposable Postgres and Redis remain in CI | PARTIAL: owner machine cold-boot of the complete frontend + backend + optional worker environment still not evidenced |
+| P3.09 | CI pipeline | Node 22 typecheck, 121 automated tests, builds, synthetic SQL/Prisma isolation, limited secret scan, staging URL checks, Node-first local preflight; CI 4/4 PASS #44626354724 | PARTIAL: repository admin must enforce protected main/required checks; formal lint/format and dependency policy open |
+| P3.10 | CD and staging | health+rollback runbook, manual gated staging workflow and HTTPS staging-host validator with negative tests; no production or customer data exposed | BLOCKED: missing owner-authorized staging domain/provider/budget/secrets and actual deploy+rollback acceptance |
+| P3.11 | Observability | server-owned UUID request IDs and structured privacy-safe logs; in-process fixed-bucket status/method/latency metrics with no public endpoint; negative privacy tests | PARTIAL: owner error tracker, OTel exporter, private sink, alert proof and retention/region policy pending |
+| P3.12 | Object storage design | provider-neutral private adapter (disabled by default); metadata MIME/size/filename/checksum candidate validator and security tests; storage/scan design and ADR 0006 | PARTIAL: provider/region/malware/retention review, owner approval and live scanning not performed |
+| P3.13 | Identity provider selection | Auth0 owner-selected, owner-reported local login/session/identity-only token acceptance and logout; added issuer/forged-token tests and release checklist | PARTIAL: MFA, access-token revocation/refresh, quotas/region, invitations, real tenant permissions and staging acceptance still pending |
+| P3.14 | Architecture decision records | ADR 0001–0006 now document modularity, tenancy, identity, Neon-first vs Docker, queues, observability, storage and reversibility; ADR 0001 approved | PARTIAL: ADR 0002–0006 and full P3 exit require owner review/approval |
 
 ## Owner decision recorded (2026-11-17)
 
@@ -142,6 +142,27 @@ These controls never read or commit the owner's private Auth0/Neon URLs.
 **Staging vault, credential lifecycle, incident rotation, GitHub branch
 protection and owner-approved deployment are outstanding.** P3.07 remains
 PARTIAL and does not close other original risks or test cases.
+
+## P3.08–P3.14 implementation batch and CI evidence (2026-11-20)
+
+The owner requested completion of all seven remaining P3 implementation
+subphases in one batch. Source and documentation were committed to the
+existing draft PR #53, without merging or exposing production resources.
+See [P3.08–P3.14 detailed execution](p3-08-to-14-execution.md).
+
+[GitHub Actions run #44626354724](https://github.com/owaisprog/Zoho-Clone/actions/runs/44626354724)
+reported **4/4 jobs PASS**. Executed automated tests: **42 frontend +
+66 backend + 5 shared + 8 Node safety/preflight = 121 tests PASS, 0 FAIL**.
+The tracked-source limited secret scan and Docker-free CI preflight also
+passed. Local Mac Neon Prisma PASS was previously owner reported.
+
+**Official master P3 exit: NOT APPROVED.** Staging deployment+rollback,
+real monitored exporter, owner cloud spend/region approval, protected
+main/required CI, critical ADR signoff, Auth0 MFA/revocation/quotas, private
+object-store provider and actual customer authorization gates remain open.
+The official P3.10 CD/staging requirement is especially not complete;
+P3.08–P3.14 code delivered must not be mislabeled as final phase closure.
+All original 727 P1.09 acceptance cases remain NOT RUN.
 
 ## Explicit unchanged gates
 
