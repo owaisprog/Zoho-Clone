@@ -1,6 +1,6 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import {
-  requireTrustedSyntheticMember, SyntheticMembershipDeniedError, SYNTHETIC_ORG_ID,
+  requireTrustedSyntheticMember, SYNTHETIC_ORG_ID,
   type TrustedSyntheticMemberActor,
 } from "./p4-membership.js";
 
