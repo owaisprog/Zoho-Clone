@@ -44,6 +44,7 @@ export default function SettingsConceptPage() {
       <div className="action-row" style={{ marginBottom: 18 }}>
         <Link className="btn" href="/account">Account and security</Link>
         <Link className="btn" href="/app/organization/new">Fictional organization preview</Link>
+        <Link className="btn" href="/app/organization/memberships">Membership and invitation preview</Link>
       </div>
       <div className="settings-grid">
         {sections.map(({ title, body, icon: Icon }) => (
