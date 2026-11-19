@@ -131,6 +131,35 @@ describe("P4.08-09 owner-only invitations, resend, single-use acceptance and rev
     assert.equal(store.member(orchid, recipient.userId), undefined);
     assert.equal(store.invites()[0]!.status, "pending");
   });
+  it("expires a pending invite before reissuing the same email under the DB uniqueness rule", async () => {
+    const store = fixture();
+    await issueSyntheticInvitation(alice, orchid, recipient.verifiedEmail, store.repository,
+      t0, () => tokens.one, () => ids.one);
+    await issueSyntheticInvitation(alice, orchid, recipient.verifiedEmail, store.repository,
+      t0 + 49 * 60 * 60 * 1000, () => tokens.two, () => ids.two);
+    assert.equal(store.invites().length, 2);
+    assert.equal(store.invites().find(x => x.id === ids.one)?.status, "expired");
+    assert.equal(store.invites().find(x => x.id === ids.two)?.status, "pending");
+    await assert.rejects(acceptSyntheticInvitation(recipient, tokens.one, store.repository,
+      t0 + 49 * 60 * 60 * 1000), SyntheticInvitationRejectedError);
+    assert.deepEqual(await acceptSyntheticInvitation(recipient, tokens.two, store.repository,
+      t0 + 49 * 60 * 60 * 1000 + 1000), { orgId: orchid, role: "MEMBER" });
+  });
+
+  it("enforces the per-owner hourly synthetic issuance budget", async () => {
+    const store = fixture();
+    for (let i = 1; i <= 5; i++) {
+      const id = "10000000-0000-4000-8000-0000000000" + String(i).padStart(2, "0");
+      await issueSyntheticInvitation(alice, orchid, "demo" + i + "@example.com", store.repository,
+        t0 + i * 1000, () => String.fromCharCode(65 + i).repeat(43), () => id);
+    }
+    await assert.rejects(issueSyntheticInvitation(alice, orchid,
+      "demo6@example.com", store.repository, t0 + 6000,
+      () => "Z".repeat(43), () => "10000000-0000-4000-8000-000000000099"),
+      SyntheticInvitationRejectedError);
+    assert.equal(store.invites().length, 5);
+  });
+
   it("denies revoked owner before issue or revoke, even if they previously had access", async () => {
     const store = fixture();
     await issueSyntheticInvitation(alice, orchid, recipient.verifiedEmail, store.repository, t0, () => tokens.one, () => ids.one);
