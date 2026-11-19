@@ -1,5 +1,8 @@
 import { createApp } from "./app.js";
 import { readServerConfig } from "./config.js";
+import { assertApprovedBackendRuntimeEnvironment } from "./runtime-env.js";
+
+assertApprovedBackendRuntimeEnvironment();
 
 const { host, port } = readServerConfig();
 const server = createApp().listen(port, host, () => {
