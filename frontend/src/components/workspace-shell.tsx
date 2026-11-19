@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Activity,
   ArrowUpRight,
+  Building2,
   ChevronDown,
   CircleHelp,
   ClipboardList,
