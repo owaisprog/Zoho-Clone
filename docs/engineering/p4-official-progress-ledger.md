@@ -11,7 +11,12 @@ This ledger uses implemented source and CI evidence separately from release gate
 | P4.03 | MFA/recovery | Fresh-MFA deny policy and UX guidance; no privileged route | OPEN: provider MFA, recovery acceptance |
 | P4.04 | Global user profile | Self-only synthetic validator/repository contract and CI-only DB candidate | OPEN: authorized persistent GET/PATCH /me |
 | P4.05 | Organization creation | Fictional browser preview; atomic service contract and CI-only UNIQUE/forced RLS tests | OPEN: real Auth0-to-tenant bridge and writes |
-| P4.06–P4.25 | Membership, tenant controls, RBAC/ABAC, teams, files, audit, notifications and administrative boundaries | NOT STARTED in P4 production scope | OPEN |
+| P4.06 | Organization membership | Synthetic self-only active membership lookup and per-org roles with revoke tests; no live endpoint | OPEN: authenticated persistence and member-management ACL |
+| P4.07 | Organization switcher | Browser-only fictional switcher; source-level fresh membership verification per switch | OPEN: real active-workspace context and verified backend switch |
+| P4.08 | Invite send/resend | Synthetic owner-only issuance, rate/delay constraints, SHA-256 token hashing and resend rotation tests | OPEN: real email delivery, auditing and locked transaction DB adapter |
+| P4.09 | Invite acceptance/revoke | One-use fictional token lifecycle, identity-email match, atomic member creation/consumption, revoke/expiry tests | OPEN: real Auth0-backed accept UI/API and secure link redemption |
+| P4.10 | Tenant context middleware | Injectable Express middleware with fresh membership guard; isolated integration tests and CI-only SQL RLS checks | OPEN: real provider subject mapping, production backend mount and job propagation |
+| P4.11–P4.25 | RLS, roles, permissions, teams, files, audit, notifications, admin boundaries | NOT STARTED in P4 production scope | OPEN |
 
 ## CI checkpoint
 
@@ -30,5 +35,5 @@ OPEN. Track them in [issue #56](https://github.com/owaisprog/Zoho-Clone/issues/5
 permissions, files and audit, executed acceptance evidence, explicit owner signoff.
 All original 14 risks, 12 unresolved decisions and unexecuted 727 P1 tests
 remain open; P3 staging/ADR and P2.02 review remain open.
-P4.01–P4.05 are development implementation slices, not formally completed
-product features. No commercial/external authorization granted.
+P4.01–P4.10 are synthetic development implementation slices, not formally
+completed product features. No commercial/external authorization granted.
