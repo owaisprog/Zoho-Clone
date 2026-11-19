@@ -15,8 +15,8 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.02 | Monorepo workspace | npm workspace with reproducible lockfile, Next/Express/shared; owner approved npm instead of PDF pnpm/Turbo on 2026-11-17 | PARTIAL: package-manager decision APPROVED; remaining module/package boundaries and clean build acceptance need review |
 | P3.03 | Next.js foundation | App Router synthetic preview, themes and build CI | PARTIAL: owner P2 IA + UI review and smoke evidence |
 | P3.04 | Modular Express backend | health/live, health/ready (fail closed), structured 404, existing internal seams | PARTIAL: status verified only after CI; no real dependency readiness |
-| P3.05 | PostgreSQL and migrations | synthetic SQL, fixtures, disposable CI/Compose, read-only restricted PostgreSQL login and live local Prisma smoke (PR #53) | PARTIAL: no approved staging DB, secure production roles, migration drift or backup/restore proof |
-| P3.06 | ORM and SQL conventions | pinned Prisma 7 client/adapter generated at build; actual transaction-scoped RLS Prisma reads and negative isolation pass in disposable Compose CI | PARTIAL: final key/ACL design not approved; no real staged migration drift, writes or production ORM use |
+| P3.05 | PostgreSQL and migrations | synthetic SQL, fixtures, disposable CI/Compose; real Neon dev project `small-river-48696124` with restricted reader, forced RLS; owner-reported Neon Prisma smoke PASS 2026-11-20 (PR #53) | **SYNTHETIC DEV MILESTONE VERIFIED**; overall PARTIAL: no approved staging DB, secure production roles, migration drift or backup/restore proof |
+| P3.06 | ORM and SQL conventions | pinned Prisma 7; transaction-scoped RLS Prisma reads pass in CI and owner-reported actual Neon restricted-role Prisma CLI smoke PASS 2026-11-20 | **SYNTHETIC DEV MILESTONE VERIFIED**; overall PARTIAL: final key/ACL design not approved; no real staging migration, writes or production ORM use |
 | P3.07 | Environment configuration | strict PORT/HOST and secret-free source, .env.p3.example | PARTIAL: secret manager and approved production env not configured |
 | P3.08 | Docker local developer stack | disposable local-only PostgreSQL + Redis with fictional seed and read-only Prisma smoke pass in GitHub CI | PARTIAL: owner-machine cold boot still not evidenced |
 | P3.09 | CI pipeline | node typecheck, test, build, isolated PG test and Prisma validation | PARTIAL: owner must configure required status checks; lint/supply-chain policy pending |
@@ -106,6 +106,26 @@ its restricted role, then rerun `npm run smoke:synthetic-neon -w backend`.
 Neon authentication secrets were never committed to GitHub.
 Account identity, cost limits, region approval, real tenant mapping, staging
 and production remain open. Do not close P3 based on these synthetic tests.
+
+## Owner-confirmed local Neon Prisma smoke PASS (2026-11-20)
+
+On 2026-11-20 the owner ran
+`npm run smoke:synthetic-neon -w backend` on their Mac and reported:
+
+```text
+P3.05/06 Neon synthetic Prisma read-only RLS smoke: PASS
+```
+
+This **supersedes the historical 'local smoke not yet passed' status** in the
+2026-11-19 note above. The owner-reported CLI result, combined with actual
+Neon role-based SQL checks and the CI synthetic tests, verifies the
+P3.05/P3.06 **development synthetic read-only acceptance milestone**.
+The user did not disclose credentials and no secret was committed.
+It does **not** close the overall P3.05/P3.06 official gates (staging,
+production credential handling, Auth0-to-membership mapping, approved
+tenant/record permissions, migration/drift, writes, backup/restore and
+original P1 acceptance cases). Continue with P3.07 environment and secrets
+management without production deployment.
 
 ## Explicit unchanged gates
 
