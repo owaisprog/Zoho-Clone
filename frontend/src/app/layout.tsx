@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Workspace OS · Synthetic Prototype",
-  description: "Original internal-only Zoho Clone workspace scaffold using fictional records. No authentication or merchant processing.",
+  description: "Original internal-only workspace prototype with fictional records. Optional Auth0 identity-only session, no organization permissions or merchant processing.",
   robots: { index: false, follow: false },
 };
 
