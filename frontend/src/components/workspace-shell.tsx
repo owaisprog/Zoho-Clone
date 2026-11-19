@@ -99,7 +99,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
 
         <div className="sidebar-footer">
           <span className="sidebar-footer-icon"><LockKeyhole size={17} aria-hidden="true" /></span>
-          <span><strong>Prototype only</strong><small>No login or tenant permissions implemented</small></span>
+          <span><strong>Prototype only</strong><small>Identity-only Auth0; no tenant permissions</small></span>
         </div>
       </aside>
 
