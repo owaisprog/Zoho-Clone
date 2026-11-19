@@ -17,7 +17,7 @@ Do not mark original P3 exit complete unless all mandated gates pass.
 | P3.04 | Modular Express backend | health/live, health/ready (fail closed), structured 404, existing internal seams | PARTIAL: status verified only after CI; no real dependency readiness |
 | P3.05 | PostgreSQL and migrations | synthetic SQL, fixtures, disposable CI/Compose; real Neon dev project `small-river-48696124` with restricted reader, forced RLS; owner-reported Neon Prisma smoke PASS 2026-11-20 (PR #53) | **SYNTHETIC DEV MILESTONE VERIFIED**; overall PARTIAL: no approved staging DB, secure production roles, migration drift or backup/restore proof |
 | P3.06 | ORM and SQL conventions | pinned Prisma 7; transaction-scoped RLS Prisma reads pass in CI and owner-reported actual Neon restricted-role Prisma CLI smoke PASS 2026-11-20 | **SYNTHETIC DEV MILESTONE VERIFIED**; overall PARTIAL: final key/ACL design not approved; no real staging migration, writes or production ORM use |
-| P3.07 | Environment configuration | strict PORT/HOST and secret-free source, .env.p3.example | PARTIAL: secret manager and approved production env not configured |
+| P3.07 | Environment configuration | strict PORT/HOST, runtime local/CI profile deny, partial Auth0 fail-closed startup, Next.js NEXT_PUBLIC secret guard, tracked-source secret signatures + CI tests, environment/rotation runbook | PARTIAL: source safeguards added; no owner-approved staging secret store, credentials, provider region/cost, rotation or release policy |
 | P3.08 | Docker local developer stack | disposable local-only PostgreSQL + Redis with fictional seed and read-only Prisma smoke pass in GitHub CI | PARTIAL: owner-machine cold boot still not evidenced |
 | P3.09 | CI pipeline | node typecheck, test, build, isolated PG test and Prisma validation | PARTIAL: owner must configure required status checks; lint/supply-chain policy pending |
 | P3.10 | CD and staging | local smoke and staging/rollback scripts, runbook | BLOCKED: no staging cloud account, credentials or verified deployment |
@@ -126,6 +126,22 @@ production credential handling, Auth0-to-membership mapping, approved
 tenant/record permissions, migration/drift, writes, backup/restore and
 original P1 acceptance cases). Continue with P3.07 environment and secrets
 management without production deployment.
+
+## P3.07 source boundary implementation (2026-11-20)
+
+Development branch PR #53 implements P3.07 **source-level local/CI
+environment controls**, not cloud staging secrets. The actual Express
+startup enforces `P3_APP_ENV=local|ci` and rejects partial Auth0
+configuration or secret-bearing `NEXT_PUBLIC_` keys. The Next.js build
+also rejects secret-bearing public-prefixed environment values.
+`scripts/check-tracked-secrets.mjs`, negative tests and GitHub Actions
+provide a limited credential-pattern guard in addition to existing
+tracked-path checks. See
+[P3.07 environment & secrets management](p3-environment-secrets-management.md).
+These controls never read or commit the owner's private Auth0/Neon URLs.
+**Staging vault, credential lifecycle, incident rotation, GitHub branch
+protection and owner-approved deployment are outstanding.** P3.07 remains
+PARTIAL and does not close other original risks or test cases.
 
 ## Explicit unchanged gates
 
