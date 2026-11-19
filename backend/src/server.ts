@@ -1,11 +1,14 @@
 import { createApp } from "./app.js";
 import { readServerConfig } from "./config.js";
 import { assertApprovedBackendRuntimeEnvironment } from "./runtime-env.js";
+import { SafeRequestMetrics } from "./platform/observability.js";
 
 assertApprovedBackendRuntimeEnvironment();
 
 const { host, port } = readServerConfig();
-const server = createApp().listen(port, host, () => {
+// P3.11: local-only metrics collector; no public or provider exporter until approval.
+const metrics = new SafeRequestMetrics();
+const server = createApp({ metrics }).listen(port, host, () => {
   console.info("Synthetic-only API listening on http://" + host + ":" + port);
 });
 
