@@ -28,6 +28,7 @@ const primary = [
 
 const administration = [
   { label: "Settings concept", href: "/app/settings", icon: Settings2 },
+  { label: "Create org · preview", href: "/app/organization/new", icon: Building2 },
 ] as const;
 
 function NavGroup({
