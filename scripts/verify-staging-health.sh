@@ -12,6 +12,7 @@ esac
 case "$STAGING_API_URL" in
   *"?"*|*"#"*|*"@"*) echo "URL must not contain query, fragment or credentials" >&2; exit 2;;
 esac
+node scripts/p3-staging-url.mjs "$STAGING_API_URL" || exit 2
 base="${STAGING_API_URL%/}"
 live_code="$(curl --silent --show-error --max-time 15 --output /dev/null --write-out '%{http_code}' "$base/health/live")"
 if [ "$live_code" != 200 ]; then echo "Staging liveness failed ($live_code)" >&2; exit 1; fi
