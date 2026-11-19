@@ -25,7 +25,7 @@ export interface SyntheticInvitation {
   version: number;
 }
 export interface SyntheticInvitationTransaction {
-  getMembership(orgId: string, userId: string): Promise<{ role: "OWNER" | "MEMBER"; active: boolean } | null>;
+  getMembership(orgId: string, userId: string): Promise<{ orgId: string; userId: string; role: "OWNER" | "MEMBER"; active: boolean } | null>;
   findPendingByEmail(orgId: string, canonicalEmail: string): Promise<SyntheticInvitation | null>;
   findById(inviteId: string): Promise<SyntheticInvitation | null>;
   findByTokenHash(tokenHash: string): Promise<SyntheticInvitation | null>;
@@ -80,7 +80,8 @@ async function verifyOrgOwner(
   orgId: string, actor: TrustedSyntheticMemberActor,
 ): Promise<void> {
   const member = await tx.getMembership(orgId, actor.userId);
-  if (!member || member.active !== true || member.role !== "OWNER") {
+  if (!member || member.orgId !== orgId || member.userId !== actor.userId ||
+      member.active !== true || member.role !== "OWNER") {
     throw new SyntheticInvitationRejectedError();
   }
 }
@@ -112,6 +113,9 @@ export async function issueSyntheticInvitation(
   return repo.transaction(async tx => {
     await verifyOrgOwner(tx, scopedOrgId, actor);
     const existing = await tx.findPendingByEmail(scopedOrgId, email);
+    if (existing && (existing.orgId !== scopedOrgId || existing.canonicalEmail !== email)) {
+      throw new SyntheticInvitationRejectedError();
+    }
     if (existing?.status === "pending") {
       if (existing.expiresAtMs > nowMs) throw new SyntheticInvitationConflictError();
       // Close the old expired row before new issuance; the DB candidate
@@ -174,7 +178,7 @@ export async function acceptSyntheticInvitation(
   const hash = tokenHash(rawToken);
   return repo.transaction(async tx => {
     const invite = requireInviteReady(await tx.findByTokenHash(hash), nowMs);
-    if (invite.canonicalEmail !== email) throw new SyntheticInvitationRejectedError();
+    if (invite.tokenHash !== hash || invite.canonicalEmail !== email) throw new SyntheticInvitationRejectedError();
     // Underlying repo MUST reject conflicts and never promote MEMBER to OWNER.
     if (!await tx.insertMembershipIfAbsent(invite.orgId, recipient.userId, "MEMBER")) {
       throw new SyntheticInvitationConflictError();
