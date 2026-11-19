@@ -38,8 +38,9 @@ jobs:
       - name: Check for accidentally tracked secrets and generated files
         run: |
           bash scripts/check-tracked-artifacts.sh
-          node --test scripts/check-tracked-secrets.test.mjs
+          node --test scripts/*.test.mjs
           node scripts/check-tracked-secrets.mjs
+          node scripts/p3-neon-first-preflight.mjs --ci
 
       - name: Verify local synthetic process and fail-closed readiness
         run: bash scripts/verify-synthetic-preview.sh
