@@ -7,6 +7,28 @@ P3.05/P3.06 tenant design, cloud region/cost, secrets, staging and P3 release
 approvals remain open. Do not repurpose an existing customer database or
 production branch.
 
+## Verified connected-cloud development setup (2026-11-19)
+
+**The new connected-account Neon setup is complete.** Open
+[zoho-clone-development](https://console.neon.tech/app/projects/small-river-48696124):
+project ID `small-river-48696124`, branch `development`, database
+`zoho_clone_synthetic`, role `p3_neon_reader`. The four synthetic tables,
+fictional fixtures and RLS policies are already provisioned on this specific
+project. Role permission checks and the five synthetic scoped-read cases
+passed directly against Neon.
+
+**Important account mismatch:** A previous session saw a different Neon
+project with the same name, which is not accessible in the currently connected
+Neon account. Confirm the project ID is **small-river-48696124**, rather than
+choosing a similarly named project from another account.
+
+**DO NOT rerun** the schema creation or fiction seed on this new project:
+the seed includes non-idempotent INSERTs and will fail on duplicates.
+For this already-provisioned project, skip sections 1–3 below and
+follow only section 4 to update your private local connection URL.
+The local Prisma test has NOT yet passed, because this chat cannot edit
+your Mac's `backend/.env.neon.local`.
+
 ## 1. Create a separate Neon project (owner action)
 
 1. Visit https://console.neon.tech/ and create a **new separate project**
