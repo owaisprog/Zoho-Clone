@@ -38,7 +38,7 @@ export default function SettingsConceptPage() {
         <ShieldAlert size={18} aria-hidden="true" />
         <div>
           <strong>No accounts, permissions, or subscriptions can be changed here.</strong>
-          <span>This preview has no login, server-side tenant guards, database, invite links or payment connections. Do not use it with real data.</span>
+          <span>Auth0 identity-only login exists, but this preview has no verified tenant permissions, organization writes, invitation service or payment connection. Do not use real data.</span>
         </div>
       </div>
       <div className="settings-grid">
