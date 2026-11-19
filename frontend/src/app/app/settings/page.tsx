@@ -9,7 +9,7 @@ const sections = [
   },
   {
     title: "Members and invitations",
-    body: "Owner/admin roles are not universal sales or merchant data grants. Real identity and invitations remain unimplemented.",
+    body: "P4 now includes a fictional membership and invitation preview. Owner roles are not universal CRM permissions; real invites and identity-to-tenant mapping are not enabled.",
     icon: UsersRound,
   },
   {
