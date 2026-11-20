@@ -35,3 +35,7 @@ May implement typed policy checks, read-only Prisma projections, SQL FORCE RLS s
 
 ## Synthetic-only engineering verification (2026-11-20)
 Under the approved D1/D2/D4/D5 scope, the team implemented read-only Prisma and test-only Express queries for P1.06 business roles using disposable `p4_r7_ci`. [Run #44766524774](https://github.com/owaisprog/Zoho-Clone/actions/runs/44766524774) **4/4 CI jobs and 269/269 automated tests passed**, plus real PostgreSQL/HTTP revocation, private field and owner-no-CRM checks. [Full Batch 08 report](../engineering/p4-exit-integration-batch-08.md). **No additional owner permission approval is implied**; the remaining P4 release and OPEN-003 scope are still OPEN.
+
+
+## Phase 4 synthetic search/report and audit rehearsal (2026-11-20)
+The approved D1/D2/D4/D5 rules now also guard CI-only bounded CRM search and visibility reporting. A **separate disposable CI-only audit trigger** demonstrates transactional role/team revocation records; **it does not constitute approval for business role-management writes, delegated permissions or a production audit ledger**. [Actions #44769982822](https://github.com/owaisprog/Zoho-Clone/actions/runs/44769982822) passed 277 synthetic unit/script tests and the PostgreSQL/HTTP checks. See [Batch 09 report](../engineering/p4-exit-integration-batch-09.md). OPEN-003 and all Phase 4 security/release gates remain OPEN.
