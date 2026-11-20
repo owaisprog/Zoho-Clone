@@ -96,6 +96,8 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/004_p4_synthetic_identity_foundation.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/005_p4_synthetic_membership_invitations.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/005_p4_synthetic_memberships_invitations.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/006_p4_synthetic_access_roles_teams.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/006_p4_synthetic_access_roles_teams.sql
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
