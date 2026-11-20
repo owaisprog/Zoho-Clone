@@ -46,6 +46,7 @@ function mockedPrisma(options: FakeDbOptions = {}) {
         privileged: options.privileged ?? false,
         isOwner: options.ownTable ?? false,
         canRead: true,
+        canReadLabel: true, canReadPrivateNote: false, canReadPrivateFile: false,
         canWrite: options.canWrite ?? false,
       }];
     },

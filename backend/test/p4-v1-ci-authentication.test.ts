@@ -49,7 +49,7 @@ function fakePrisma(args: {
       if(sql.includes("set_config"))return [{}];
       return [{
         role:"p4_v1_ci_runtime",privileged:false,isOwner:false,
-        canRead:true,canWrite:false,
+        canRead:true,canReadLabel:true,canReadPrivateNote:false,canReadPrivateFile:false,canWrite:false,
       }];
     },
     v1Membership:{

@@ -106,13 +106,19 @@ export async function withP4V1CiPrismaTenant<T>(
         privileged: boolean;
         isOwner: boolean;
         canRead: boolean;
+        canReadLabel: boolean;
+        canReadPrivateNote: boolean;
+        canReadPrivateFile: boolean;
         canWrite: boolean;
       }>>(
         "SELECT current_user AS role," +
         " (SELECT rolsuper OR rolbypassrls FROM pg_roles WHERE rolname=current_user) AS privileged," +
         " (SELECT c.relowner = (SELECT oid FROM pg_roles WHERE rolname=current_user)" +
         " FROM pg_class c WHERE c.oid='p4_v1_ci.crm_leads'::regclass) AS \"isOwner\"," +
-        " has_table_privilege(current_user,'p4_v1_ci.crm_leads','SELECT') AS \"canRead\"," +
+        " has_any_column_privilege(current_user,'p4_v1_ci.crm_leads','SELECT') AS \"canRead\"," +
+        " has_column_privilege(current_user,'p4_v1_ci.crm_leads','display_name','SELECT') AS \"canReadLabel\"," +
+        " has_column_privilege(current_user,'p4_v1_ci.crm_leads','confidential_note','SELECT') AS \"canReadPrivateNote\"," +
+        " has_column_privilege(current_user,'p4_v1_ci.file_metadata','private_object_locator','SELECT') AS \"canReadPrivateFile\"," +
         " (has_table_privilege(current_user,'p4_v1_ci.crm_leads','INSERT') OR" +
         " has_table_privilege(current_user,'p4_v1_ci.crm_leads','UPDATE') OR" +
         " has_table_privilege(current_user,'p4_v1_ci.crm_leads','DELETE')) AS \"canWrite\"",
@@ -120,7 +126,8 @@ export async function withP4V1CiPrismaTenant<T>(
       if (checked.length !== 1 ||
           checked[0]?.role !== CI_ROLE || checked[0]?.privileged !== false ||
           checked[0]?.isOwner !== false || checked[0]?.canRead !== true ||
-          checked[0]?.canWrite !== false) {
+          checked[0]?.canReadLabel !== true || checked[0]?.canReadPrivateNote !== false ||
+          checked[0]?.canReadPrivateFile !== false || checked[0]?.canWrite !== false) {
         throw new P4V1CiPrismaDeniedError();
       }
       const membership = await tx.v1Membership.findUnique({
