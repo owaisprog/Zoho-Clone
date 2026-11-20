@@ -90,7 +90,7 @@ function fakeDb(settings:FakeSettings={}) {
     },
   };
   const prisma={
-    async $transaction<T>(f:(tx:typeof tx)=>Promise<T>):Promise<T>{
+    async $transaction<T>(f:(client:typeof tx)=>Promise<T>):Promise<T>{
       return f(tx);
     },
   } as unknown as PrismaClient;
