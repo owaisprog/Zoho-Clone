@@ -21,7 +21,12 @@ This ledger uses implemented source and CI evidence separately from release gate
 | P4.13 | Permissions engine | Synthetic RBAC+record-owner/team ABAC default-deny evaluator and fictional UI matrix | OPEN: real API/UI authorization parity under live Auth0/Prisma and record/field policies |
 | P4.14 | Access revocation | Atomic synthetic disable/revision/audit service, tests prove fresh membership denies removed actor | OPEN: real DELETE members API, Auth0 access-token revocation and cache/worker enforcement |
 | P4.15 | Departments and teams | CI-only same-org FKs/RLS and backend team visibility/create contract; fictional UI | OPEN: real department/team APIs, manager assignment and CRM/HR acceptance |
-| P4.16–P4.25 | Preferences, app registry, workspace nav, audit, files, notifications, admin boundaries | NOT STARTED in P4 production scope | OPEN |
+| P4.16 | Organization preferences | Synthetic org preferences validation/read/update contract, versioned owner writes, user timezone precedence, fictional settings preview, CI-only table | OPEN: authenticated GET/PATCH, actual DB writes, reporting/billing approvals |
+| P4.17 | Application registry | Fixed app catalog, separate entitlement and permission evaluation, direct-URL denial tests in isolated Express app, CI-only app grants | OPEN: real GET /apps, tenant entitlements and direct-route security |
+| P4.18 | Workspace navigation shell | Keyboard-searchable demo app launcher, locked cards, responsive workspace navigation links, fictional manifest | OPEN: backend /navigation/manifest and accessibility/real authenticated navigation |
+| P4.19 | Audit log engine | Redacted append-only event contract, owner-only read, CI-only FORCE RLS table and separate INSERT-only writer role, fictional filterable log | OPEN: real audit GET API, all writes wired, retention/security reviews |
+| P4.20 | File upload service | Same-org/record metadata validator, explicit deny of signed URLs, CI-only quarantined file/version metadata, disabled upload UI | OPEN: private provider, scanning/quarantine, real record authorization/upload API |
+| P4.21–P4.25 | File download/deletion, notifications, platform admin, support access and org deletion/export | NOT STARTED in P4 production scope | OPEN |
 
 ## CI checkpoint
 
@@ -59,5 +64,5 @@ role, member, department, team or permission APIs.
 permissions, files and audit, executed acceptance evidence, explicit owner signoff.
 All original 14 risks, 12 unresolved decisions and unexecuted 727 P1 tests
 remain open; P3 staging/ADR and P2.02 review remain open.
-P4.01–P4.15 are synthetic development implementation slices, not formally
+P4.01–P4.20 are synthetic development implementation slices, not formally
 completed product features. No commercial/external authorization granted.
