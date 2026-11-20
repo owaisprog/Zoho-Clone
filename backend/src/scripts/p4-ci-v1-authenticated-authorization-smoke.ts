@@ -19,10 +19,12 @@ import {
 } from "../platform/p4-v1-ci-identity.js";
 import {
   assertP4V1CiPrismaEnvironment,
-  createP4V1CiPrismaClient,
+  createP4V1CiPrismaClient, withP4V1CiPrismaTenant,
+  P4V1CiPrismaDeniedError,
 } from "../platform/p4-v1-ci-prisma.js";
 import {
   readP4V1CiAppManifest, readP4V1CiAuthorizedApp,
+  readP4V1CiAuthorizedLead,
   P4V1CiAppDeniedError,
 } from "../platform/p4-v1-ci-authorized-app.js";
 import { createP4V1CiTestOnlyRouter } from "../platform/p4-v1-ci-authenticated-router.js";
@@ -33,6 +35,9 @@ const EXPECTED = {
 } as const;
 const NOW = 2_000_000_000;
 const ALICE = "10000000-0000-4000-8000-0000000000a1";
+const CHARLIE = "10000000-0000-4000-8000-0000000000c1";
+const ORCHID_LEAD = "40000000-0000-4000-8000-000000000001";
+const CEDAR_LEAD = "40000000-0000-4000-8000-000000000002";
 const ORCHID = "20000000-0000-4000-8000-000000000001";
 const CEDAR = "20000000-0000-4000-8000-000000000002";
 const FOREIGN = "20000000-0000-4000-8000-000000000099";
@@ -81,6 +86,49 @@ async function main() {
       organizationId: ORCHID, actorId: actor,
     }, "finance", process.env), P4V1CiAppDeniedError);
 
+
+    // Provisional TEAM/RECORD ABAC: Charlie has no owned leads, yet is
+    // assigned to Orchid's team. File/audit data must stay private.
+    const charlie = await resolveP4V1CiActor(
+      { ...alice, subject:"auth0|demo-charlie" }, EXPECTED, lookup, NOW,
+    );
+    assert.equal(charlie,CHARLIE);
+    const memberScope = { organizationId: ORCHID, actorId: charlie };
+    const assigned = await readP4V1CiAuthorizedApp(
+      prisma, memberScope, "crm", process.env,
+    );
+    assert.equal(assigned.leads.length, 2);
+    const assignedRecord = await readP4V1CiAuthorizedLead(
+      prisma, memberScope, ORCHID_LEAD, process.env,
+    );
+    assert.equal(assignedRecord.id,ORCHID_LEAD);
+    assert.deepEqual(Object.keys(assignedRecord).sort(),[
+      "id","label","organizationId",
+    ]);
+    await assert.rejects(readP4V1CiAuthorizedLead(
+      prisma, memberScope, CEDAR_LEAD, process.env,
+    ),P4V1CiAppDeniedError);
+    await assert.rejects(readP4V1CiAuthorizedLead(
+      prisma, memberScope, "40000000-0000-1000-8000-000000000001", process.env,
+    ),P4V1CiAppDeniedError);
+    await assert.rejects(readP4V1CiAppManifest(prisma, {
+      organizationId: CEDAR, actorId: charlie,
+    },process.env),P4V1CiAppDeniedError);
+
+    // SQL column grants deny private fields even if developer code bypasses
+    // explicit ORM selects and requests raw SQL inside the protected tx.
+    for(const statement of [
+      "SELECT confidential_note FROM p4_v1_ci.crm_leads LIMIT 1",
+      "SELECT private_object_locator FROM p4_v1_ci.file_metadata LIMIT 1",
+    ]) {
+      await assert.rejects(
+        withP4V1CiPrismaTenant(prisma, memberScope, async tx => {
+          await tx.$queryRawUnsafe(statement);
+        },process.env),
+        P4V1CiPrismaDeniedError,
+      );
+    }
+
     // Subject is mapped globally, but revoked membership still denies access.
     const bob = await resolveP4V1CiActor(
       { ...alice, subject: "auth0|demo-bob" }, EXPECTED, lookup, NOW,
@@ -126,6 +174,28 @@ async function main() {
     const allowed = await request(good).get("/_p4_ci/" + ORCHID + "/apps/crm");
     assert.equal(allowed.status, 200);
     assert.equal(allowed.body.data.leads.length, 2);
+    const signedMemberApp = testApp({ ...alice, subject:"auth0|demo-charlie" });
+    const allowedRecord = await request(signedMemberApp).get(
+      "/_p4_ci/" + ORCHID + "/apps/crm/leads/" + ORCHID_LEAD,
+    );
+    assert.equal(allowedRecord.status,200);
+    assert.equal(allowedRecord.body.data.id,ORCHID_LEAD);
+    const foreignRecord = await request(signedMemberApp).get(
+      "/_p4_ci/" + ORCHID + "/apps/crm/leads/" + CEDAR_LEAD,
+    );
+    assert.equal(foreignRecord.status,403);
+    const foreignTenantRecord = await request(signedMemberApp).get(
+      "/_p4_ci/" + CEDAR + "/apps/crm/leads/" + CEDAR_LEAD,
+    ).set("x-role","OWNER");
+    assert.equal(foreignTenantRecord.status,403);
+    const invalidRecord = await request(good).get(
+      "/_p4_ci/" + ORCHID + "/apps/crm/leads/not-a-uuid",
+    );
+    assert.equal(invalidRecord.status,403);
+    const noRecordMutation = await request(good).post(
+      "/_p4_ci/" + ORCHID + "/apps/crm/leads/" + ORCHID_LEAD,
+    );
+    assert.equal(noRecordMutation.status,404);
     const wrong = await request(good).get("/_p4_ci/" + FOREIGN + "/apps/crm")
       .set("x-org-id", ORCHID).set("x-role","OWNER");
     assert.equal(wrong.status, 403);
@@ -152,7 +222,7 @@ async function main() {
     );
     assert.deepEqual(leftover, [{ role: "demo_ci", actor: null, tenant: null }]);
     process.stdout.write(
-      "P4 integration 05: exact subject UUID mapping, fresh Prisma membership," +
+      "P4 integration 06: Auth0 subject, TEAM/RECORD RLS, sensitive-column denial," +
       " independent app grants/RBAC and synthetic HTTP 401/403 checks PASS\n",
     );
   } finally {
