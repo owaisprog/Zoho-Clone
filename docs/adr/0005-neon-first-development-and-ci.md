@@ -42,3 +42,7 @@ backups, data key strategy and security approval remain outstanding.
 
 ## Architecture v1.0 (2026-11-20)
 The owner approved the shared PostgreSQL/Prisma tenant model but **did not authorize applying CI-only SQL candidates to Neon or connecting customer workloads**. The prior Neon development account stays synthetic-only with its existing restrictions. New UUIDv4 schema design needs separate reviewed migration/staging tests. [ADR 0007](0007-architecture-v1-owner-approval.md).
+
+
+## P4 Prisma development isolation (2026-11-20)
+The approved new CI Prisma client targets **only** `p4_v1_ci` in disposable `zoho_clone_synthetic_ci` on localhost with GitHub Actions environment checks; it is not the owner's existing Neon schema or development credential. Its signed-in user is a fixed fictional UUID fixture, not live Auth0. The original Neon read-only smoke setup remains untouched. [CI #44745186348](https://github.com/owaisprog/Zoho-Clone/actions/runs/44745186348) passed. Paid/staging/production provider and real migrations remain unapproved.
