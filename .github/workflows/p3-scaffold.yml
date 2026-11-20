@@ -102,6 +102,8 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/007_p4_synthetic_settings_apps_audit_files.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/008_p4_synthetic_continuity.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/008_p4_synthetic_continuity.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/009_p4_synthetic_verified_identity_lookup.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/009_p4_synthetic_verified_identity_lookup.sql
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
