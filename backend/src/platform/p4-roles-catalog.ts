@@ -24,7 +24,7 @@ const RESERVED: Readonly<Record<ReservedRoleCode, P4RoleDefinition>> = Object.fr
   }),
   MEMBER: Object.freeze({
     code: "MEMBER", label: "Organization member (fictional)", reserved: true,
-    permissions: Object.freeze(["crm.leads.read.own", "teams.read.assigned"]),
+    permissions: Object.freeze(["crm.leads.read.own", "teams.read.assigned"] as const),
   }),
 });
 /** Review custom privileges per P1.06 before enabling real writes. */
