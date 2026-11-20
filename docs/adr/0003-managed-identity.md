@@ -30,3 +30,7 @@ configuration tests. No owner tenant, real keys, live sign-in, session revocatio
 organization policy or secure CRM data access is yet connected/verified.
 The existing injected synthetic identity seam remains test-only and must not
 be treated as a true Auth0 user mapping.
+
+
+## Architecture v1.0 confirmation (2026-11-20)
+The owner expressly reaffirmed **Auth0**, plus independent active organization membership, entitlement, RBAC, ABAC and RLS boundaries. This **does not** signify real Auth0 session/MFA/revocation acceptance or final permission matrix approval. OPEN-001/OPEN-003 remain open. [ADR 0007](0007-architecture-v1-owner-approval.md).

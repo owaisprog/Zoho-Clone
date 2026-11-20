@@ -38,3 +38,7 @@ tenant partitioning or growth requires a different topology.
 Owner reported actual restricted Neon Prisma smoke PASS 2026-11-20;
 this is development evidence only. Region, paid costs, staging, production
 backups, data key strategy and security approval remain outstanding.
+
+
+## Architecture v1.0 (2026-11-20)
+The owner approved the shared PostgreSQL/Prisma tenant model but **did not authorize applying CI-only SQL candidates to Neon or connecting customer workloads**. The prior Neon development account stays synthetic-only with its existing restrictions. New UUIDv4 schema design needs separate reviewed migration/staging tests. [ADR 0007](0007-architecture-v1-owner-approval.md).

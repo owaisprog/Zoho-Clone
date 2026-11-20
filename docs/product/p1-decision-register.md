@@ -64,3 +64,7 @@ The machine-readable [open decision log](p1-decision-backlog.csv) contains all 1
 - [x] P1.10 issue #23 closed and P2.01 Brand and Design Tokens started; 12 decisions stay OPEN.
 
 **No new architectural, legal, commercial or security certification decision is claimed as already signed by the owner.**
+
+
+## Architecture v1.0 partial decisions, no closure (2026-11-20)
+[ADR 0007](../adr/0007-architecture-v1-owner-approval.md) records express owner approval for shared PostgreSQL/FORCE RLS with UUIDv4 new IDs, Auth0/independent membership/RBAC/ABAC/entitlements, private provider-neutral storage/quarantine/scanning, transactional outbox + Redis/BullMQ when appropriate, and separate development/staging/production. The listed **12 tracked decisions remain OPEN**: key/FK migration and authorization granularity, real Auth0 MFA/revocation, worker delivery, storage provider, hosting/residency/retention, pricing, security, legal and pilot/release gates are not thereby complete. Never count synthetic CI or architecture signoff as execution of the original 727 P1.09 tests. No Neon mutation, paid cloud, deployment or merge approved.

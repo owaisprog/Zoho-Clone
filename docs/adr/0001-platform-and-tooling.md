@@ -43,3 +43,7 @@ authorization policies remain provisional. GitHub required-check enforcement,
 actual staging deployment, security reviews, and approval of the other ADRs
 are separate P3 gates. The owner-approved technology choices do not close
 any of the 12 P1.10 open decisions unless separately and explicitly resolved.
+
+
+## Owner Architecture v1.0 decision (2026-11-20)
+The previous stack/npm-workspaces/modular-monolith decisions are **reaffirmed** for internal development and P4 staging preparation. See [ADR 0007](0007-architecture-v1-owner-approval.md). This is not a release, provider, region, deployment or cloud-spend approval.
