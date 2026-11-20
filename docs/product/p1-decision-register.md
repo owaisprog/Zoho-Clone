@@ -80,3 +80,7 @@ The specific P4 D1/D2/D4/D5 owner decisions are recorded in [ADR 0008](../adr/00
 
 ## 2026-11-20 — Phase 4 Batch 09 CI-only audit/search checkpoint
 Current owner-approved D1/D2/D4/D5 synthetic rules are enforced on scoped CRM search and small read-only reports, with an isolated fictional PostgreSQL role/team audit rehearsal. [GitHub Actions #44769982822](https://github.com/owaisprog/Zoho-Clone/actions/runs/44769982822) passed 277 tests and four jobs. **No new owner approval for real writes, exports, commercial reporting or role delegation**; OPEN-003 and the full 12 original decisions remain tracked OPEN. Original 14 risks, 727 unexecuted P1.09 acceptance cases and external release gates remain open.
+
+
+## 2026-11-21 — Batch 10 proposed role/team change contract, OPEN-003 unchanged
+Engineering added a **decision-only** role/team change evaluator and CI-only candidate 015 with simulated owner/tenant/version/idempotency/audit protection. [Actions #44832334505](https://github.com/owaisprog/Zoho-Clone/actions/runs/44832334505) **4/4 PASS, 285/285 automated tests PASS** plus real disposable PostgreSQL. Proposed R10-C1–C5 in [owner review](../security/p4-batch10-role-team-change-contract-owner-review.md) are **NOT APPROVED** and are part of the still OPEN-003 authorization design/acceptance questions; **all 12 original tracked decisions remain OPEN** alongside original 14 risks, 727 unexecuted P1.09 cases and all staging/production/provider/release gates. No live role mutation endpoint or Neon SQL change.

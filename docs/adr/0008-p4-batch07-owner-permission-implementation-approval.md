@@ -23,7 +23,7 @@ May implement typed policy checks, read-only Prisma projections, SQL FORCE RLS s
 - The historical **OPEN-003** decision remains **OPEN** for complete role-grant workflows, all resource/action and field lists, high-risk transitions, true customer ACLs, independent acceptance tests, audit and staging security. Approval D1/D2/D4/D5 is a *partial implementation policy decision*, not closure of OPEN-003 or P4.
 - The original **12 tracked decisions, 14 original risks and 727 unexecuted P1.09 acceptance cases** remain tracked as OPEN. The 286 P1.06 entries stay APPROVED_DESIGN only, not complete executable P4 coverage.
 - Real Auth0 sessions/JWKS/MFA/revocation, private object storage/quarantine/scanner, outbox workers, hosting/storage provider, data region and retention, backup/rollback and all remaining P2/P3/P4 gates remain open.
-- **NOT authorized:** Neon SQL candidate execution (004–014), customer data, spending, staging or production deployment, merge to `main`, live file/download APIs, paid pilot or launch.
+- **NOT authorized:** Neon SQL candidate execution (004–015), customer data, spending, staging or production deployment, merge to `main`, live file/download APIs, paid pilot or launch.
 
 ## Implementation traceability
 
@@ -39,3 +39,7 @@ Under the approved D1/D2/D4/D5 scope, the team implemented read-only Prisma and 
 
 ## Phase 4 synthetic search/report and audit rehearsal (2026-11-20)
 The approved D1/D2/D4/D5 rules now also guard CI-only bounded CRM search and visibility reporting. A **separate disposable CI-only audit trigger** demonstrates transactional role/team revocation records; **it does not constitute approval for business role-management writes, delegated permissions or a production audit ledger**. [Actions #44769982822](https://github.com/owaisprog/Zoho-Clone/actions/runs/44769982822) passed 277 synthetic unit/script tests and the PostgreSQL/HTTP checks. See [Batch 09 report](../engineering/p4-exit-integration-batch-09.md). OPEN-003 and all Phase 4 security/release gates remain OPEN.
+
+
+## Batch 10 additional unapproved delegation contract (2026-11-21 local)
+The earlier owner approval of D1/D2/D4/D5 **does not extend** to actual role/team management. A pure P1.06 review function and isolated CI-only candidate 015 demonstrate last-owner denial, synthetic change audit and optimistic idempotency, with no mounted HTTP writer. [Run #44832334505](https://github.com/owaisprog/Zoho-Clone/actions/runs/44832334505) passed 285 automated tests/4 CI jobs and disposable PostgreSQL checks. [New R10-C1–C5 contract](../security/p4-batch10-role-team-change-contract-owner-review.md) is **proposed and NOT APPROVED**. OPEN-003, all other decisions and release gates remain OPEN.
