@@ -22,6 +22,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const primary = [
   { label: "Overview", href: "/app", icon: LayoutDashboard },
+  { label: "App launcher · preview", href: "/app/apps", icon: LayoutGrid },
   { label: "Sales CRM", href: "/app/sales/leads", icon: UsersRound },
   { label: "Merchant Operations", href: "/app/operations/applications", icon: ClipboardList },
   { label: "Tasks (demo)", href: "/app/tasks", icon: ListTodo },
