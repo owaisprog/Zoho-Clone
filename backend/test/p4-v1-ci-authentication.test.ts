@@ -6,6 +6,7 @@ import {
 } from "../src/platform/p4-v1-ci-identity.js";
 import {
   readP4V1CiAppManifest, readP4V1CiAuthorizedApp,
+  readP4V1CiAuthorizedLead,
   P4V1CiAppDeniedError,
 } from "../src/platform/p4-v1-ci-authorized-app.js";
 import type { P4VerifiedProviderToken } from "../src/platform/p4-auth0-subject-bridge.js";
@@ -40,6 +41,8 @@ function fakePrisma(args: {
   crmGrant?: boolean;
   permission?: boolean;
   tamper?: "duplicate"|"foreign_app"|"unknown_permission"|"bad_role";
+  recordMissing?: boolean;
+  recordForeign?: boolean;
 }={}) {
   let reads=0;
   const calls:{model:string;options:unknown}[]=[];
@@ -76,6 +79,14 @@ function fakePrisma(args: {
       },
     },
     v1Lead:{
+      async findUnique({where}:{where:unknown}){
+        reads++;calls.push({model:"record",options:where});
+        if(args.recordMissing)return null;
+        return {id:args.recordForeign?
+          "40000000-0000-4000-8000-000000000002":
+          "40000000-0000-4000-8000-000000000001",
+          displayName:"Demo Orchid Lead",confidentialNote:"Demo PRIVATE"};
+      },
       async findMany({where}:{where:unknown}){
         reads++;calls.push({model:"lead",options:where});
         return [{id:"40000000-0000-4000-8000-000000000001",
@@ -181,5 +192,43 @@ describe("P4.17/13 separate entitlement and RBAC in the fresh Prisma transaction
     await assert.rejects(readP4V1CiAuthorizedApp(f.prisma,
       {organizationId:ORCHID,actorId:ALICE},"finance",CI),P4V1CiAppDeniedError);
     assert.equal(f.reads,0);
+  });
+});
+
+
+describe("P4.13 direct lead record and field authorization",()=>{
+  const scope={organizationId:ORCHID,actorId:ALICE};
+  const ownRecord="40000000-0000-4000-8000-000000000001";
+  it("requires exact tenant+record key and returns only allowlisted fields",async()=>{
+    const f=fakePrisma();
+    const result=await readP4V1CiAuthorizedLead(f.prisma,scope,ownRecord,CI);
+    assert.deepEqual(result,{
+      organizationId:ORCHID,id:ownRecord,label:"Demo Orchid Lead",
+    });
+    assert.equal(JSON.stringify(result).includes("PRIVATE"),false);
+    assert.equal(f.reads,1);
+    assert.ok(f.calls.some(c=>c.model==="record" &&
+      JSON.stringify(c.options).includes(ORCHID) &&
+      JSON.stringify(c.options).includes(ownRecord)));
+  });
+  it("denies invalid, missing and RLS-filtered foreign records",async()=>{
+    const f=fakePrisma();
+    await assert.rejects(readP4V1CiAuthorizedLead(f.prisma,scope,
+      "not-a-uuid",CI),P4V1CiAppDeniedError);
+    assert.equal(f.reads,0);
+    for(const config of [{recordMissing:true},{recordForeign:true}]){
+      const fake=fakePrisma(config);
+      await assert.rejects(readP4V1CiAuthorizedLead(fake.prisma,scope,
+        ownRecord,CI),P4V1CiAppDeniedError);
+    }
+  });
+  it("never queries a lead when app grant or role permission is absent",async()=>{
+    for(const config of [{crmGrant:false},{permission:false},
+      {member:"REVOKED" as const},{member:"MISSING" as const}]){
+      const fake=fakePrisma(config);
+      await assert.rejects(readP4V1CiAuthorizedLead(fake.prisma,scope,
+        ownRecord,CI),P4V1CiAppDeniedError);
+      assert.equal(fake.reads,0);
+    }
   });
 });
