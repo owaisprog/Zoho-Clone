@@ -124,6 +124,11 @@ jobs:
         run: |
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/013_p4_r7_approved_permission_rehearsal.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/013_p4_r7_approved_permission_rehearsal.sql
+      - name: Verify owner-approved D1/D2/D4/D5 in real Prisma and synthetic HTTP (disposable CI)
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r8-approved-authz-smoke.js
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
