@@ -2,6 +2,7 @@
 @import "../styles/tokens.css";
 @import "../styles/p4-foundation.css";
 @import "../styles/p4-memberships.css";
+@import "../styles/p4-access.css";
 
 * { box-sizing: border-box; }
 html { min-width: 320px; }
