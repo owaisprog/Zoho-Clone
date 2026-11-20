@@ -46,27 +46,31 @@ RETURNS trigger LANGUAGE plpgsql SET search_path=pg_catalog AS $body$
 BEGIN
  -- Until last-owner ownership transfer flow is separately approved, NEVER
  -- modify an existing ORG_OWNER grant or deactivate an active owner member.
- IF TG_TABLE_NAME='role_grants' AND OLD.role_code='ORG_OWNER' THEN
-   IF TG_OP='DELETE' THEN
-     RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
+ IF TG_TABLE_NAME='role_grants' THEN
+   IF OLD.role_code='ORG_OWNER' THEN
+     IF TG_OP='DELETE' THEN
+       RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
+     END IF;
+     IF NEW.active IS DISTINCT FROM OLD.active OR
+        NEW.role_code IS DISTINCT FROM OLD.role_code OR
+        NEW.actor_id IS DISTINCT FROM OLD.actor_id OR
+        NEW.organization_id IS DISTINCT FROM OLD.organization_id THEN
+       RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
+     END IF;
    END IF;
-   IF NEW.active IS DISTINCT FROM OLD.active OR
-      NEW.role_code IS DISTINCT FROM OLD.role_code OR
-      NEW.actor_id IS DISTINCT FROM OLD.actor_id OR
-      NEW.organization_id IS DISTINCT FROM OLD.organization_id THEN
-     RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
-   END IF;
- ELSIF TG_TABLE_NAME='memberships' AND OLD.active AND
-   EXISTS(SELECT 1 FROM p4_r7_ci.role_grants r
+ ELSIF TG_TABLE_NAME='memberships' THEN
+   IF OLD.active AND EXISTS(
+     SELECT 1 FROM p4_r7_ci.role_grants r
      WHERE r.organization_id=OLD.organization_id AND r.actor_id=OLD.actor_id
        AND r.role_code='ORG_OWNER' AND r.active) THEN
-   IF TG_OP='DELETE' THEN
-     RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
-   END IF;
-   IF NEW.active IS DISTINCT FROM OLD.active OR
-      NEW.actor_id IS DISTINCT FROM OLD.actor_id OR
-      NEW.organization_id IS DISTINCT FROM OLD.organization_id THEN
-     RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
+     IF TG_OP='DELETE' THEN
+       RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
+     END IF;
+     IF NEW.active IS DISTINCT FROM OLD.active OR
+        NEW.actor_id IS DISTINCT FROM OLD.actor_id OR
+        NEW.organization_id IS DISTINCT FROM OLD.organization_id THEN
+       RAISE EXCEPTION 'P4_R10_OWNER_TRANSFER_NOT_APPROVED';
+     END IF;
    END IF;
  END IF;
  IF TG_OP='DELETE' THEN RETURN OLD; END IF;
