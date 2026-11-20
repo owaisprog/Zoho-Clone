@@ -47,9 +47,11 @@ export function createP4SyntheticAuditEvent(
   if (!validTenant(tenant) || !(action in ACTIONS) ||
       typeof objectId !== "string" || !ID_PATTERN.test(objectId) ||
       !Number.isSafeInteger(nowMs) || nowMs <= 0 ||
-      !SYNTHETIC_ORG_ID.test(idFactory())) throw new P4AuditDeniedError();
+      !Number.isFinite(nowMs) || nowMs > 8_640_000_000_000_000) throw new P4AuditDeniedError();
+  const eventId = idFactory();
+  if (!SYNTHETIC_ORG_ID.test(eventId)) throw new P4AuditDeniedError();
   return Object.freeze({
-    eventId: idFactory(), orgId: tenant.orgId,
+    eventId, orgId: tenant.orgId,
     actorUserId: tenant.userId, action, objectType: ACTIONS[action],
     objectId, before: "[REDACTED]" as const,
     after: "[REDACTED]" as const, createdAt: new Date(nowMs).toISOString(),
