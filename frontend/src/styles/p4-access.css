@@ -1,0 +1,11 @@
+/* P4.12-15 synthetic role, revocation and team preview */
+.p4-access-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; align-items: start; }
+.p4-access-role-picker { display: grid; gap: 9px; margin: 20px 0; }
+.p4-access-matrix { border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; }
+.p4-access-matrix-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; border-bottom: 1px solid var(--border-soft); font-size: 13px; }
+.p4-access-matrix-row:last-child { border-bottom: 0; }
+.p4-policy-state { white-space: nowrap; font-size: 11px; font-weight: 700; border: 1px solid var(--border-soft); border-radius: 999px; padding: 5px 8px; }
+.p4-policy-state.allowed { color: var(--ink); }
+.p4-policy-state.denied { color: var(--muted); }
+@media(max-width:980px) { .p4-access-grid { grid-template-columns: 1fr; } }
+@media(max-width:520px) { .p4-access-matrix-row { align-items:flex-start; flex-direction:column; } }
