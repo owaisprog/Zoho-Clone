@@ -165,3 +165,5 @@ jobs:
         run: npx --yes prisma@7.9.1 validate --schema backend/db/schema.prisma
       - name: Validate isolated UUIDv4 Prisma CI model (no database connection)
         run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-v1-ci.prisma
+      - name: Validate owner-approved R7 business role CI-only Prisma schema
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-r7-ci.prisma

@@ -13,10 +13,11 @@
     "start": "node dist/server.js",
     "typecheck": "npm run prisma:generate && tsc --noEmit -p tsconfig.json",
     "test": "tsx --test test/*.test.ts",
-    "prisma:generate": "prisma generate --schema db/schema.prisma && prisma generate --schema db/p4-v1-ci.prisma",
+    "prisma:generate": "prisma generate --schema db/schema.prisma && prisma generate --schema db/p4-v1-ci.prisma && prisma generate --schema db/p4-r7-ci.prisma",
     "smoke:synthetic-prisma": "node --env-file=.env.p3.runtime.local dist/scripts/p3-prisma-local-smoke.js",
     "smoke:synthetic-neon": "node --env-file=.env.neon.local dist/scripts/p3-prisma-neon-smoke.js",
-    "prisma:validate:v1-ci": "prisma validate --schema db/p4-v1-ci.prisma"
+    "prisma:validate:v1-ci": "prisma validate --schema db/p4-v1-ci.prisma",
+    "prisma:validate:r7-ci": "prisma validate --schema db/p4-r7-ci.prisma"
   },
   "dependencies": {
     "@zoho-clone/demo-contracts": "*",

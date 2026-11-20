@@ -1,0 +1,62 @@
+// OWNER APPROVED 2026-11-20 ADR 0008: disposable CI ONLY.
+// Read-only projection of candidate 013 p4_r7_ci. Not a Neon migration.
+// SQL/DB policies, not this Prisma schema, enforce FORCE RLS and UUIDv4.
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/p4-r7-ci"
+  moduleFormat = "esm"
+  importFileExtension = "js"
+}
+datasource db {
+  provider = "postgresql"
+  schemas = ["p4_r7_ci"]
+}
+model R7Membership {
+  orgId String @map("organization_id") @db.Uuid
+  actorId String @map("actor_id") @db.Uuid
+  active Boolean
+  @@id([orgId,actorId])
+  @@map("memberships")
+  @@schema("p4_r7_ci")
+}
+model R7RoleGrant {
+  orgId String @map("organization_id") @db.Uuid
+  actorId String @map("actor_id") @db.Uuid
+  roleCode String @map("role_code") @db.Text
+  active Boolean
+  @@id([orgId,actorId,roleCode])
+  @@map("role_grants")
+  @@schema("p4_r7_ci")
+}
+model R7AppGrant {
+  orgId String @map("organization_id") @db.Uuid
+  appCode String @map("app_code") @db.Text
+  active Boolean
+  @@id([orgId,appCode])
+  @@map("app_grants")
+  @@schema("p4_r7_ci")
+}
+model R7TeamGrant {
+  orgId String @map("organization_id") @db.Uuid
+  teamId String @map("team_id") @db.Uuid
+  actorId String @map("actor_id") @db.Uuid
+  active Boolean
+  managed Boolean
+  @@id([orgId,teamId,actorId])
+  @@map("team_grants")
+  @@schema("p4_r7_ci")
+}
+model R7Lead {
+  orgId String @map("organization_id") @db.Uuid
+  id String @db.Uuid
+  ownerUserId String @map("owner_user_id") @db.Uuid
+  teamId String @map("team_id") @db.Uuid
+  assignedUserId String? @map("assigned_user_id") @db.Uuid
+  displayName String @map("display_name") @db.Text
+  shareState String @map("share_state") @db.Text
+  // confidential_note is deliberately omitted from this client model,
+  // and the restricted CI role is also DENIED SELECT on that column.
+  @@id([orgId,id])
+  @@map("leads")
+  @@schema("p4_r7_ci")
+}
