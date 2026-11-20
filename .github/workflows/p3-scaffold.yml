@@ -120,6 +120,10 @@ jobs:
           node backend/dist/scripts/p4-ci-v1-uuidv4-tenant-smoke.js
           node backend/dist/scripts/p4-ci-v1-prisma-smoke.js
           node backend/dist/scripts/p4-ci-v1-authenticated-authorization-smoke.js
+      - name: Rehearse P1.06 business roles and private-team sharing after legacy CI smoke
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/013_p4_r7_approved_permission_rehearsal.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/013_p4_r7_approved_permission_rehearsal.sql
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
