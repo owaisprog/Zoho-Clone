@@ -15,6 +15,9 @@ import {
   readP4R7CiLead, readP4R7CiLeads,
 } from "./p4-r7-ci-prisma-reader.js";
 import { assertP4V1CiPrismaEnvironment } from "./p4-v1-ci-prisma.js";
+import {
+  searchP4R9CiLeads, readP4R9CiVisibleReport,
+} from "./p4-r9-ci-search-report.js";
 
 export type P4R8CiRouterDeps = Readonly<{
   prisma: PrismaClient;
@@ -71,6 +74,59 @@ export function createP4R8CiTestRouter(deps: P4R8CiRouterDeps): Router {
       res.status(403).json({ error: { code: "P4_ACCESS_DENIED" } });
     }
   }
+
+  // Search and reports MUST use identical Auth0->UUID mapping and same
+  // current PostgreSQL transaction/role checks as individual CRM reads.
+  async function handleReadOnlyQuery(
+    req: Request,res: import("express").Response,
+    kind:"search"|"report",
+  ){
+    res.setHeader("Cache-Control","no-store");
+    let actorId:string;
+    try{
+      actorId=await resolveP4V1CiActor(
+        await deps.resolveVerifiedSdkEvidence(req),
+        {issuer:deps.expectedIssuer,audience:deps.expectedAudience},
+        deps.mappingLookup,deps.nowEpochSeconds(),
+      );
+    }catch{
+      res.status(401).json({error:{code:"P4_IDENTITY_REQUIRED"}});
+      return;
+    }
+    if(typeof req.params.orgId!=="string"){
+      res.status(403).json({error:{code:"P4_ACCESS_DENIED"}});
+      return;
+    }
+    try{
+      const scope={organizationId:req.params.orgId,actorId};
+      if(kind==="search"){
+        const text=req.query.q;
+        const lim=req.query.limit;
+        const afterId=req.query.afterId;
+        if(typeof text!=="string"||
+           (lim!==undefined&&typeof lim!=="string")||
+           (afterId!==undefined&&typeof afterId!=="string")||
+           Object.keys(req.query).some(k=>!["q","limit","afterId"].includes(k))){
+          throw new Error("INVALID_CI_SEARCH_PARAMS");
+        }
+        const limit=lim===undefined?undefined:
+          /^\d{1,2}$/.test(lim)?Number(lim):NaN;
+        const result=await searchP4R9CiLeads(
+          deps.prisma,scope,{text,...(limit===undefined?{}:{limit}),
+            ...(afterId?{afterId}:{})},process.env,
+        );
+        res.status(200).json({scope:"disposable-ci-only",data:result});
+        return;
+      }
+      if(Object.keys(req.query).length!==0)throw new Error("INVALID_CI_REPORT_PARAMS");
+      const result=await readP4R9CiVisibleReport(deps.prisma,scope,process.env);
+      res.status(200).json({scope:"disposable-ci-only",data:result});
+    }catch{
+      res.status(403).json({error:{code:"P4_ACCESS_DENIED"}});
+    }
+  }
+  router.get("/:orgId/crm/search",async(req,res)=>handleReadOnlyQuery(req,res,"search"));
+  router.get("/:orgId/crm/report",async(req,res)=>handleReadOnlyQuery(req,res,"report"));
   router.get("/:orgId/crm/leads", async (req,res) => handle(req,res,false));
   router.get("/:orgId/crm/leads/:leadId", async (req,res) => handle(req,res,true));
   return router;
