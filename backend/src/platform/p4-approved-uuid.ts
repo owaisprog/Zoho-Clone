@@ -42,7 +42,7 @@ export function validateAuth0SubjectReference(
 ): Readonly<{ issuer: string; subject: string }> {
   if (!ref || typeof ref !== "object" || Array.isArray(ref)) throw new P4ApprovedKeyDeniedError();
   const r = ref as Record<string, unknown>;
-  // Only allow provider-issued subject from the verified server-side SDK.
+  // SHAPE VALIDATION ONLY: callers must separately verify signed provider claims.
   if (typeof r.issuer !== "string" || !/^https:\/\/[a-z0-9-]+(?:\.[a-z0-9-]+)*\.auth0\.com\/$/i.test(r.issuer) ||
       typeof r.subject !== "string" || !/^[A-Za-z0-9|:_-]{3,200}$/.test(r.subject)) {
     throw new P4ApprovedKeyDeniedError();
