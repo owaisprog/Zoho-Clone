@@ -113,6 +113,7 @@ jobs:
           npm ci --no-audit --no-fund
           npm run build -w backend
           node backend/dist/scripts/p4-ci-live-read.js
+          node backend/dist/scripts/p4-ci-v1-uuidv4-tenant-smoke.js
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
