@@ -34,3 +34,7 @@ be treated as a true Auth0 user mapping.
 
 ## Architecture v1.0 confirmation (2026-11-20)
 The owner expressly reaffirmed **Auth0**, plus independent active organization membership, entitlement, RBAC, ABAC and RLS boundaries. This **does not** signify real Auth0 session/MFA/revocation acceptance or final permission matrix approval. OPEN-001/OPEN-003 remain open. [ADR 0007](0007-architecture-v1-owner-approval.md).
+
+
+## Isolated subject-to-UUID integration (2026-11-20)
+A new CI-only role/function and `p4-v1-ci-identity.ts` now map a **test-injected** already-verified Auth0 issuer+subject shape to internal UUIDv4, independently of tenant app authorization. The test-only Express router requires fresh Prisma membership, enabled app grant and role permissions before reading. [Actions #44751975773](https://github.com/owaisprog/Zoho-Clone/actions/runs/44751975773) passed 244 tests/4 jobs. **No real Auth0 signature, MFA/recovery, access-token revocation, or true live account mapping verified by these tests.** No login credentials were configured; do not mount the test router in production. OPEN-001 and P4 external security gates remain OPEN.
