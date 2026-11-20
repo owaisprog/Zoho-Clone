@@ -19,3 +19,7 @@ Candidate `backend/db/schema.prisma` and
 data only** and are not deployable production tenant schemas. Runtime
 Prisma driver, migration drift and backup restore tests remain outstanding.
 **Approved 2026-11-20:** UUIDv4 opaque IDs for new internal users, organizations and business records; shared PostgreSQL, tenant-scoped keys/FKs, FORCE RLS and restricted tenant-local transactions. **Not approved or implemented for real data:** migrations of existing synthetic tables, production runtime DB role, final record/field ACL matrix, Auth0-to-internal UUID mapping, backup/recovery, or any deployment to Neon. OPEN-002/OPEN-003 remain tracked for these unresolved implementation/security requirements. See [ADR 0007](0007-architecture-v1-owner-approval.md).
+
+
+## Disposable physical-schema rehearsal (2026-11-20)
+Under owner-approved Architecture v1.0, `backend/db/candidates/010_p4_v1_uuidv4_relational_isolation.sql` validates canonical UUIDv4 domain IDs, global user/OIDC bindings, tenant-scoped composite FKs, FORCE RLS and nonowner roles against **temporary GitHub CI Postgres only**. [Run #44741204992](https://github.com/owaisprog/Zoho-Clone/actions/runs/44741204992) passed actual SQL/pooled-client isolation checks. This is not an approved Prisma schema, Neon migration or final P1.06 RBAC/ABAC matrix; those release gates remain OPEN. Never run candidate 010 on owner Neon.
