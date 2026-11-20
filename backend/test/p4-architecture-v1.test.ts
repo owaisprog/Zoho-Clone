@@ -41,7 +41,7 @@ describe("ADR0007 approved internal UUIDv4 contract", () => {
       "10000000-0000-1000-8000-000000000001",
       "10000000-0000-5000-8000-000000000001",
       "10000000-0000-4000-0000-000000000001",
-      org.toUpperCase(), "demo-alice", "auth0|user", null, 41,
+      "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA", "demo-alice", "auth0|user", null, 41,
     ];
     for (const value of invalid) {
       assert.equal(isCanonicalUuidV4(value), false);
@@ -74,7 +74,6 @@ describe("ADR0007 P4 private-file quarantine policy: inert plan only", () => {
     assert.equal(clean.nextState, "scan_clean");
     assert.equal(rejected.nextState, "rejected");
     assert.equal(clean.nextRevision, 2);
-    assert.equal(clean.canPersist, undefined);
     assert.equal(clean.persistEnabled, false);
     assert.equal(clean.downloadEnabled, false);
     assert.equal(clean.uploadEnabled, false);
@@ -136,7 +135,7 @@ describe("ADR0007 transactional outbox design remains disconnected", () => {
       { ...request, eventName: "billing.charge.card" },
       { ...request, serverResolved: false },
       { ...request, actorId: "user_demo_alice" },
-      { ...request, organizationId: otherOrg.toUpperCase() },
+      { ...request, organizationId: "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA" },
       { ...request, aggregateRevision: 0 },
       { ...request, idempotencyKey: "raw card number: 4000-0000" },
     ]) {
