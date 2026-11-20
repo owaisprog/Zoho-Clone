@@ -31,3 +31,7 @@ CI-only schema `backend/db/p4-v1-ci.prisma` generates a **separate** typed Prism
 
 ## CI-only split role and entitlement checkpoint (2026-11-20)
 Candidate `backend/db/candidates/011_p4_v1_ci_identity_app_access.sql` adds a **separate identity-function caller** (no direct subject-table access) and RLS-enabled app grant and permission tables. The Prisma read-only route rechecks active membership and both entitlements/permissions in the same restricted transaction. [CI #44751975773](https://github.com/owaisprog/Zoho-Clone/actions/runs/44751975773) passed. **The SECURITY DEFINER function requires independent audit and real middleware before production**; CI's setup superuser credentials must never be used in a customer environment. Final tenant/team/record/field schema and permissions are still open.
+
+
+## P4.13 provisional row/column isolation rehearsal (2026-11-20)
+CI candidate `012_p4_v1_ci_record_field_acl.sql` rehearses team assignment, application entitlement and role permission checks **within FORCE RLS**, plus SQL column-level SELECT grants denying confidential CRM notes and private file locators to the tenant runtime. The direct CRM record lookup uses the (organization,id) primary key with minimal fields. [Actions #44754559278](https://github.com/owaisprog/Zoho-Clone/actions/runs/44754559278) passes the real disposable PostgreSQL checks. These are **only sample fictional permissions**, not the final approved P1.06 role/team/field specification or managed Neon migration.

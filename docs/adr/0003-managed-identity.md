@@ -38,3 +38,7 @@ The owner expressly reaffirmed **Auth0**, plus independent active organization m
 
 ## Isolated subject-to-UUID integration (2026-11-20)
 A new CI-only role/function and `p4-v1-ci-identity.ts` now map a **test-injected** already-verified Auth0 issuer+subject shape to internal UUIDv4, independently of tenant app authorization. The test-only Express router requires fresh Prisma membership, enabled app grant and role permissions before reading. [Actions #44751975773](https://github.com/owaisprog/Zoho-Clone/actions/runs/44751975773) passed 244 tests/4 jobs. **No real Auth0 signature, MFA/recovery, access-token revocation, or true live account mapping verified by these tests.** No login credentials were configured; do not mount the test router in production. OPEN-001 and P4 external security gates remain OPEN.
+
+
+## SDK config alignment (2026-11-20)
+For the development-only Auth0 middleware composition, `auth0IdentityCheckMiddleware` now uses the **same explicit config object** (issuer/audience) as the downstream expected-claim bridge. Unit tests reject missing configuration, unsigned browser requests and owner headers. This does **not** prove real JWKS signature, MFA, token revocation or session management. [CI #44754559278](https://github.com/owaisprog/Zoho-Clone/actions/runs/44754559278) passed. OPEN-001 and all live P4 authentication gates remain OPEN.
