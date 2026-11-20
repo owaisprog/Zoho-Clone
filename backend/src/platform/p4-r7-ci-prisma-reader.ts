@@ -48,7 +48,7 @@ export function createP4R7CiPrismaClient(env: CiEnv = process.env): PrismaClient
  * synthetic token-to-subject bridge BEFORE entering this function.
  * Never infer a role or membership from browser props or JWT claims.
  */
-async function inRestrictedTenant<T>(
+export async function inRestrictedTenant<T>(
   prisma: PrismaClient,
   scope: P4R7CiScope,
   env: CiEnv,
