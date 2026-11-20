@@ -74,7 +74,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     pathname === "/app/tasks" ? "Tasks (fictional)" :
     pathname === "/app/settings" ? "Settings concept" :
     pathname === "/app/organization/new" ? "Organization / Preview" :
-    pathname === "/app/organization/memberships" ? "Organization / Memberships" : "Unrecognized demo page";
+    pathname === "/app/organization/memberships" ? "Organization / Memberships" :
+    pathname === "/app/organization/access" ? "Organization / Access" : "Unrecognized demo page";
 
   const navigation = (
     <>
