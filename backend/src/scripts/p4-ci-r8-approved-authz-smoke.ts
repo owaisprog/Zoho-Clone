@@ -20,6 +20,7 @@ import {
   resolveP4V1CiActor,
 } from "../platform/p4-v1-ci-identity.js";
 import { createP4R8CiTestRouter } from "../platform/p4-r8-ci-test-router.js";
+import { readP4R9CiVisibleReport,searchP4R9CiLeads } from "../platform/p4-r9-ci-search-report.js";
 
 const ORCHID = "20000000-0000-4000-8000-000000000001";
 const CEDAR = "20000000-0000-4000-8000-000000000002";
@@ -152,6 +153,55 @@ async function main() {
     assert.equal(JSON.stringify(got.body).includes("PRIVATE placeholder"),false);
     assert.equal(JSON.stringify(got.body).includes("ownerUserId"),false);
     assert.equal(JSON.stringify(got.body).includes("assigned_user_id"),false);
+
+    // D1/D2: search and report cannot count hidden leads, and keyset
+    // pagination must be over RLS-filtered rows (not the tenant inventory).
+    const first=await request(good).get(
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=Demo&limit=2",
+    );
+    assert.equal(first.status,200);
+    assert.equal(first.headers["cache-control"],"no-store");
+    assert.deepEqual(first.body.data.records.map((r:{id:string})=>r.id),[SHARED,OWNED]);
+    assert.equal(first.body.data.nextCursor,OWNED);
+    const second=await request(good).get(
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=Demo&limit=2&afterId="+OWNED,
+    );
+    assert.equal(second.status,200);
+    assert.deepEqual(second.body.data.records.map((r:{id:string})=>r.id),[ASSIGNED]);
+    assert.equal(second.body.data.nextCursor,null);
+    assert.equal(JSON.stringify(first.body).includes("confidential"),false);
+    const report=await request(good).get("/_p4_r8_ci/"+ORCHID+"/crm/report");
+    assert.equal(report.status,200);
+    assert.deepEqual(report.body.data,{
+      metric:"visible_crm_leads",totalVisible:3,
+      privateVisible:2,explicitlyTeamSharedVisible:1,
+    });
+    const managerReport=await readP4R9CiVisibleReport(prisma,manager,process.env);
+    assert.equal(managerReport.totalVisible,1);
+    assert.equal(managerReport.privateVisible,0);
+    assert.deepEqual((await searchP4R9CiLeads(prisma,rep,{text:"orchid"},process.env))
+      .records.map(x=>x.id),[SHARED]);
+    for(const q of [
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=%25",
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=Demo&limit=50",
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=Demo&role=ORG_OWNER",
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=Demo&afterId=not-a-uuid",
+      "/_p4_r8_ci/"+CEDAR+"/crm/report",
+    ]){
+      assert.equal((await request(good).get(q).set("x-role","ORG_OWNER")).status,403);
+    }
+    const ownerApp=makeApp({...token,subject:"auth0|demo-alice"});
+    assert.equal((await request(ownerApp).get(
+      "/_p4_r8_ci/"+ORCHID+"/crm/search?q=Demo")).status,403);
+    assert.equal((await request(ownerApp).get(
+      "/_p4_r8_ci/"+ORCHID+"/crm/report")).status,403);
+    assert.equal((await request(makeApp(null)).get(
+      "/_p4_r8_ci/"+ORCHID+"/crm/report")).status,401);
+    assert.equal((await request(good).post(
+      "/_p4_r8_ci/"+ORCHID+"/crm/report")).status,404);
+    assert.equal((await request(good).get(
+      "/_p4_r8_ci/"+ORCHID+"/crm/report?export=csv")).status,403);
+    // Search/report are read-only, not an authorization to create exports.
     assert.equal((await request(good).get(
       "/_p4_r8_ci/"+ORCHID+"/crm/leads/"+SHARED)).status,200);
     for(const target of [PRIVATE,CEDAR_LEAD,"not-a-uuid"]) {
