@@ -104,6 +104,8 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/008_p4_synthetic_continuity.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/009_p4_synthetic_verified_identity_lookup.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/009_p4_synthetic_verified_identity_lookup.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/010_p4_v1_uuidv4_relational_isolation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/010_p4_v1_uuidv4_relational_isolation.sql
       - name: Run real pg client under restricted RLS against two disposable tenants
         env:
           CI: 'true'
