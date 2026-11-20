@@ -13,7 +13,7 @@ export const FICTIONAL_ACCESS_MATRIX: Readonly<Record<FictionalRole, readonly Fi
     "org.members.read", "org.members.manage", "crm.leads.read.own",
     "crm.leads.read.all", "teams.read.assigned", "teams.manage.assigned",
   ] as const),
-  MEMBER: Object.freeze(["crm.leads.read.own", "teams.read.assigned"]),
+  MEMBER: Object.freeze(["crm.leads.read.own", "teams.read.assigned"] as const),
 });
 
 export interface FictionalTeamPreview {
