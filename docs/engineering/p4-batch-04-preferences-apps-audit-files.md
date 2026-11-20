@@ -64,7 +64,21 @@ to the feature branch *after preserving local changes*, run
 `npm ci`, `npm run typecheck`, `npm run test`, `npm run build`.
 Demo pages: `/app/apps` and `/app/organization/platform`.
 
-## CI evidence
+## Verified CI evidence (2026-11-20)
 
-Await the last GitHub Actions result for the final feature commit.
-A green synthetic CI result proves only the explicitly executed tests.
+[GitHub Actions #44719617968](https://github.com/owaisprog/Zoho-Clone/actions/runs/44719617968)
+completed **4/4 jobs PASS**: **55 frontend + 125 backend +
+5 shared + 8 Node script tests = 193 PASS, 0 FAIL**.
+TypeScript, Next.js and Express builds, Prisma schema validation,
+disposable Postgres/Redis boot, limited tracked-secret scan, and
+CI-only RLS tests succeeded. The SQL log includes:
+`P4.16-20 CI-only preference, app, audit and private file RLS PASS`.
+
+The restricted PostgreSQL role denied unapproved writes and cross-org
+file/settings access. A separate audit-writer role could INSERT a
+redacted audit row but could neither UPDATE nor DELETE one.
+
+This is synthetic CI evidence, NOT 727 original P1.09 product cases,
+actual Auth0-to-user integration or production-grade private storage.
+Remaining acceptance is tracked in
+[issue #59](https://github.com/owaisprog/Zoho-Clone/issues/59).
