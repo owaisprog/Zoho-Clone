@@ -64,8 +64,19 @@ branch (after safeguarding local modifications), run
 Use `/app/organization/access` in the Next.js preview to inspect the
 fictional matrix, team visibility and member-removal simulation.
 
-## CI acceptance evidence
+## Verified CI acceptance evidence (2026-11-20)
 
-To be populated with the **latest verified final commit** after GitHub
-Actions completes. Passing synthetic CI must not be represented as formal
-P4.11–P4.15 acceptance or public commercial authorization.
+[GitHub Actions #44643627579](https://github.com/owaisprog/Zoho-Clone/actions/runs/44643627579)
+finished **4/4 jobs PASS**. Tests: **51 frontend + 112 backend
++ 5 shared + 8 Node safety scripts = 176 PASS, 0 FAIL**.
+TypeScript checks, Next.js/Express builds, Prisma validation, limited
+tracked secret scanning, disposable Postgres/Redis and the local-only
+process readiness checks succeeded. CI-only P4 candidate 006 ran its
+restricted non-owner role RLS assertions, including default deny,
+organization-scoped role templates, team-manager visibility and
+post-revocation denial.
+
+**Important:** These are new synthetic engineering tests, not the
+727 original unexecuted P1.09 cases and not an actual production
+database role or real authenticated P4 API acceptance. Track unresolved
+formal work in [issue #58](https://github.com/owaisprog/Zoho-Clone/issues/58).
