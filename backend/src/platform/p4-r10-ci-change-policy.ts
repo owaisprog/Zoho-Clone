@@ -103,8 +103,8 @@ export function reviewP4R10CiChange(
       !validRoles(snapshot.actorRoles)||
       !validRoles(snapshot.targetRoles)||
       !snapshot.actorRoles.includes("ORG_OWNER")||
-      !getP4R7ApprovedMatrixRow("ORG_OWNER","role_grants")?.actions.includes("M")||
-      !getP4R7ApprovedMatrixRow("ORG_OWNER","memberships")?.actions.includes("M")||
+      !getP4R7ApprovedMatrixRow("ORG_OWNER","role_grants")?.actions.some(a=>a==="M")||
+      !getP4R7ApprovedMatrixRow("ORG_OWNER","memberships")?.actions.some(a=>a==="M")||
       !validRevision(command.expectedRevision)||
       !validRevision(snapshot.currentRevision)||
       !Number.isSafeInteger(snapshot.activeOwnerCount)||
