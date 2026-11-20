@@ -14,7 +14,7 @@ const sections = [
   },
   {
     title: "Permission policies",
-    body: "Default-deny, tenant, row, field and export checks exist in approved P1 design documentation but not in this running UI.",
+    body: "A fictional roles, permissions and team preview is available. Real tenant authorization, data access and permission writes remain disabled.",
     icon: LockKeyhole,
   },
   {
