@@ -14,7 +14,7 @@ import {
   resolveP4V1CiActor, type P4V1CiIdentityLookup,
 } from "./p4-v1-ci-identity.js";
 import {
-  readP4V1CiAppManifest, readP4V1CiAuthorizedApp,
+  readP4V1CiAppManifest, readP4V1CiAuthorizedApp, readP4V1CiAuthorizedLead,
 } from "./p4-v1-ci-authorized-app.js";
 import { assertP4V1CiPrismaEnvironment } from "./p4-v1-ci-prisma.js";
 
@@ -40,7 +40,7 @@ export function createP4V1CiTestOnlyRouter(deps: P4V1CiRouterDependencies) {
   }
   const router = Router();
   async function authAndRead(
-    req: Request, res: import("express").Response, appOnly: boolean,
+    req: Request, res: import("express").Response, mode: "manifest" | "app" | "record",
   ) {
     res.setHeader("Cache-Control","no-store");
     let actorId: string;
@@ -58,7 +58,12 @@ export function createP4V1CiTestOnlyRouter(deps: P4V1CiRouterDependencies) {
       const organizationId = req.params.orgId;
       if (typeof organizationId !== "string") throw new Error("P4_INVALID_ORG_ID");
       const scope = { actorId, organizationId };
-      if (appOnly) {
+      if (mode === "record") {
+        const data = await readP4V1CiAuthorizedLead(
+          deps.prisma, scope, req.params.leadId, deps.env,
+        );
+        res.status(200).json({ scope: "disposable-ci-only", data });
+      } else if (mode === "app") {
         const data = await readP4V1CiAuthorizedApp(
           deps.prisma, scope, req.params.appCode, deps.env,
         );
@@ -71,7 +76,8 @@ export function createP4V1CiTestOnlyRouter(deps: P4V1CiRouterDependencies) {
       res.status(403).json({ error: { code: "P4_ACCESS_DENIED" } });
     }
   }
-  router.get("/:orgId/apps", async (req,res) => authAndRead(req,res,false));
-  router.get("/:orgId/apps/:appCode", async (req,res) => authAndRead(req,res,true));
+  router.get("/:orgId/apps", async (req,res) => authAndRead(req,res,"manifest"));
+  router.get("/:orgId/apps/crm/leads/:leadId", async (req,res) => authAndRead(req,res,"record"));
+  router.get("/:orgId/apps/:appCode", async (req,res) => authAndRead(req,res,"app"));
   return router;
 }

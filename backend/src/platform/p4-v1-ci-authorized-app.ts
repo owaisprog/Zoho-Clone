@@ -112,3 +112,44 @@ export async function readP4V1CiAuthorizedApp(
     }, env);
   } catch { throw new P4V1CiAppDeniedError(); }
 }
+
+
+/**
+ * Provisional P4.13 record-level gate: same current app grant/role
+ * transaction PLUS exact (tenant,lead) primary key PLUS enforced DB RLS.
+ * This is a read-only synthetic API; no arbitrary field selector is allowed.
+ */
+export async function readP4V1CiAuthorizedLead(
+  prisma: PrismaClient,
+  scope: P4V1CiTenantScope,
+  requestedLeadId: unknown,
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<Readonly<{
+  organizationId: string;
+  id: string;
+  label: string;
+}>> {
+  if (typeof requestedLeadId !== "string") throw new P4V1CiAppDeniedError();
+  try {
+    const leadId = requireCanonicalUuidV4(requestedLeadId);
+    return await withP4V1CiPrismaTenant(prisma, scope, async (tx, current) => {
+      const apps = await manifestInsideTransaction(tx, current.organizationId, current.role);
+      if (apps.find(a => a.code === "crm")?.status !== "available") {
+        throw new P4V1CiAppDeniedError();
+      }
+      const lead = await tx.v1Lead.findUnique({
+        where: { orgId_id: { orgId: current.organizationId, id: leadId } },
+        select: { id: true, displayName: true },
+      });
+      // RLS returning null is access denied, not a visible existence check.
+      if (!lead || lead.id !== leadId ||
+          !/^Demo [A-Za-z0-9 ]{3,70}$/.test(lead.displayName)) {
+        throw new P4V1CiAppDeniedError();
+      }
+      return Object.freeze({
+        organizationId: current.organizationId, id: lead.id,
+        label: lead.displayName,
+      });
+    }, env);
+  } catch { throw new P4V1CiAppDeniedError(); }
+}
