@@ -26,7 +26,7 @@ This ledger uses implemented source and CI evidence separately from release gate
 | P4.18 | Workspace navigation shell | Keyboard-searchable demo app launcher, locked cards, responsive workspace navigation links, fictional manifest | OPEN: backend /navigation/manifest and accessibility/real authenticated navigation |
 | P4.19 | Audit log engine | Redacted append-only event contract, owner-only read, CI-only FORCE RLS table and separate INSERT-only writer role, fictional filterable log | OPEN: real audit GET API, all writes wired, retention/security reviews |
 | P4.20 | File upload service | Same-org/record metadata validator, explicit deny of signed URLs, CI-only quarantined file/version metadata, disabled upload UI | OPEN: private provider, scanning/quarantine, real record authorization/upload API |
-| P4.21–P4.25 | File download/deletion, notifications, platform admin, support access and org deletion/export | NOT STARTED in P4 production scope | OPEN |
+| P4.21–P4.25 | File download/deletion, notifications, platform admin, support access and org deletion/export | Synthetic-only TypeScript contracts, fictional UI, negative tests, CI-only SQL; NO live routes or jobs | OPEN: Auth0/Prisma/storage/worker integration, admin/consent, data export/delete and owner signoff |
 
 ## CI checkpoint
 
@@ -74,3 +74,6 @@ All original 14 risks, 12 unresolved decisions and unexecuted 727 P1 tests
 remain open; P3 staging/ADR and P2.02 review remain open.
 P4.01–P4.20 are synthetic development implementation slices, not formally
 completed product features. No commercial/external authorization granted.
+
+
+**Batch 05 (2026-11-20):** P4.21–P4.25 synthetic TypeScript policy contracts, negative tests, CI-only RLS candidate and fictional /app/organization/continuity Next.js page. See [engineering batch 05](p4-batch-05-file-notifications-platform-support-closure.md). Actual public/privileged APIs, file operations, platform/support grants and deletion/export remain DISABLED; formal acceptance OPEN. CI verification evidence to be added after run completion.
