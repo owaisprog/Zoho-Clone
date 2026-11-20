@@ -133,6 +133,10 @@ jobs:
         run: |
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/014_p4_r9_ci_audited_role_team_rehearsal.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/014_p4_r9_ci_audited_role_team_rehearsal.sql
+      - name: Check strict last-owner and idempotent CI role/team command rehearsal
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/015_p4_r10_ci_change_replay_and_owner_guard.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/015_p4_r10_ci_change_replay_and_owner_guard.sql
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
