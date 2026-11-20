@@ -72,6 +72,7 @@ function NavGroup({
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const pageTitle = pathname === "/app" ? "Overview" :
+    pathname === "/app/apps" ? "App launcher" :
     pathname === "/app/sales/leads" ? "Sales CRM / Leads" :
     pathname === "/app/operations/applications" ? "Merchant applications" :
     pathname === "/app/tasks" ? "Tasks (fictional)" :
