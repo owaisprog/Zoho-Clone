@@ -104,6 +104,13 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/008_p4_synthetic_continuity.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/009_p4_synthetic_verified_identity_lookup.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/009_p4_synthetic_verified_identity_lookup.sql
+      - name: Run real pg client under restricted RLS against two disposable tenants
+        env:
+          CI: 'true'
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build -w backend
+          node backend/dist/scripts/p4-ci-live-read.js
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
