@@ -129,6 +129,10 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r8-approved-authz-smoke.js
+      - name: Prove atomic CI-only audit of synthetic role/team changes
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/014_p4_r9_ci_audited_role_team_rehearsal.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/014_p4_r9_ci_audited_role_team_rehearsal.sql
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
