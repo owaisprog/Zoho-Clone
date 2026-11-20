@@ -10,6 +10,7 @@ import {
   CircleHelp,
   ClipboardList,
   LayoutDashboard,
+  LayoutGrid,
   Layers3,
   LockKeyhole,
   ListTodo,
