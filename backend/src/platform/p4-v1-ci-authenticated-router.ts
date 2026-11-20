@@ -55,7 +55,9 @@ export function createP4V1CiTestOnlyRouter(deps: P4V1CiRouterDependencies) {
       return;
     }
     try {
-      const scope = { actorId, organizationId: req.params.orgId };
+      const organizationId = req.params.orgId;
+      if (typeof organizationId !== "string") throw new Error("P4_INVALID_ORG_ID");
+      const scope = { actorId, organizationId };
       if (appOnly) {
         const data = await readP4V1CiAuthorizedApp(
           deps.prisma, scope, req.params.appCode, deps.env,
