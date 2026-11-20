@@ -1,3 +1,17 @@
+> **P4 BATCH 04 VERIFIED (2026-11-20):** Development foundations
+> for **P4.01–P4.20** are now in [draft PR #55](https://github.com/owaisprog/Zoho-Clone/pull/55),
+> which still targets the unmerged P3 development branch, not main.
+> [CI #44719617968](https://github.com/owaisprog/Zoho-Clone/actions/runs/44719617968)
+> passed **193/193 tests and 4/4 jobs** with restricted-role synthetic
+> PostgreSQL audit, preferences, app grant and file-metadata RLS checks.
+> New preview pages: `/app/apps` (app launcher) and
+> `/app/organization/platform` (preferences, redacted audit and disabled
+> uploads). No real uploads, customer data, commercial billing, tenant
+> mutation APIs or production deployment. See the
+> [P4 batch 04 report](docs/engineering/p4-batch-04-preferences-apps-audit-files.md)
+> and [remaining acceptance issue #59](https://github.com/owaisprog/Zoho-Clone/issues/59).
+> **All P3/P4 formal release, staging and security gates remain OPEN.**
+>
 > **P4 BATCH 02 DEVELOPMENT VERIFIED (2026-11-20):** Synthetic-only
 > P4.06–P4.10 membership, switching, invitation lifecycle and tenant-context
 > code now joins the P4.01–P4.05 foundation in
