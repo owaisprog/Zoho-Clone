@@ -1,0 +1,74 @@
+// ADR 0007 / P4.11: GENERATED TYPES FOR DISPOSABLE CI POSTGRES ONLY.
+// Never run Prisma db push/migrate from this schema, especially not on Neon.
+// This schema describes read-only projections of the p4_v1_ci SQL candidate.
+// The database itself enforces UUIDv4 domain checks, composite FKs and FORCE RLS.
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/p4-v1-ci"
+  moduleFormat = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas = ["p4_v1_ci"]
+}
+
+model V1Organization {
+  id String @id @db.Uuid
+  slug String @db.Text
+  displayName String @map("display_name") @db.Text
+  createdBy String @map("created_by") @db.Uuid
+
+  @@map("organizations")
+  @@schema("p4_v1_ci")
+}
+
+model V1Membership {
+  orgId String @map("organization_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  role String @db.Text
+  active Boolean
+
+  @@id([orgId, userId])
+  @@map("memberships")
+  @@schema("p4_v1_ci")
+}
+
+model V1Lead {
+  orgId String @map("organization_id") @db.Uuid
+  id String @db.Uuid
+  ownerUserId String @map("owner_user_id") @db.Uuid
+  teamId String @map("team_id") @db.Uuid
+  displayName String @map("display_name") @db.Text
+  version Int
+
+  @@id([orgId, id])
+  @@map("crm_leads")
+  @@schema("p4_v1_ci")
+}
+
+model V1FileMetadata {
+  orgId String @map("organization_id") @db.Uuid
+  id String @db.Uuid
+  leadId String @map("lead_id") @db.Uuid
+  ownerUserId String @map("owner_user_id") @db.Uuid
+  scanState String @map("scan_state") @db.Text
+  revision Int
+
+  @@id([orgId, id])
+  @@map("file_metadata")
+  @@schema("p4_v1_ci")
+}
+
+model V1AuditLog {
+  orgId String @map("organization_id") @db.Uuid
+  id String @db.Uuid
+  actorUserId String @map("actor_user_id") @db.Uuid
+  eventName String @map("event_name") @db.Text
+  redacted Boolean
+
+  @@id([orgId, id])
+  @@map("audit_logs")
+  @@schema("p4_v1_ci")
+}

@@ -153,3 +153,5 @@ jobs:
       # only in the disposable Compose smoke job, never production.
       - name: Validate provisional Prisma 7 schema without connecting to a database
         run: npx --yes prisma@7.9.1 validate --schema backend/db/schema.prisma
+      - name: Validate isolated UUIDv4 Prisma CI model (no database connection)
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-v1-ci.prisma
