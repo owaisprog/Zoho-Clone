@@ -1,7 +1,7 @@
 import { SYNTHETIC_ORG_ID, type VerifiedSyntheticTenant } from "./p4-membership.js";
 import {
   P4_PERMISSION_CODES, type P4PermissionCode, type P4RoleDefinition,
-  reservedRole,
+  reservedRole, validateSyntheticCustomRoleDraft,
 } from "./p4-roles-catalog.js";
 
 /**
@@ -56,7 +56,15 @@ export function authorizeSyntheticAction(
     const builtIn = reservedRole(role.code);
     if (!builtIn || builtIn.permissions.length !== role.permissions.length ||
         builtIn.permissions.some(p => !role.permissions.includes(p))) return DENIED;
-  } else if (!/^demo_[a-z][a-z0-9_]{2,30}$/.test(role.code)) return DENIED;
+  } else {
+    // Never trust arbitrary custom role grants even if an adapter claims
+    // the snapshot was server-resolved. Revalidate the limited allowlist.
+    try {
+      validateSyntheticCustomRoleDraft({
+        code: role.code, label: role.label, permissions: role.permissions,
+      });
+    } catch { return DENIED; }
+  }
 
   // The MVP synthetic membership model only has OWNER/MEMBER; a custom role
   // must be evaluated from DB-assigned grants after P4.12 approval.
