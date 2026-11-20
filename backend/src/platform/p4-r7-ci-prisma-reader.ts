@@ -54,7 +54,8 @@ export async function inRestrictedTenant<T>(
   env: CiEnv,
   callback: (tx: Tx, evidence: P4R7Evidence) => Promise<T>,
 ): Promise<T> {
-  assertP4V1CiPrismaEnvironment(env);
+  try { assertP4V1CiPrismaEnvironment(env); }
+  catch { throw new P4R7CiReadDeniedError(); }
   if (!prisma || typeof prisma.$transaction !== "function" || typeof callback !== "function")
     throw new P4R7CiReadDeniedError();
   let org: P4UuidV4, actor: P4UuidV4;
