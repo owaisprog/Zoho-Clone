@@ -66,5 +66,12 @@ describe("P4.13 synthetic RBAC + record and team ABAC", () => {
       ...bobMember, roleDefinition: { ...reservedRole("MEMBER")!, permissions: ["org.members.manage"] },
     }, "org.members.manage"), false);
     assert.equal(permit({ ...bobMember, roleDefinition: reservedRole("OWNER")! }, "org.members.manage"), false);
+    assert.equal(permit({
+      ...aliceOwner, roleDefinition: {
+        code: "demo_admin", label: "Demo Admin", reserved: false,
+        permissions: ["crm.leads.read.all"],
+      },
+    }, "crm.leads.read.all", lead), false);
+
   });
 });
