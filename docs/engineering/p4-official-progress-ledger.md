@@ -16,7 +16,12 @@ This ledger uses implemented source and CI evidence separately from release gate
 | P4.08 | Invite send/resend | Synthetic owner-only issuance, rate/delay constraints, SHA-256 token hashing and resend rotation tests | OPEN: real email delivery, auditing and locked transaction DB adapter |
 | P4.09 | Invite acceptance/revoke | One-use fictional token lifecycle, identity-email match, atomic member creation/consumption, revoke/expiry tests | OPEN: real Auth0-backed accept UI/API and secure link redemption |
 | P4.10 | Tenant context middleware | Injectable Express middleware with fresh membership guard; isolated integration tests and CI-only SQL RLS checks | OPEN: real provider subject mapping, production backend mount and job propagation |
-| P4.11–P4.25 | RLS, roles, permissions, teams, files, audit, notifications, admin boundaries | NOT STARTED in P4 production scope | OPEN |
+| P4.11 | PostgreSQL RLS policies | Scoped transaction helper and disposable CI candidate with FORCE RLS, non-owner app-role tests, cross-tenant/revocation denial | OPEN: real staging/production role and actual Prisma full tenant access |
+| P4.12 | Roles catalog | Immutable reserved OWNER/MEMBER templates, allowlisted custom-role drafts, CI-only roles/grants/assignments | OPEN: real role CRUD, approved P1.06 permissions and tenant-scoped grants |
+| P4.13 | Permissions engine | Synthetic RBAC+record-owner/team ABAC default-deny evaluator and fictional UI matrix | OPEN: real API/UI authorization parity under live Auth0/Prisma and record/field policies |
+| P4.14 | Access revocation | Atomic synthetic disable/revision/audit service, tests prove fresh membership denies removed actor | OPEN: real DELETE members API, Auth0 access-token revocation and cache/worker enforcement |
+| P4.15 | Departments and teams | CI-only same-org FKs/RLS and backend team visibility/create contract; fictional UI | OPEN: real department/team APIs, manager assignment and CRM/HR acceptance |
+| P4.16–P4.25 | Preferences, app registry, workspace nav, audit, files, notifications, admin boundaries | NOT STARTED in P4 production scope | OPEN |
 
 ## CI checkpoint
 
@@ -45,5 +50,5 @@ or production migrations were performed.
 permissions, files and audit, executed acceptance evidence, explicit owner signoff.
 All original 14 risks, 12 unresolved decisions and unexecuted 727 P1 tests
 remain open; P3 staging/ADR and P2.02 review remain open.
-P4.01–P4.10 are synthetic development implementation slices, not formally
+P4.01–P4.15 are synthetic development implementation slices, not formally
 completed product features. No commercial/external authorization granted.
