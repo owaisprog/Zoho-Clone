@@ -49,9 +49,10 @@ export function createP4Auth0DevelopmentReadRouter(
     });
     return router;
   }
-  // No route may run before the SDK JWT verification. The SDK reads the
-  // actual process environment; do not create a synthetic customer token.
-  router.use(auth0IdentityCheckMiddleware());
+  // No route may run before the SDK JWT verification. The SAME reviewed
+  // environment must configure both the middleware and its expected claims.
+  // Do not create a synthetic customer token.
+  router.use(auth0IdentityCheckMiddleware(env));
   router.use(createP4IntegrationTestRouter({
     ...deps,
     resolveVerifiedToken: async request => signedPayloadFromSdk(request),
