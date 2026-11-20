@@ -93,13 +93,14 @@ async function main() {
         throw new Error("INVALID_CI_FIXTURE");
       const where = {
         team:"actor_id=$1 AND organization_id=$2 AND team_id=$3",
-        app:"organization_id=$2 AND app_code='crm'",
+        app:"organization_id=$1 AND app_code='crm'",
         role:"actor_id=$1 AND organization_id=$2 AND role_code='SALES_REP'",
         member:"actor_id=$1 AND organization_id=$2",
       }[predicate]!;
       const q="UPDATE p4_r7_ci."+table+" SET active="+(off?"false":"true")+
         " WHERE "+where;
-      const params=predicate==="team"?[CHARLIE,ORCHID,TEAM]:[CHARLIE,ORCHID];
+      const params=predicate==="team"?[CHARLIE,ORCHID,TEAM]:
+        predicate==="app"?[ORCHID]:[CHARLIE,ORCHID];
       await fixturePool.query(q,params);
     }
     try {
@@ -168,7 +169,7 @@ async function main() {
       "/_p4_r8_ci/"+ORCHID+"/crm/leads/export")).status,403);
     assert.equal((await request(makeApp(null)).get(
       "/_p4_r8_ci/"+ORCHID+"/crm/leads")).status,401);
-    assert.equal((await request(makeApp({...token,cryptographicallyVerified:false})).get(
+    assert.equal((await request(makeApp({...token,cryptographicallyVerified:false as never})).get(
       "/_p4_r8_ci/"+ORCHID+"/crm/leads")).status,401);
     assert.equal((await request(makeApp({...token,expiresAtEpochSeconds:NOW})).get(
       "/_p4_r8_ci/"+ORCHID+"/crm/leads")).status,401);
