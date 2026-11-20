@@ -56,7 +56,7 @@ export async function readP4OrganizationPreferences(
   try {
     const row = await repo.find(tenant.orgId);
     if (!row || row.orgId !== tenant.orgId || row.revision < 1) throw new P4PreferencesDeniedError();
-    validateP4PreferenceInput(row);
+    validateP4PreferenceInput({ name: row.name, locale: row.locale, timeZone: row.timeZone, currency: row.currency });
     return Object.freeze({ ...row });
   } catch { throw new P4PreferencesDeniedError(); }
 }
