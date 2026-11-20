@@ -33,6 +33,7 @@ const administration = [
   { label: "Create org · preview", href: "/app/organization/new", icon: Building2 },
   { label: "Members · preview", href: "/app/organization/memberships", icon: UsersRound },
   { label: "Access · preview", href: "/app/organization/access", icon: LockKeyhole },
+  { label: "Platform · preview", href: "/app/organization/platform", icon: Building2 },
 ] as const;
 
 function NavGroup({
