@@ -31,3 +31,7 @@ May implement typed policy checks, read-only Prisma projections, SQL FORCE RLS s
 - Provisional engine: `backend/src/platform/p4-r7-authorizer.ts`.
 - SQL CI isolation candidate 013: `backend/db/candidates/013_p4_r7_approved_permission_rehearsal.sql`, test 013; these test cases do **not** count toward the original P1.09 suite.
 - Further approved implementation may extend only synthetic and CI-only role/relation and field tests; record actual run links in the engineering ledger.
+
+
+## Synthetic-only engineering verification (2026-11-20)
+Under the approved D1/D2/D4/D5 scope, the team implemented read-only Prisma and test-only Express queries for P1.06 business roles using disposable `p4_r7_ci`. [Run #44766524774](https://github.com/owaisprog/Zoho-Clone/actions/runs/44766524774) **4/4 CI jobs and 269/269 automated tests passed**, plus real PostgreSQL/HTTP revocation, private field and owner-no-CRM checks. [Full Batch 08 report](../engineering/p4-exit-integration-batch-08.md). **No additional owner permission approval is implied**; the remaining P4 release and OPEN-003 scope are still OPEN.
