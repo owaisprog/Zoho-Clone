@@ -1,4 +1,5 @@
 import type { ScopedPgClient, ScopedPgPool } from "./p4-rls-transaction.js";
+import { isCanonicalUuidV4 } from "./p4-approved-uuid.js";
 import { withSyntheticRlsTransaction } from "./p4-rls-transaction.js";
 import type { VerifiedSyntheticTenant } from "./p4-membership.js";
 import {
@@ -18,7 +19,6 @@ export class P4ReadModelDeniedError extends Error {
   constructor() { super("P4_READ_MODEL_DENIED"); }
 }
 const CI_ROLE = "p4_synthetic_ci_runtime" as const;
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const CODES = new Set<string>(P4_PERMISSION_CODES);
 
 function resultRows(value: unknown, max: number): Record<string, unknown>[] {
@@ -66,7 +66,7 @@ export interface P4ReadOnlyShell {
 }
 function fail(): never { throw new P4ReadModelDeniedError(); }
 function mapNotification(row: Record<string, unknown>): P4ReadOnlyNotification {
-  if (typeof row.id !== "string" || !UUID.test(row.id) ||
+  if (typeof row.id !== "string" || !isCanonicalUuidV4(row.id) ||
       typeof row.category !== "string" || typeof row.read !== "boolean" ||
       typeof row.linkCode !== "string") return fail();
   const links = {
@@ -84,7 +84,7 @@ function mapNotification(row: Record<string, unknown>): P4ReadOnlyNotification {
   });
 }
 function mapFile(row: Record<string, unknown>): P4ReadOnlyAttachment {
-  if (typeof row.id !== "string" || !UUID.test(row.id) ||
+  if (typeof row.id !== "string" || !isCanonicalUuidV4(row.id) ||
       typeof row.label !== "string" || !/^Demo [A-Za-z0-9 .'-]{1,100}$/.test(row.label) ||
       typeof row.mediaType !== "string" ||
       !["application/pdf","image/jpeg","image/png","text/plain"].includes(row.mediaType) ||
@@ -149,7 +149,7 @@ export async function readP4SyntheticPlatformShell(
 }
 /** Deny direct API route if no entitlement OR no role permission. */
 export function authorizeP4DirectAppRoute(shell: P4ReadOnlyShell, code: unknown): void {
-  if (!shell || !UUID.test(shell.orgId) || typeof code !== "string" ||
+  if (!shell || !isCanonicalUuidV4(shell.orgId) || typeof code !== "string" ||
       !["crm","teams","finance","files"].includes(code)) return fail();
   // Re-check from the server-computed manifest, never a browser nav item.
   const matched = shell.apps.find(item => item.code === code);
@@ -169,7 +169,7 @@ export async function readP4SyntheticOwnerAudit(
       ), 50);
       const allowedActions = ["membership.revoked","org.preferences.changed","app.grant.changed","team.created","file.upload.requested"];
       return Object.freeze(events.map(row => {
-        if (typeof row.id !== "string" || !UUID.test(row.id) ||
+        if (typeof row.id !== "string" || !isCanonicalUuidV4(row.id) ||
             typeof row.action !== "string" || !allowedActions.includes(row.action) ||
             typeof row.objectType !== "string" ||
             !["membership","organization","application","team","file"].includes(row.objectType) ||
