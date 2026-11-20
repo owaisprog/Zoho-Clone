@@ -18,7 +18,7 @@
 - Frontend unit tests: frontend/test/p4-operations-preview.test.ts.
 - PostgreSQL: 008_p4_synthetic_continuity.sql and its test; the CI workflow runs them only against a disposable database named zoho_clone_synthetic_ci.
 - Existing P4.20 storage provider continues to DENY all signed file URLs.
-- CI run link/totals must be recorded after verification; a passing CI test does not imply real release readiness.
+- Verified: [GitHub Actions #44724748196](https://github.com/owaisprog/Zoho-Clone/actions/runs/44724748196), 4/4 CI jobs PASS; 204/204 tests PASS (58 frontend, 133 backend, 5 shared, 8 scripts), including disposable PostgreSQL restricted-role RLS for P4.21–P4.25. Formal acceptance still OPEN in [issue #60](https://github.com/owaisprog/Zoho-Clone/issues/60).
 
 ## Security and release restrictions
 - No production endpoints, email delivery, customer data, object storage, privileged requests, file download, support session, deletion or export execution enabled.
