@@ -1,0 +1,9 @@
+/* Synthetic launcher P4.17–18 */
+.p4-launcher { margin-top: 12px; padding: 18px; }
+.p4-launcher input { width: 100%; padding: 12px 14px; background: var(--canvas); color: var(--ink); border: 1px solid var(--border-control); border-radius: 9px; margin: 8px 0 18px; }
+.p4-app-grid { display: grid; gap: 10px; }
+.p4-app-card { display: flex; justify-content: space-between; gap: 15px; align-items: center; border: 1px solid var(--border-soft); border-radius: 9px; padding: 13px; }
+.p4-app-card strong,.p4-app-card small { display: block; }
+.p4-app-card strong { font-size: 13px; }
+.p4-app-card small { font-size: 11px; color: var(--muted); margin-top: 3px; }
+@media (max-width: 560px) { .p4-app-card { align-items: flex-start; flex-direction: column; } }
