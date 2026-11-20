@@ -46,6 +46,8 @@ export default function SettingsConceptPage() {
         <Link className="btn" href="/app/organization/new">Fictional organization preview</Link>
         <Link className="btn" href="/app/organization/memberships">Membership and invitation preview</Link>
         <Link className="btn" href="/app/organization/access">Roles, policies and teams preview</Link>
+        <Link className="btn" href="/app/organization/platform">Preferences, audit and files preview</Link>
+        <Link className="btn" href="/app/apps">Fictional app launcher</Link>
       </div>
       <div className="settings-grid">
         {sections.map(({ title, body, icon: Icon }) => (
