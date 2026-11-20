@@ -46,6 +46,15 @@ formal acceptance remains OPEN in [issue #57](https://github.com/owaisprog/Zoho-
 No real invitation delivery, tenant membership writes, privileged APIs
 or production migrations were performed.
 
+**P4 batch 03 verified:** [CI run #44643627579](https://github.com/owaisprog/Zoho-Clone/actions/runs/44643627579)
+passed 4/4 jobs and 176 tests (51 frontend, 112 backend, 5 shared,
+8 scripts). Disposable PostgreSQL restricted non-owner FORCE RLS
+tests checked default deny, reserved roles, team-level tenant isolation
+and revoked-member denial. Formal P4.11–P4.15 acceptance remains OPEN
+in [issue #58](https://github.com/owaisprog/Zoho-Clone/issues/58).
+These changes do not migrate the owner's Neon database or enable live
+role, member, department, team or permission APIs.
+
 **Phase exit:** two isolated demo organizations with full identity, teams,
 permissions, files and audit, executed acceptance evidence, explicit owner signoff.
 All original 14 risks, 12 unresolved decisions and unexecuted 727 P1 tests
