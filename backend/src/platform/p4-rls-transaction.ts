@@ -32,7 +32,12 @@ export async function withSyntheticRlsTransaction<T>(
       (context.role !== "OWNER" && context.role !== "MEMBER")) {
     throw new P4DatabaseScopeDeniedError();
   }
-  const client = await pool.connect();
+  let client: ScopedPgClient;
+  try {
+    client = await pool.connect();
+  } catch {
+    throw new P4DatabaseScopeDeniedError();
+  }
   let began = false;
   try {
     await client.query("BEGIN");
