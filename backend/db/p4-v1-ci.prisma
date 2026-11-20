@@ -72,3 +72,23 @@ model V1AuditLog {
   @@map("audit_logs")
   @@schema("p4_v1_ci")
 }
+
+model V1AppGrant {
+  orgId String @map("organization_id") @db.Uuid
+  appCode String @map("app_code") @db.Text
+  active Boolean
+
+  @@id([orgId, appCode])
+  @@map("app_grants")
+  @@schema("p4_v1_ci")
+}
+
+model V1RolePermission {
+  orgId String @map("organization_id") @db.Uuid
+  roleCode String @map("role_code") @db.Text
+  permissionCode String @map("permission_code") @db.Text
+
+  @@id([orgId, roleCode, permissionCode])
+  @@map("role_permissions")
+  @@schema("p4_v1_ci")
+}
