@@ -34,6 +34,7 @@ const administration = [
   { label: "Members · preview", href: "/app/organization/memberships", icon: UsersRound },
   { label: "Access · preview", href: "/app/organization/access", icon: LockKeyhole },
   { label: "Platform · preview", href: "/app/organization/platform", icon: Building2 },
+  { label: "Continuity · preview", href: "/app/organization/continuity", icon: LockKeyhole },
 ] as const;
 
 function NavGroup({
@@ -80,7 +81,8 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     pathname === "/app/organization/new" ? "Organization / Preview" :
     pathname === "/app/organization/memberships" ? "Organization / Memberships" :
     pathname === "/app/organization/access" ? "Organization / Access" :
-    pathname === "/app/organization/platform" ? "Organization / Platform controls" : "Unrecognized demo page";
+    pathname === "/app/organization/platform" ? "Organization / Platform controls" :
+    pathname === "/app/organization/continuity" ? "Organization / Continuity" : "Unrecognized demo page";
 
   const navigation = (
     <>
