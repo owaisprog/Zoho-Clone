@@ -1,7 +1,7 @@
 # Zoho Clone — P4 Batch 07 permission implementation choices for owner approval
 
 **Date:** 2026-11-20
-**Review status:** **PROPOSED IMPLEMENTATION DETAILS — OWNER APPROVAL REQUESTED**, not a re-opening of P1.06 or a production release.
+**Review status:** **D1, D2, D4, D5 OWNER APPROVED FOR INTERNAL SYNTHETIC-ONLY IMPLEMENTATION (2026-11-20)**, not a re-opening of P1.06 or a production release.
 **Source of truth:** [P1.06 owner-approved 286-row matrix](permission-matrix.csv), [P1.06 human policy](permission-matrix.md), [policy decision procedure](permission-policy-rules.md); [original 225-page Express roadmap P1.06, P4.12–P4.15].
 **Read this first:** The P1.06 **DESIGN** already received owner approval 2026-11-13. It includes exactly **13 roles × 22 resource families = 286 action/resource decisions** and is NOT a generic four-level Owner/Admin/Manager/Member hierarchy. This document asks only for approval of **new concrete implementation choices and unresolved policy details**. Existing OPEN-003 fine-grained semantics, 14 risks, other 11 tracked open decisions and all 727 original P1.09 cases remain open until separately accepted.
 
@@ -58,3 +58,7 @@ The table below is a *summary*. For all 286 exact resource/action/scope/field co
 Please decide whether to approve **D1, D2, D4 and D5 as provisional implementation semantics** for continuing internal, synthetic-only P4 development. **D3 is a preserved existing P1.06 requirement**, not a new policy vote. If any detail needs changing, state the decision ID and preferred behavior.
 
 **Approval, if granted, would not authorize:** editing existing live customers or owner Neon, staging/production deployment, paid cloud, merging PR #55 to main, real Auth0 or storage activation, P4 closure, original acceptance signoff or final commercial field policy. Keep issue #61 open.
+
+
+## F. Owner disposition (2026-11-20)
+The owner **explicitly approved D1, D2, D4 and D5 exactly as documented above**, for internal synthetic-only Phase 4 development. D3 remains the **previously approved P1.06 requirement**, not a new vote. [ADR 0008](../adr/0008-p4-batch07-owner-permission-implementation-approval.md) records this approval. **OPEN-003 remains OPEN** for final complete P4 role/field/record implementation and acceptance. No real data, Neon migration, staging/production release, provider/cost choice, merge or exit-gate closure was approved.

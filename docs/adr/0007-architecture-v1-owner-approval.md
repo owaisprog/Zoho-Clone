@@ -34,3 +34,7 @@
 
 ## Safe implementation authorization
 May add/adjust TypeScript contracts, UUIDv4 validators, synthetic fixtures, provider-neutral adapter protections, CI-only database tests, ADR docs and development PR test coverage. Must use fictional-only data and isolated CI. **No schema migration to Neon, no staging/production deployment, no merge or cloud purchase**. Stop at external/resource approvals and report blockers.
+
+
+## Scoped P4 permission implementation approval (2026-11-20)
+The owner approved D1/D2/D4/D5 as synthetic-only implementation details within the previously approved P1.06 matrix. [ADR 0008](0008-p4-batch07-owner-permission-implementation-approval.md) records exact boundaries. This does **not** grant actual production permissions, close OPEN-003, or relax any security/release/provisioning restrictions in ADR 0007.
