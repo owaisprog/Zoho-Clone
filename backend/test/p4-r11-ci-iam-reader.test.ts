@@ -21,6 +21,7 @@ type Fixture={
   roles?:string[];noMember?:boolean;noPlatform?:boolean;
   privateField?:boolean;foreign?:boolean;invalidRole?:boolean;
   invalidStatus?:boolean;invalidTime?:boolean;tooMany?:boolean;
+  returnedRoleCode?:string;
 };
 function mock(opts:Fixture={}) {
   let safeReads=0;
@@ -37,7 +38,7 @@ function mock(opts:Fixture={}) {
       const many=opts.tooMany?21:1;
       if(sql.includes("read_member_roles()")){
         return Array.from({length:many},()=>({
-          actorId:MEMBER,roleCode:opts.invalidRole?"EVIL":"SALES_REP",
+          actorId:MEMBER,roleCode:opts.invalidRole?"EVIL":opts.returnedRoleCode??"SALES_REP",
           active:true,privateSubject:"auth0|PRIVATE",
         }));
       }
@@ -143,9 +144,7 @@ describe("P4 Batch 11 safe IAM projections",()=>{
   it("does not show restricted owner/security roles to a plain org admin",async()=>{
     const f=mock({roles:["ORG_ADMIN"]});
     // A malicious DB adapter returned an owner role despite SQL masking.
-    const raw=(f.prisma as unknown as { $transaction:unknown });
-    assert.ok(raw.$transaction);
-    const invalid=mock({roles:["ORG_ADMIN"],invalidRole:true});
+    const invalid=mock({roles:["ORG_ADMIN"],returnedRoleCode:"ORG_OWNER"});
     await assert.rejects(readP4R11CiMembershipStatus(invalid.prisma,owner,20,ENV),
       P4R7CiReadDeniedError);
   });
