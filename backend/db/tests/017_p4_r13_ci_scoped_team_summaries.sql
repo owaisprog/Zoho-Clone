@@ -77,24 +77,24 @@ END $rep$;
 COMMIT;
 RESET ROLE;
 -- Nonowner runtime sees each membership/revocation immediately.
-UPDATE p4_r7_ci.team_grants SET managed=false
+UPDATE p4_r7_ci.memberships SET active=false
  WHERE organization_id='20000000-0000-4000-8000-000000000001'
-   AND actor_id='10000000-0000-4000-8000-0000000000d1';
+   AND actor_id='10000000-0000-4000-8000-0000000000e1';
 SET ROLE p4_v1_ci_runtime;
 BEGIN;
 SELECT set_config('app.tenant_id','20000000-0000-4000-8000-000000000001',true);
-SELECT set_config('app.actor_id','10000000-0000-4000-8000-0000000000d1',true);
-DO $unmanaged$
+SELECT set_config('app.actor_id','10000000-0000-4000-8000-0000000000e1',true);
+DO $revoked$
 BEGIN
  IF (SELECT count(*) FROM p4_r13_ci.read_team_summaries())<>0 THEN
-  RAISE EXCEPTION 'Revoked management still sees teams';
+  RAISE EXCEPTION 'Revoked admin still sees team metadata';
  END IF;
-END $unmanaged$;
+END $revoked$;
 COMMIT;
 RESET ROLE;
-UPDATE p4_r7_ci.team_grants SET managed=true
+UPDATE p4_r7_ci.memberships SET active=true
  WHERE organization_id='20000000-0000-4000-8000-000000000001'
-   AND actor_id='10000000-0000-4000-8000-0000000000d1';
+   AND actor_id='10000000-0000-4000-8000-0000000000e1';
 UPDATE p4_r7_ci.app_grants SET active=false
  WHERE organization_id='20000000-0000-4000-8000-000000000001'
    AND app_code='platform';
