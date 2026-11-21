@@ -40,7 +40,7 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog AS $fn$
      WHERE m.organization_id=t.organization_id
        AND m.actor_id::text=NULLIF(current_setting('app.actor_id',true),'')
        AND m.active AND r.active AND a.active
-       AND r.role_code IN ('ORG_OWNER','ORG_ADMIN')))
+       AND r.role_code IN ('ORG_OWNER','ORG_ADMIN'))
  ORDER BY t.id
  LIMIT 21
 $fn$;
