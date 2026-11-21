@@ -17,7 +17,7 @@ type Opts={roles?:string[];entitled?:boolean;active?:boolean;foreign?:boolean;
   inviteStatus?:string;invalidTime?:boolean};
 function fixture(opts:Opts={}){
   let queryCount=0,transCount=0;
-  const tx={
+  const transaction={
     async $executeRawUnsafe(){return 0;},
     async $queryRawUnsafe(sql:string){
       if(sql.includes("set_config("))return [{}];
@@ -45,8 +45,8 @@ function fixture(opts:Opts={}){
       [{appCode:"platform",active:true}];}},
     r7TeamGrant:{async findMany(){return [];}}, 
   };
-  const prisma={async $transaction<T>(fn:(tx:typeof tx)=>Promise<T>){
-    transCount++;return fn(tx);
+  const prisma={async $transaction<T>(fn:(transactionClient:typeof transaction)=>Promise<T>){
+    transCount++;return fn(transaction);
   }} as unknown as PrismaClient;
   return {prisma,get queryCount(){return queryCount;},
     get transCount(){return transCount;}};
