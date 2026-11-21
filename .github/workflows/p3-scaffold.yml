@@ -137,6 +137,10 @@ jobs:
         run: |
           psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/015_p4_r10_ci_change_replay_and_owner_guard.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/015_p4_r10_ci_change_replay_and_owner_guard.sql
+      - name: Verify P1.06 restricted R0 IAM read surfaces in disposable CI
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/016_p4_r11_ci_scoped_iam_read_surfaces.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/016_p4_r11_ci_scoped_iam_read_surfaces.sql
 
   synthetic-compose-boot:
     runs-on: ubuntu-latest
