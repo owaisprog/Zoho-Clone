@@ -147,6 +147,16 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r11-iam-read-smoke.js
 
+      - name: Prove P4 R13 approved IAM-only team summaries in disposable PostgreSQL
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/017_p4_r13_ci_scoped_team_summaries.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/017_p4_r13_ci_scoped_team_summaries.sql
+      - name: Run P4 R13 restricted Prisma two-tenant and invitation expiry smoke
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r13-team-invite-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
