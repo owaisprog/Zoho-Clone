@@ -157,6 +157,16 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r13-team-invite-smoke.js
 
+      - name: Validate P4 R14 organization and role CI-only SQL boundaries
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/018_p4_r14_ci_org_role_summaries.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/018_p4_r14_ci_org_role_summaries.sql
+      - name: Exercise restricted R14 Prisma and HTTP revocation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r14-iam-read-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
