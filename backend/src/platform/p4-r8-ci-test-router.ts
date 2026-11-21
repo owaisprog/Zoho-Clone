@@ -1,0 +1,181 @@
+/**
+ * OWNER-APPROVED ADR 0008 P4 implementation; TEST-ONLY Express adapter.
+ * This deliberately is NEVER imported from backend/src/app.ts.
+ * Synthetic token evidence injected by CI tests is not a real Auth0 login.
+ * No write, export, storage/download, admin or customer-facing routes.
+ */
+import { Router, type Request } from "express";
+import type { PrismaClient } from "../generated/p4-r7-ci/client.js";
+import type { P4VerifiedProviderToken } from "./p4-auth0-subject-bridge.js";
+import {
+  resolveP4V1CiActor,
+  type P4V1CiIdentityLookup,
+} from "./p4-v1-ci-identity.js";
+import {
+  readP4R7CiLead, readP4R7CiLeads,
+} from "./p4-r7-ci-prisma-reader.js";
+import { assertP4V1CiPrismaEnvironment } from "./p4-v1-ci-prisma.js";
+import {
+  searchP4R9CiLeads, readP4R9CiVisibleReport,
+} from "./p4-r9-ci-search-report.js";
+import {
+  readP4R11CiMembershipStatus,readP4R11CiInvitationStatus,
+  readP4R11CiAuditMetadata,
+} from "./p4-r11-ci-iam-reader.js";
+
+export type P4R8CiRouterDeps = Readonly<{
+  prisma: PrismaClient;
+  mappingLookup: P4V1CiIdentityLookup;
+  resolveVerifiedSdkEvidence(req: Request): Promise<P4VerifiedProviderToken | null>;
+  expectedIssuer: string;
+  expectedAudience: string;
+  nowEpochSeconds(): number;
+}>;
+
+/** Refuse to mount outside the actual disposable GitHub Actions environment. */
+export function createP4R8CiTestRouter(deps: P4R8CiRouterDeps): Router {
+  assertP4V1CiPrismaEnvironment(process.env);
+  if (process.env.NODE_ENV === "production" ||
+      typeof deps?.resolveVerifiedSdkEvidence !== "function" ||
+      typeof deps.nowEpochSeconds !== "function") {
+    throw new Error("P4_R8_CI_ROUTER_DISABLED");
+  }
+  const router = Router();
+  async function handle(req: Request, res: import("express").Response, single: boolean) {
+    res.setHeader("Cache-Control", "no-store");
+    let actorId: string;
+    try {
+      // SDK evidence is injected by GitHub CI; not cryptographically verified
+      // here. A live Auth0 middleware still requires owner approval and review.
+      actorId = await resolveP4V1CiActor(
+        await deps.resolveVerifiedSdkEvidence(req),
+        { issuer: deps.expectedIssuer, audience: deps.expectedAudience },
+        deps.mappingLookup,
+        deps.nowEpochSeconds(),
+      );
+    } catch {
+      res.status(401).json({ error: { code: "P4_IDENTITY_REQUIRED" } });
+      return;
+    }
+    const orgId = req.params.orgId;
+    if (typeof orgId !== "string") {
+      res.status(403).json({ error: { code: "P4_ACCESS_DENIED" } });
+      return;
+    }
+    try {
+      const scope = { organizationId: orgId, actorId };
+      if (single) {
+        const result = await readP4R7CiLead(
+          deps.prisma, scope, req.params.leadId, process.env,
+        );
+        res.status(200).json({ scope: "disposable-ci-only", data: result });
+      } else {
+        const result = await readP4R7CiLeads(deps.prisma, scope, process.env);
+        res.status(200).json({ scope: "disposable-ci-only", data: result });
+      }
+    } catch {
+      // No existence disclosure: same response for missing/forbidden records.
+      res.status(403).json({ error: { code: "P4_ACCESS_DENIED" } });
+    }
+  }
+
+  // Search and reports MUST use identical Auth0->UUID mapping and same
+  // current PostgreSQL transaction/role checks as individual CRM reads.
+  async function handleReadOnlyQuery(
+    req: Request,res: import("express").Response,
+    kind:"search"|"report",
+  ){
+    res.setHeader("Cache-Control","no-store");
+    let actorId:string;
+    try{
+      actorId=await resolveP4V1CiActor(
+        await deps.resolveVerifiedSdkEvidence(req),
+        {issuer:deps.expectedIssuer,audience:deps.expectedAudience},
+        deps.mappingLookup,deps.nowEpochSeconds(),
+      );
+    }catch{
+      res.status(401).json({error:{code:"P4_IDENTITY_REQUIRED"}});
+      return;
+    }
+    if(typeof req.params.orgId!=="string"){
+      res.status(403).json({error:{code:"P4_ACCESS_DENIED"}});
+      return;
+    }
+    try{
+      const scope={organizationId:req.params.orgId,actorId};
+      if(kind==="search"){
+        const text=req.query.q;
+        const lim=req.query.limit;
+        const afterId=req.query.afterId;
+        if(typeof text!=="string"||
+           (lim!==undefined&&typeof lim!=="string")||
+           (afterId!==undefined&&typeof afterId!=="string")||
+           Object.keys(req.query).some(k=>!["q","limit","afterId"].includes(k))){
+          throw new Error("INVALID_CI_SEARCH_PARAMS");
+        }
+        const limit=lim===undefined?undefined:
+          /^\d{1,2}$/.test(lim)?Number(lim):NaN;
+        const result=await searchP4R9CiLeads(
+          deps.prisma,scope,{text,...(limit===undefined?{}:{limit}),
+            ...(afterId?{afterId}:{})},process.env,
+        );
+        res.status(200).json({scope:"disposable-ci-only",data:result});
+        return;
+      }
+      if(Object.keys(req.query).length!==0)throw new Error("INVALID_CI_REPORT_PARAMS");
+      const result=await readP4R9CiVisibleReport(deps.prisma,scope,process.env);
+      res.status(200).json({scope:"disposable-ci-only",data:result});
+    }catch{
+      res.status(403).json({error:{code:"P4_ACCESS_DENIED"}});
+    }
+  }
+
+  // Only CI-injected already-verified identity evidence can reach these
+  // restricted IAM metadata routes. No live Auth0, invite sends, mutations,
+  // raw audit bodies or file downloads are exposed.
+  async function handleIamMetadata(
+    req:Request,res:import("express").Response,
+    kind:"memberships"|"invitations"|"audit_events",
+  ) {
+    res.setHeader("Cache-Control","no-store");
+    let actorId:string;
+    try {
+      actorId=await resolveP4V1CiActor(
+        await deps.resolveVerifiedSdkEvidence(req),
+        {issuer:deps.expectedIssuer,audience:deps.expectedAudience},
+        deps.mappingLookup,deps.nowEpochSeconds(),
+      );
+    } catch {
+      res.status(401).json({error:{code:"P4_IDENTITY_REQUIRED"}});
+      return;
+    }
+    if(typeof req.params.orgId!=="string"||
+        Object.keys(req.query).length!==0) {
+      res.status(403).json({error:{code:"P4_ACCESS_DENIED"}});
+      return;
+    }
+    try {
+      const scope={organizationId:req.params.orgId,actorId};
+      const data=kind==="memberships"?
+        await readP4R11CiMembershipStatus(deps.prisma,scope,20,process.env):
+        kind==="invitations"?
+        await readP4R11CiInvitationStatus(deps.prisma,scope,20,process.env):
+        await readP4R11CiAuditMetadata(deps.prisma,scope,20,process.env);
+      res.status(200).json({scope:"disposable-ci-only",data});
+    } catch {
+      res.status(403).json({error:{code:"P4_ACCESS_DENIED"}});
+    }
+  }
+  router.get("/:orgId/iam/members",async(req,res)=>
+    handleIamMetadata(req,res,"memberships"));
+  router.get("/:orgId/iam/invitations",async(req,res)=>
+    handleIamMetadata(req,res,"invitations"));
+  router.get("/:orgId/iam/audit",async(req,res)=>
+    handleIamMetadata(req,res,"audit_events"));
+
+  router.get("/:orgId/crm/search",async(req,res)=>handleReadOnlyQuery(req,res,"search"));
+  router.get("/:orgId/crm/report",async(req,res)=>handleReadOnlyQuery(req,res,"report"));
+  router.get("/:orgId/crm/leads", async (req,res) => handle(req,res,false));
+  router.get("/:orgId/crm/leads/:leadId", async (req,res) => handle(req,res,true));
+  return router;
+}

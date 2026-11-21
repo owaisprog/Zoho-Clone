@@ -90,6 +90,63 @@ jobs:
       - name: Execute PostgreSQL RLS and relational-isolation assertions
         run: psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/001_synthetic_isolation.sql
 
+      - name: Validate P4.01-P4.05 CI-only identity and organization candidate
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/004_p4_synthetic_identity_foundation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/004_p4_synthetic_identity_foundation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/005_p4_synthetic_membership_invitations.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/005_p4_synthetic_memberships_invitations.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/006_p4_synthetic_access_roles_teams.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/006_p4_synthetic_access_roles_teams.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/007_p4_synthetic_settings_apps_audit_files.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/007_p4_synthetic_settings_apps_audit_files.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/008_p4_synthetic_continuity.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/008_p4_synthetic_continuity.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/009_p4_synthetic_verified_identity_lookup.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/009_p4_synthetic_verified_identity_lookup.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/010_p4_v1_uuidv4_relational_isolation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/010_p4_v1_uuidv4_relational_isolation.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/011_p4_v1_ci_identity_app_access.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/011_p4_v1_ci_identity_app_access.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/012_p4_v1_ci_record_field_acl.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/012_p4_v1_ci_record_field_acl.sql
+      - name: Run real pg client under restricted RLS against two disposable tenants
+        env:
+          CI: 'true'
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build -w backend
+          node backend/dist/scripts/p4-ci-live-read.js
+          node backend/dist/scripts/p4-ci-v1-uuidv4-tenant-smoke.js
+          node backend/dist/scripts/p4-ci-v1-prisma-smoke.js
+          node backend/dist/scripts/p4-ci-v1-authenticated-authorization-smoke.js
+      - name: Rehearse P1.06 business roles and private-team sharing after legacy CI smoke
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/013_p4_r7_approved_permission_rehearsal.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/013_p4_r7_approved_permission_rehearsal.sql
+      - name: Verify owner-approved D1/D2/D4/D5 in real Prisma and synthetic HTTP (disposable CI)
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r8-approved-authz-smoke.js
+      - name: Prove atomic CI-only audit of synthetic role/team changes
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/014_p4_r9_ci_audited_role_team_rehearsal.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/014_p4_r9_ci_audited_role_team_rehearsal.sql
+      - name: Check strict last-owner and idempotent CI role/team command rehearsal
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/015_p4_r10_ci_change_replay_and_owner_guard.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/015_p4_r10_ci_change_replay_and_owner_guard.sql
+      - name: Verify P1.06 restricted R0 IAM read surfaces in disposable CI
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/016_p4_r11_ci_scoped_iam_read_surfaces.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/016_p4_r11_ci_scoped_iam_read_surfaces.sql
+      - name: Run real CI-only IAM redacted Prisma and HTTP regression smoke
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r11-iam-read-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -128,3 +185,7 @@ jobs:
       # only in the disposable Compose smoke job, never production.
       - name: Validate provisional Prisma 7 schema without connecting to a database
         run: npx --yes prisma@7.9.1 validate --schema backend/db/schema.prisma
+      - name: Validate isolated UUIDv4 Prisma CI model (no database connection)
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-v1-ci.prisma
+      - name: Validate owner-approved R7 business role CI-only Prisma schema
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-r7-ci.prisma

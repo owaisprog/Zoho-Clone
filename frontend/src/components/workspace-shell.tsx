@@ -5,10 +5,12 @@ import { usePathname } from "next/navigation";
 import {
   Activity,
   ArrowUpRight,
+  Building2,
   ChevronDown,
   CircleHelp,
   ClipboardList,
   LayoutDashboard,
+  LayoutGrid,
   Layers3,
   LockKeyhole,
   ListTodo,
@@ -20,6 +22,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 const primary = [
   { label: "Overview", href: "/app", icon: LayoutDashboard },
+  { label: "App launcher · preview", href: "/app/apps", icon: LayoutGrid },
   { label: "Sales CRM", href: "/app/sales/leads", icon: UsersRound },
   { label: "Merchant Operations", href: "/app/operations/applications", icon: ClipboardList },
   { label: "Tasks (demo)", href: "/app/tasks", icon: ListTodo },
@@ -27,6 +30,11 @@ const primary = [
 
 const administration = [
   { label: "Settings concept", href: "/app/settings", icon: Settings2 },
+  { label: "Create org · preview", href: "/app/organization/new", icon: Building2 },
+  { label: "Members · preview", href: "/app/organization/memberships", icon: UsersRound },
+  { label: "Access · preview", href: "/app/organization/access", icon: LockKeyhole },
+  { label: "Platform · preview", href: "/app/organization/platform", icon: Building2 },
+  { label: "Continuity · preview", href: "/app/organization/continuity", icon: LockKeyhole },
 ] as const;
 
 function NavGroup({
@@ -65,10 +73,16 @@ function NavGroup({
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const pageTitle = pathname === "/app" ? "Overview" :
+    pathname === "/app/apps" ? "App launcher" :
     pathname === "/app/sales/leads" ? "Sales CRM / Leads" :
     pathname === "/app/operations/applications" ? "Merchant applications" :
     pathname === "/app/tasks" ? "Tasks (fictional)" :
-    pathname === "/app/settings" ? "Settings concept" : "Unrecognized demo page";
+    pathname === "/app/settings" ? "Settings concept" :
+    pathname === "/app/organization/new" ? "Organization / Preview" :
+    pathname === "/app/organization/memberships" ? "Organization / Memberships" :
+    pathname === "/app/organization/access" ? "Organization / Access" :
+    pathname === "/app/organization/platform" ? "Organization / Platform controls" :
+    pathname === "/app/organization/continuity" ? "Organization / Continuity" : "Unrecognized demo page";
 
   const navigation = (
     <>
@@ -96,7 +110,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
 
         <div className="sidebar-footer">
           <span className="sidebar-footer-icon"><LockKeyhole size={17} aria-hidden="true" /></span>
-          <span><strong>Prototype only</strong><small>No login or tenant permissions implemented</small></span>
+          <span><strong>Prototype only</strong><small>Identity-only Auth0; no tenant permissions</small></span>
         </div>
       </aside>
 

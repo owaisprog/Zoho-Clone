@@ -1,5 +1,10 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
+@import "../styles/p4-foundation.css";
+@import "../styles/p4-memberships.css";
+@import "../styles/p4-access.css";
+@import "../styles/p4-app-launcher.css";
+@import "../styles/p4-platform.css";
 
 * { box-sizing: border-box; }
 html { min-width: 320px; }

@@ -113,3 +113,7 @@ Add a dated entry before changing architecture, product order or launch scope. S
 - No real merchant workflows, buyer interviews, price tests or pilot commitments have been fabricated
 
 - P3.01 early engineering exception: Owner authorized actual frontend/backend code and synthetic-only tests on 2026-11-14 while P2.02 remains OPEN; see issue #26 and `docs/engineering/p3-early-start.md`.
+
+
+## 2026-11-20 — P4 Batch 07 D1/D2/D4/D5 partial implementation approval
+**OWNER APPROVED for internal synthetic-only engineering:** default-private CRM records with direct/current team sharing (D1), distinct sales rep/manager scopes (D2), safe initial lead field projection (D4), and next-request revocation with no unapproved writes/exports (D5). See [ADR 0008](../adr/0008-p4-batch07-owner-permission-implementation-approval.md). **OPEN-003 and all 12 tracked decisions remain OPEN for incomplete policies and real acceptance**. P1.06 286-row role matrix is unchanged. No Neon, provider purchases, real customer data, main merge or deployment approval.

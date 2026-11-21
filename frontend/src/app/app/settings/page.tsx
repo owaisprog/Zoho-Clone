@@ -1,19 +1,20 @@
+import Link from "next/link";
 import { BadgeCheck, Database, LockKeyhole, ShieldAlert, UsersRound } from "lucide-react";
 
 const sections = [
   {
     title: "Organization context",
-    body: "Only Orchid Payments Demo appears in this preview. Active membership and organization switching are future R0 features.",
+    body: "Only fictional Orchid Payments appears in this preview. Auth0 identity-only login is separate from membership and organization switching.",
     icon: Database,
   },
   {
     title: "Members and invitations",
-    body: "Owner/admin roles are not universal sales or merchant data grants. Real identity and invitations remain unimplemented.",
+    body: "P4 now includes a fictional membership and invitation preview. Owner roles are not universal CRM permissions; real invites and identity-to-tenant mapping are not enabled.",
     icon: UsersRound,
   },
   {
     title: "Permission policies",
-    body: "Default-deny, tenant, row, field and export checks exist in approved P1 design documentation but not in this running UI.",
+    body: "A fictional roles, permissions and team preview is available. Real tenant authorization, data access and permission writes remain disabled.",
     icon: LockKeyhole,
   },
   {
@@ -37,8 +38,16 @@ export default function SettingsConceptPage() {
         <ShieldAlert size={18} aria-hidden="true" />
         <div>
           <strong>No accounts, permissions, or subscriptions can be changed here.</strong>
-          <span>This preview has no login, server-side tenant guards, database, invite links or payment connections. Do not use it with real data.</span>
+          <span>Auth0 identity-only login exists, but this preview has no verified tenant permissions, organization writes, invitation service or payment connection. Do not use real data.</span>
         </div>
+      </div>
+      <div className="action-row" style={{ marginBottom: 18 }}>
+        <Link className="btn" href="/account">Account and security</Link>
+        <Link className="btn" href="/app/organization/new">Fictional organization preview</Link>
+        <Link className="btn" href="/app/organization/memberships">Membership and invitation preview</Link>
+        <Link className="btn" href="/app/organization/access">Roles, policies and teams preview</Link>
+        <Link className="btn" href="/app/organization/platform">Preferences, audit and files preview</Link>
+        <Link className="btn" href="/app/apps">Fictional app launcher</Link>
       </div>
       <div className="settings-grid">
         {sections.map(({ title, body, icon: Icon }) => (

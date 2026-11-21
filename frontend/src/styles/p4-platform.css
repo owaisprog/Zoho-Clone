@@ -1,0 +1,11 @@
+/* P4.16/19/20 fictional platform previews */
+.p4-platform-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; align-items:start; }
+.p4-platform-grid .p4-panel { min-width: 0; }
+.p4-platform-grid .p4-alert { margin-top:16px; }
+.p4-platform-grid select,.p4-platform-grid input { width:100%; padding:11px 13px; border-radius:8px; border:1px solid var(--border-control); background:var(--canvas); color:var(--ink); }
+.p4-platform-grid input:disabled { opacity:.6; cursor:not-allowed; }
+.p4-audit-events { display:grid; margin:18px 0; gap:8px; }
+.p4-audit-event { border:1px solid var(--border-soft); border-radius:9px; padding:13px; display:grid; gap:4px; }
+.p4-audit-event strong { font-size:13px; }
+.p4-audit-event small { color:var(--muted); font-size:11px; }
+@media (max-width:980px) {.p4-platform-grid {grid-template-columns:1fr;}}

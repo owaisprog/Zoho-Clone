@@ -64,3 +64,27 @@ The machine-readable [open decision log](p1-decision-backlog.csv) contains all 1
 - [x] P1.10 issue #23 closed and P2.01 Brand and Design Tokens started; 12 decisions stay OPEN.
 
 **No new architectural, legal, commercial or security certification decision is claimed as already signed by the owner.**
+
+
+## Architecture v1.0 partial decisions, no closure (2026-11-20)
+[ADR 0007](../adr/0007-architecture-v1-owner-approval.md) records express owner approval for shared PostgreSQL/FORCE RLS with UUIDv4 new IDs, Auth0/independent membership/RBAC/ABAC/entitlements, private provider-neutral storage/quarantine/scanning, transactional outbox + Redis/BullMQ when appropriate, and separate development/staging/production. The listed **12 tracked decisions remain OPEN**: key/FK migration and authorization granularity, real Auth0 MFA/revocation, worker delivery, storage provider, hosting/residency/retention, pricing, security, legal and pilot/release gates are not thereby complete. Never count synthetic CI or architecture signoff as execution of the original 727 P1.09 tests. No Neon mutation, paid cloud, deployment or merge approved.
+
+
+## P4 Batch 07 D1/D2/D4/D5 subset approval (2026-11-20)
+The owner expressly approved four **implementation detail** decisions D1 (private-by-default/direct/team sharing), D2 (sales-rep vs manager current-team scopes), D4 (minimal `id`/`displayName` lead projection and sensitive-field denial) and D5 (fresh checks/revocation on next protected request; no unapproved export/writes) for **synthetic-only P4 work**. See [ADR 0008](../adr/0008-p4-batch07-owner-permission-implementation-approval.md) and [approved review text](../security/p4-batch07-permissions-owner-review.md). The P1.06 13-role/286-row approved design is not replaced. **OPEN-003 remains OPEN** for full integration and independent security acceptance; all **12 tracked decisions remain OPEN**, with 14 risks/727 original unexecuted P1.09 cases and external gates unchanged.
+
+
+## 2026-11-20 verification of partially approved OPEN-003 implementation
+The specific P4 D1/D2/D4/D5 owner decisions are recorded in [ADR 0008](../adr/0008-p4-batch07-owner-permission-implementation-approval.md). [GitHub Actions #44766524774](https://github.com/owaisprog/Zoho-Clone/actions/runs/44766524774) passed 269 synthetic automated tests and two-org restricted PostgreSQL/HTTP checks. **OPEN-003 remains OPEN** for complete resource/action/field coverage and independent staging acceptance; all 12 tracked decision entries, original 14 risks, 727 original unexecuted P1.09 cases, and release gates remain open. No Neon/production deployment or database mutation approved.
+
+
+## 2026-11-20 — Phase 4 Batch 09 CI-only audit/search checkpoint
+Current owner-approved D1/D2/D4/D5 synthetic rules are enforced on scoped CRM search and small read-only reports, with an isolated fictional PostgreSQL role/team audit rehearsal. [GitHub Actions #44769982822](https://github.com/owaisprog/Zoho-Clone/actions/runs/44769982822) passed 277 tests and four jobs. **No new owner approval for real writes, exports, commercial reporting or role delegation**; OPEN-003 and the full 12 original decisions remain tracked OPEN. Original 14 risks, 727 unexecuted P1.09 acceptance cases and external release gates remain open.
+
+
+## 2026-11-21 — Batch 10 proposed role/team change contract, OPEN-003 unchanged
+Engineering added a **decision-only** role/team change evaluator and CI-only candidate 015 with simulated owner/tenant/version/idempotency/audit protection. [Actions #44832334505](https://github.com/owaisprog/Zoho-Clone/actions/runs/44832334505) **4/4 PASS, 285/285 automated tests PASS** plus real disposable PostgreSQL. Proposed R10-C1–C5 in [owner review](../security/p4-batch10-role-team-change-contract-owner-review.md) are **NOT APPROVED** and are part of the still OPEN-003 authorization design/acceptance questions; **all 12 original tracked decisions remain OPEN** alongside original 14 risks, 727 unexecuted P1.09 cases and all staging/production/provider/release gates. No live role mutation endpoint or Neon SQL change.
+
+
+## 2026-11-21 — Batch 11 IAM read-only checkpoint (no decision closure)
+The previously approved P1.06 membership, invitation and audit metadata read rights are rehearsed in a **separate disposable CI-only schema** with restricted fields, force RLS and current organization role checks. [Actions #44844318336](https://github.com/owaisprog/Zoho-Clone/actions/runs/44844318336) passed 294 tests and real database/HTTP isolation. Invitation token/email, raw audit payload and non-approved write operations are excluded. This does **not** approve R10-C1–C5 role/team delegation, live Auth0, storage, staging, any Neon migration or P4 exit. **All 12 original tracked decisions, 14 risks and 727 original P1.09 unexecuted acceptance cases remain OPEN.**

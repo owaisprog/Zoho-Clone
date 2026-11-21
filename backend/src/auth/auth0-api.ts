@@ -7,8 +7,8 @@ import { readAuth0ApiConfiguration } from "./auth0-config.js";
  * signature/JWKS, RS256, issuer, audience, expiry. Never use ID tokens for API
  * authorization. Provider subject != a tenant membership or record grant.
  */
-export function auth0IdentityCheckMiddleware(): RequestHandler {
-  const config = readAuth0ApiConfiguration();
+export function auth0IdentityCheckMiddleware(env: NodeJS.ProcessEnv = process.env): RequestHandler {
+  const config = readAuth0ApiConfiguration(env);
   if (!config) {
     return (_req, res) => {
       res.status(503).json({

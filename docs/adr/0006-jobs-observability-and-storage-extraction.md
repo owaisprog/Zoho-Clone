@@ -1,6 +1,6 @@
 # ADR 0006 — Queue, telemetry and private file foundation
 
-Status: **PROVISIONAL / OWNER REVIEW REQUIRED**
+Status: **OUTBOX/REDIS/BULLMQ AND PRIVATE-STORAGE ARCHITECTURE OWNER APPROVED; PROVIDERS AND RUNTIME OPEN**
 Date: 2026-11-20
 Master: P3.11–P3.12; P4 and P7 follow-on work.
 
@@ -47,3 +47,7 @@ Worker transport, telemetry exporter and file provider remain replaceable
 behind interfaces. R2 versus S3, telemetry vendor, object retention and
 malware scanner are pending owner cost/privacy decisions. No live customer
 data or paid infrastructure authorized.
+
+
+## Architecture v1.0 approval boundary (2026-11-20)
+The owner approved the **transactional outbox + Redis/BullMQ at the appropriate phase** and **provider-neutral private storage with quarantine and scanning**. This is not approval for live queues, real emails, storage provider/region, object retention/scanner or production workers. Keep the interface fail-closed until separate rollout approvals. [ADR 0007](0007-architecture-v1-owner-approval.md).
