@@ -42,7 +42,7 @@ export async function readP4R13CiTeams(
   return inRestrictedTenant(prisma,scope,env,async(tx,evidence)=>{
     if(!evidence.enabledApps.includes("platform")||
        !evidence.roleCodes.some(r=>(r==="ORG_OWNER"||r==="ORG_ADMIN")&&
-          getP4R7ApprovedMatrixRow(r,"memberships")?.actions.includes("R"))) {
+          getP4R7ApprovedMatrixRow(r,"memberships")?.actions.some(a=>a==="R"))) {
       throw new P4R7CiReadDeniedError();
     }
     const rows=await tx.$queryRawUnsafe<Array<{
