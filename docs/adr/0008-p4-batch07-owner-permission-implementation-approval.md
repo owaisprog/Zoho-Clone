@@ -43,3 +43,7 @@ The approved D1/D2/D4/D5 rules now also guard CI-only bounded CRM search and vis
 
 ## Batch 10 additional unapproved delegation contract (2026-11-21 local)
 The earlier owner approval of D1/D2/D4/D5 **does not extend** to actual role/team management. A pure P1.06 review function and isolated CI-only candidate 015 demonstrate last-owner denial, synthetic change audit and optimistic idempotency, with no mounted HTTP writer. [Run #44832334505](https://github.com/owaisprog/Zoho-Clone/actions/runs/44832334505) passed 285 automated tests/4 CI jobs and disposable PostgreSQL checks. [New R10-C1–C5 contract](../security/p4-batch10-role-team-change-contract-owner-review.md) is **proposed and NOT APPROVED**. OPEN-003, all other decisions and release gates remain OPEN.
+
+
+## Batch 11 scoped R0 IAM read rehearsal (2026-11-21)
+CI-only candidate 016 and minimal Prisma/HTTP projections demonstrate restricted P1.06 membership metadata, invite status and sanitized audit reads; [Actions #44844318336](https://github.com/owaisprog/Zoho-Clone/actions/runs/44844318336) passed 294 tests and restricted real PostgreSQL smoke. The P1.06 design and owner-approved D1/D2/D4/D5 synthetic scope are unchanged. **R10-C1–C5 remains unapproved**, and no production IAM writer/authentication/storage/release gate is closed. See [Batch 11 report](../engineering/p4-exit-integration-batch-11.md).
