@@ -93,6 +93,10 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog AS $f$
  LIMIT 21
 $f$;
 REVOKE ALL ON FUNCTION p4_r14_ci.read_role_summaries() FROM PUBLIC;
+-- Earlier disposable P4 candidate granted the runtime direct SELECT on all
+-- organization columns. Remove that broad grant before exposing the new
+-- minimal organization projection, including for billing/reviewer roles.
+REVOKE SELECT ON p4_v1_ci.organizations FROM p4_v1_ci_runtime;
 GRANT USAGE ON SCHEMA p4_r14_ci TO p4_v1_ci_runtime;
 GRANT EXECUTE ON FUNCTION p4_r14_ci.read_organization() TO p4_v1_ci_runtime;
 GRANT EXECUTE ON FUNCTION p4_r14_ci.read_role_summaries() TO p4_v1_ci_runtime;
