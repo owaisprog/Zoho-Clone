@@ -60,9 +60,8 @@ SELECT set_config('app.tenant_id','20000000-0000-4000-8000-000000000001',true);
 SELECT set_config('app.actor_id','10000000-0000-4000-8000-0000000000d1',true);
 DO $manager$
 BEGIN
- IF (SELECT count(*) FROM p4_r13_ci.read_team_summaries())<>1
-    OR NOT (SELECT is_manager FROM p4_r13_ci.read_team_summaries() LIMIT 1) THEN
-   RAISE EXCEPTION 'Manager lacks own managed team';
+ IF (SELECT count(*) FROM p4_r13_ci.read_team_summaries())<>0 THEN
+   RAISE EXCEPTION 'Manager accessed unapproved IAM team directory';
  END IF;
 END $manager$;
 COMMIT;
