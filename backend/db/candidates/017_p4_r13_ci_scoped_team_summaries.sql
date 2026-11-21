@@ -16,7 +16,7 @@ CREATE SCHEMA p4_r13_ci;
 REVOKE ALL ON SCHEMA p4_r13_ci FROM PUBLIC;
 
 -- This helper examines current business grants, not legacy OWNER/MEMBER or JWT roles.
--- Organization managers can see only teams they CURRENTLY manage.
+-- P1.06 lacks a distinct team-read resource. Only owner/admin IAM metadata is allowed.
 CREATE FUNCTION p4_r13_ci.read_team_summaries()
 RETURNS TABLE(org_id uuid,team_id uuid,team_name text,member_count bigint,is_manager boolean)
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog AS $fn$
@@ -40,11 +40,7 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog AS $fn$
      WHERE m.organization_id=t.organization_id
        AND m.actor_id::text=NULLIF(current_setting('app.actor_id',true),'')
        AND m.active AND r.active AND a.active
-       AND (r.role_code IN ('ORG_OWNER','ORG_ADMIN','SECURITY_REVIEWER')
-         OR (r.role_code='SALES_MANAGER'
-           AND EXISTS(SELECT 1 FROM p4_r7_ci.team_grants own
-             WHERE own.organization_id=t.organization_id AND own.team_id=t.id
-               AND own.actor_id=m.actor_id AND own.active AND own.managed))))
+       AND r.role_code IN ('ORG_OWNER','ORG_ADMIN')))
  ORDER BY t.id
  LIMIT 21
 $fn$;
