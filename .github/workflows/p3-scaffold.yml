@@ -29,6 +29,9 @@ jobs:
       - name: Type-check source
         run: npm run typecheck
 
+      - name: Validate P4 R35 identity-only Auth0 configuration with fictional inputs
+        run: node scripts/p4-r35-auth0-preflight.mjs --ci
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
