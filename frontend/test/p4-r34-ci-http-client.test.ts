@@ -4,7 +4,7 @@ import {P4R34CiHttpClient,P4R34CiClientError}
  from "../src/lib/p4-r34-ci-http-client";
 import {P4R34CiWorkflowController}
  from "../src/lib/p4-r34-ci-workflow-controller";
-const ENV={CI:"true",GITHUB_ACTIONS:"true"};
+const ENV:NodeJS.ProcessEnv={CI:"true",GITHUB_ACTIONS:"true",NODE_ENV:"test"};
 const ORG="10000000-0000-4000-8000-000000000001";
 const invitation={id:"10000000-0000-4000-8000-000000000002",
  organizationId:ORG,recipientEmail:"carla@example.com",role:"MEMBER",
