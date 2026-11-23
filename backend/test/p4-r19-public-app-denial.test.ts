@@ -31,7 +31,7 @@ describe("P4 R19 normal production Express route surface",()=>{
  });
  it("does not mount test router through any HTTP verb",async()=>{
   const e=app();
-  const url=endpoints[5];
+  const url=endpoints[5]!;
   for(const method of ["post","put","patch","delete"] as const){
    const r=await request(e)[method](url).send({role:"ORG_OWNER"});
    assert.equal(r.status,404);
@@ -41,7 +41,7 @@ describe("P4 R19 normal production Express route surface",()=>{
  it("does not leak internal membership data via query or path tricks",async()=>{
   const e=app();
   for(const suffix of ["?limit=1","?cursor=fake","?export=csv"]){
-   const r=await request(e).get(endpoints[5]+suffix);
+   const r=await request(e).get(endpoints[5]!+suffix);
    assert.equal(r.status,404);
    assert.equal(JSON.stringify(r.body).includes("token_hash"),false);
   }
