@@ -32,6 +32,7 @@ const administration = [
   { label: "Settings concept", href: "/app/settings", icon: Settings2 },
   { label: "Create org · preview", href: "/app/organization/new", icon: Building2 },
   { label: "Members · preview", href: "/app/organization/memberships", icon: UsersRound },
+  { label: "Invitations · demo", href: "/app/organization/workflow", icon: UsersRound },
   { label: "Access · preview", href: "/app/organization/access", icon: LockKeyhole },
   { label: "Platform · preview", href: "/app/organization/platform", icon: Building2 },
   { label: "Continuity · preview", href: "/app/organization/continuity", icon: LockKeyhole },
@@ -80,6 +81,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     pathname === "/app/settings" ? "Settings concept" :
     pathname === "/app/organization/new" ? "Organization / Preview" :
     pathname === "/app/organization/memberships" ? "Organization / Memberships" :
+    pathname === "/app/organization/workflow" ? "Organization / Invitation demo" :
     pathname === "/app/organization/access" ? "Organization / Access" :
     pathname === "/app/organization/platform" ? "Organization / Platform controls" :
     pathname === "/app/organization/continuity" ? "Organization / Continuity" : "Unrecognized demo page";
