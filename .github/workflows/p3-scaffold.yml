@@ -35,6 +35,9 @@ jobs:
       - name: Build frontend and backend
         run: npm run build
 
+      - name: Assert built Express app cannot import synthetic CI-only platform modules
+        run: node scripts/p4-ci-compiled-boundary.mjs
+
       - name: Check for accidentally tracked secrets and generated files
         run: |
           bash scripts/check-tracked-artifacts.sh

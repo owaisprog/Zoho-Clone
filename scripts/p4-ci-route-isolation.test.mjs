@@ -44,3 +44,38 @@ test("server direct imported synthetic router also fails",()=>{
   'import "./platform/p4-r15-ci-audit-test-router.js";'),
   /P4_CI_TEST_ROUTER_REACHABLE/);
 });
+
+
+test("rejects reaching a CI Prisma reader even without a router",()=>{
+ assert.throws(()=>fakeGraph('import "./platform/p4-r7-ci-prisma-reader.js";',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects CI identity helper imported through safe-looking module",()=>{
+ assert.throws(()=>fakeGraph('import "./internal/safe.js";',"",{
+  "internal/safe.ts":'export * from "../platform/p4-v1-ci-identity.js";',
+ }),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects unresolved relative dependency rather than silently skipping",()=>{
+ assert.throws(()=>fakeGraph('import "./internal/unknown.js";',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects computed dynamic imports",()=>{
+ assert.throws(()=>fakeGraph('const spec="./safe.js";void import(spec);',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects CommonJS computed require",()=>{
+ assert.throws(()=>fakeGraph('const dep="./safe.js";require(dep);',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects backend alias imports until explicitly resolved",()=>{
+ assert.throws(()=>fakeGraph('import x from "@/platform/p4-r7-ci-prisma-reader";',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects traversal outside backend source tree",()=>{
+ assert.throws(()=>fakeGraph('import "../test/p4-r15-ci-audit-page.test.js";',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects canonical paths resolving outside backend source",()=>{
+ assert.throws(()=>inspectProductionGraph(
+  ()=> 'import "./internal/safe.js";',
+  p=>p.endsWith("internal/safe.ts"),
+  ()=>resolve("backend/test/escaped.ts"),
+ ),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("rejects static CommonJS CI module import",()=>{
+ assert.throws(()=>fakeGraph('const test=require("./platform/p4-r17-ci-rotated-audit-router.js");',""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
