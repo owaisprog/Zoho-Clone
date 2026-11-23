@@ -62,7 +62,7 @@ export function addSandboxOrganization(state:SandboxState,name:string,slug:strin
  ensure(!state.organizations.some(x=>x.slug===draft.slug),"CONFLICT");
  const org:SandboxOrganization=Object.freeze({
   id:"sandbox-org-"+(state.revision+1),name:draft.name,slug:draft.slug,
-  members:Object.freeze([{email:OWNER,role:"ORG_OWNER",active:true}]),
+  members:Object.freeze([{email:OWNER,role:"ORG_OWNER" as const,active:true}]),
   invitations:Object.freeze([]),
  });
  const next=Object.freeze({organizations:Object.freeze([...state.organizations,org]),
