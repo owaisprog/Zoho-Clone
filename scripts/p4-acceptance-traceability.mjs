@@ -78,7 +78,7 @@ export function evaluateP4R21Acceptance(
  if(relevant.length<4||new Set(relevant.map(f=>f.feature_id)).size!==relevant.length)
   reject(errors,"P4_FEATURE_COVERAGE_DRIFT");
  for(const f of relevant){
-  if(!f.planned_case_ids?.split(";").some(id=>byId.has(id)))
+  if(!f.planned_case_ids||!f.planned_case_ids.split(";").every(id=>byId.has(id)))
    reject(errors,"P4_FEATURE_CASE_REFERENCE_MISSING");
  }
  if(!object(links)||links.version!==1||links.phase!=="P4"||
