@@ -104,7 +104,8 @@ async function main(){
    [replacement.body.data.id]);
   assert.deepEqual(old.rows,[{status:"expired",version:2}]);
   diagnosticPhase="foreign-organization";
-  const foreignOrg="10000000-0000-4000-8000-000000000002";
+  // Alice already owns the seeded Cedar tenant; use an unowned UUIDv4.
+  const foreignOrg="10000000-0000-4000-8000-000000000099";
   assert.equal((await request(alice).post(
    "/_p4_r29_ci/"+foreignOrg+"/invitations")
    .send({recipientEmail:"other@example.com"})).status,403);
