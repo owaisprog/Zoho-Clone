@@ -1,0 +1,107 @@
+{
+  "version": 1,
+  "phase": "P4",
+  "scope": "synthetic-engineering-evidence-only",
+  "originalInventory": "docs/qa/test-inventory.csv",
+  "originalPlannedTotal": 727,
+  "originalExecutedTotal": 0,
+  "evidenceDoesNotExecuteOriginalCases": true,
+  "rows": [
+    {
+      "plannedTestId": "AC-050",
+      "evidencePath": "backend/db/tests/010_p4_v1_uuidv4_relational_isolation.sql",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Fictional relational org and membership constraints; does not demonstrate Auth0-verified create API",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-051",
+      "evidencePath": "backend/src/scripts/p4-ci-v1-authenticated-authorization-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic verified-identity bridge and tenant denial; no live Auth0 integration",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-052",
+      "evidencePath": "backend/src/scripts/p4-ci-r11-iam-read-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Role denial for IAM read surface, not an authenticated invitation send test",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-053",
+      "evidencePath": "backend/src/scripts/p4-ci-r14-iam-read-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Membership revocation read denial, not live revoke UI, token/session expiry or cache invalidation",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-054",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic cross-org access denial, not all original merchant-read/write paths",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-055",
+      "evidencePath": "backend/src/scripts/p4-ci-r11-iam-read-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Restricted metadata visibility, not production support audit chain",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-056",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Fictional app entitlement denial, not live MerchantOps plan and payment integration",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-058",
+      "evidencePath": "backend/db/tests/015_p4_r10_ci_change_replay_and_owner_guard.sql",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Disposable audited role/team rehearsal, write approvals R10-C1-C5 remain open",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-100",
+      "evidencePath": "backend/test/p4-r19-public-app-denial.test.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Normal Express route denial and log-scope tests, not full original telemetry under live bearer failures",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "J-02-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r11-iam-read-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic IAM read role boundaries, not invite redemption and role grant journey",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T008",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Owner without sales grant denied fictional lead reads by restricted policy",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T012-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r17-audit-rotation-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Scoped synthetic GET audit denial, no production API/OpenAPI acceptance",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    }
+  ]
+}
