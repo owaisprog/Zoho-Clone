@@ -70,7 +70,7 @@ async function main(){
    base(CEDAR)+"?limit=1&cursor="+fakeCursor,
    base(ORCHID)+"?limit=2&cursor="+fakeCursor,
    base(ORCHID)+"?limit=1&cursor="+fakeReviewerCursor,
-   base(ORCHID)+"?limit=1&cursor="+fakeCursor.slice(0,-1)+"x",
+   base(ORCHID)+"?limit=1&cursor="+fakeCursor.slice(0,fakeCursor.indexOf(".")+1)+"x"+fakeCursor.slice(fakeCursor.indexOf(".")+2),
    base(ORCHID)+"?cursor=bad",
    base(ORCHID)+"?limit=0",
    base(ORCHID)+"?export=csv",
