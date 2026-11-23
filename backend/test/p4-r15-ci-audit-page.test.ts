@@ -36,6 +36,8 @@ function fake(o:Opts={}){
     actionCode:o.action??"role_grant.revoked",
     occurredAt:o.date===undefined?new Date("2026-11-20T10:00:00Z"):o.date,
     cursorProvided:params[0],
+    raw_payload_private:{token:'synthetic-hidden-test-only'},
+    recipient_email:'private@example.invalid',
    }));
   },
   r7Membership:{async findUnique(){return o.noMember?null:{active:true};}},
@@ -116,6 +118,46 @@ describe("P4 R15 audit read-only page",()=>{
   await assert.rejects(readP4R15CiAuditPage(m.prisma,scope,{},
    {...ENV,PGHOST:"production.neon.tech"}),P4R7CiReadDeniedError);
   assert.equal(m.queries,0);
+ });
+ it("projects only the four approved fields despite extra SQL-returned secrets",async()=>{
+  const m=fake();
+  const p=await readP4R15CiAuditPage(m.prisma,scope,{},ENV);
+  assert.deepEqual(Object.keys(p.data[0]??{}).sort(),
+   ["action","actorId","id","occurredAt"]);
+  const serialized=JSON.stringify(p);
+  for(const hidden of ["raw_payload_private","recipient_email",
+   "synthetic-hidden-test-only","private@example.invalid","cursorProvided"])
+   assert.equal(serialized.includes(hidden),false);
+ });
+ it("allowlisted event actions remain the only readable synthetic codes",async()=>{
+  for(const action of ["role_grant.revoked","team_grant.revoked","invitation.created"]){
+   const m=fake({action});
+   const p=await readP4R15CiAuditPage(m.prisma,scope,{},ENV);
+   assert.equal(p.data[0]?.action,action);
+  }
+  for(const action of ["invitation.token","secret.export","role_grant.created",
+   "audit.removed",""]){
+   const m=fake({action});
+   await assert.rejects(readP4R15CiAuditPage(m.prisma,scope,{},ENV),
+    P4R7CiReadDeniedError);
+  }
+ });
+ it("denies insufficient role even with active membership and platform grant",async()=>{
+  for(const roles of [["ORG_ADMIN"],["SALES_REP"],["SYSTEM_WORKER"],
+   ["PLATFORM_SUPPORT"],["BILLING_ADMIN"]]){
+   const m=fake({roles});
+   await assert.rejects(readP4R15CiAuditPage(m.prisma,scope,{},ENV),
+    P4R7CiReadDeniedError);
+   assert.equal(m.queries,0);
+  }
+ });
+ it("never uses invalid event timestamps or malformed IDs as audit evidence",async()=>{
+  for(const opts of [{actorId:"00000000-0000-0000-0000-000000000000"},
+   {eventId:"bad"}, {date:42},{date:null},{action:"raw_provider_body"}]){
+   const m=fake(opts);
+   await assert.rejects(readP4R15CiAuditPage(m.prisma,scope,{},ENV),
+    P4R7CiReadDeniedError);
+  }
  });
  it("denies unexpected rows beyond bounded keyset count",async()=>{
   const m=fake({records:3});
