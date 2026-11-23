@@ -8,7 +8,7 @@ const ENV={CI:"true",GITHUB_ACTIONS:"true",PGHOST:"127.0.0.1",
  PGPASSWORD:"fake_ci_not_for_real_accounts"};
 const ACTOR={userId:"user_demo_alice",verified:true} as const;
 const ORG="10000000-0000-4000-8000-000000000001";
-function f(env:Record<string,string>=ENV){
+function f(env:NodeJS.ProcessEnv=ENV){
  let count=0;
  const pool={async connect(){count++;throw Error("UNEXPECTED_DB");}} as unknown as pg.Pool;
  return {s:new P4R29CiInvitationService(pool,env),get count(){return count;}};
