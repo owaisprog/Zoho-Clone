@@ -12,3 +12,15 @@
 .p4-invite-info strong { color: var(--ink); }
 .p4-invite-info p { margin-top: 6px; font-size: 13px; }
 @media (max-width: 980px) { .p4-membership-layout { grid-template-columns: 1fr; } }
+
+
+/* P4 R27 fully interactive, browser-memory sandbox */
+.p4-functional-layout { display:grid;grid-template-columns:minmax(280px,1fr) minmax(350px,1.35fr);gap:18px;align-items:start; }
+.p4-functional-records { margin:12px 0 20px;display:grid;gap:10px; }
+.p4-functional-record { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border-soft);flex-wrap:wrap; }
+.p4-functional-record strong,.p4-functional-record small { display:block;overflow-wrap:anywhere; }
+.p4-functional-record strong {font-size:13px;color:var(--ink);}
+.p4-functional-record small {font-size:11px;color:var(--muted);margin-top:3px;}
+.p4-functional-record .p4-actions {margin:0;}
+.p4-functional-notice {grid-column:1/-1;}
+@media(max-width:980px){.p4-functional-layout{grid-template-columns:1fr;}}
