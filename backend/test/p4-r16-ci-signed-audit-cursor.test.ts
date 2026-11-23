@@ -69,7 +69,7 @@ describe("P4 R16 CI-only signed audit cursor",()=>{
   const t=good();
   assert.throws(()=>verifyP4R16CiAuditCursor(t,S,20,NOW,KEY),
    P4R7CiReadDeniedError);
-  assert.throws(()=>issueP4R16CiAuditCursor(S,AFTER.toUpperCase(),5,NOW,KEY),
+  assert.throws(()=>issueP4R16CiAuditCursor(S,"7A000000-0000-4000-8000-000000000001",5,NOW,KEY),
    P4R7CiReadDeniedError);
  });
 });
