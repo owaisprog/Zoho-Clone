@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "phase": "P4",
+  "profile": "UNPROVISIONED_STAGING_BLUEPRINT",
+  "mode": "DRY_RUN_ONLY",
+  "publicIngress": "DISABLED",
+  "releaseDecision": "NO_GO",
+  "approval": {
+    "productOwner": false,
+    "security": false,
+    "architecture": false,
+    "operations": false
+  },
+  "dependencies": {
+    "auth0": {
+      "state": "NOT_CONNECTED",
+      "requires": "approved issuer/JWKS and MFA"
+    },
+    "postgres": {
+      "state": "NOT_CONNECTED",
+      "requires": "least-privilege tenant RLS role and migration review"
+    },
+    "delivery": {
+      "state": "NOT_CONNECTED",
+      "requires": "KMS-backed encrypted outbox and approved mailer"
+    },
+    "recovery": {
+      "state": "NOT_TESTED_IN_STAGING",
+      "requires": "snapshot restore and owner-approved rollback"
+    }
+  },
+  "rollback": {
+    "snapshotBeforeCutover": true,
+    "restoreDrillRequired": true,
+    "canaryRequired": true,
+    "rollbackTrigger": "FAILED_AUTH_OR_TENANT_ISOLATION",
+    "automaticDeployment": false
+  },
+  "formalAcceptance": {
+    "originalCases": 727,
+    "executed": 0,
+    "ownerAccepted": false
+  },
+  "permittedActions": [
+    "VALIDATE_SCHEMA",
+    "RUN_SYNTHETIC_READINESS_REHEARSAL",
+    "SIMULATE_ROLLBACK"
+  ],
+  "forbiddenActions": [
+    "DEPLOY",
+    "MIGRATE_NEON",
+    "ENABLE_LIVE_AUTH0",
+    "SEND_MAIL",
+    "MERGE_MAIN",
+    "APPROVE_P4_EXIT"
+  ]
+}
