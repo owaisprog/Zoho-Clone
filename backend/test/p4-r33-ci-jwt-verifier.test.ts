@@ -19,7 +19,7 @@ const encode=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
 const token=(h:unknown=header,p:unknown=claims,changeSignature=false)=>{
  const input=encode(h)+"."+encode(p);
  const s=sign("RSA-SHA256",Buffer.from(input),keys.privateKey);
- if(changeSignature)s[0]^=1;
+ if(changeSignature)s[0]=(s[0]??0)^1;
  return input+"."+s.toString("base64url");
 };
 const denied=(raw:unknown,keyset:readonly P4R33CiJwk[]=[jwk],
