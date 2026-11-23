@@ -132,7 +132,10 @@ async function main(){
   assert.equal((await request(carla).post(path)
     .send({token:revokeFixture.token})).status,403);
   phase="concurrent-double-redemption";
-  const concurrent=await fixture(other.id,"diana@example.com");
+  const raceOrg=await orgService.create(ALICE,{
+   name:"Demo R30 Race",slug:"demo-r30-race",
+  });
+  const concurrent=await fixture(raceOrg.id,"diana@example.com");
   const attempts=await Promise.all(Array.from({length:4},()=>
     request(diana).post(path).send({token:concurrent.token})));
   assert.deepEqual(attempts.map(a=>a.status).sort(),[200,403,403,403]);
