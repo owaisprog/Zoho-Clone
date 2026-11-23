@@ -8,6 +8,7 @@ import {P4R29CiInvitationService} from "../platform/p4-r29-ci-invitation-service
 import {createP4R29CiInvitationRouter} from "../platform/p4-r29-ci-invitation-router.js";
 const ALICE={userId:"user_demo_alice",verified:true} as const;
 const BOB={userId:"user_demo_bob",verified:true} as const;
+let diagnosticPhase="initial";
 async function main(){
  assertP4V1CiPrismaEnvironment(process.env);
  const pool=new pg.Pool({host:"127.0.0.1",port:5432,
@@ -25,18 +26,22 @@ async function main(){
  const alice=appFor(ALICE),bob=appFor(BOB),anonymous=appFor(null);
  const email="new.r29@example.com";
  try{
+  diagnosticPhase="create-organization";
   const org=await orgService.create(ALICE,{
    name:"Demo R29 Payments",slug:"demo-r29-payments",
   });
   const base="/_p4_r29_ci/"+org.id+"/invitations";
+  diagnosticPhase="anonymous-denial";
   const denied=await request(anonymous).post(base).send({recipientEmail:email})
    .set("x-role","OWNER").set("x-user-id","user_demo_alice");
   assert.equal(denied.status,401);
   assert.deepEqual(denied.body,{error:{code:"IDENTITY_REQUIRED"}});
+  diagnosticPhase="foreign-denial";
   const foreign=await request(bob).post(base).send({recipientEmail:email})
    .set("x-role","OWNER");
   assert.equal(foreign.status,403);
   assert.deepEqual(foreign.body,{error:{code:"ACCESS_DENIED"}});
+  diagnosticPhase="invalid-body";
   for(const body of [{recipientEmail:"real@merchant.com"},
    {recipientEmail:email,role:"OWNER"},
    {recipientEmail:email,token:"never-allowed"},{recipientEmail:42}]){
@@ -44,6 +49,7 @@ async function main(){
    assert.equal(invalid.status,400);
    assert.deepEqual(invalid.body,{error:{code:"INVALID_INPUT"}});
   }
+  diagnosticPhase="create-invitation";
   const created=await request(alice).post(base).send({recipientEmail:email});
   assert.equal(created.status,201);
   assert.equal(created.headers["cache-control"],"no-store, private");
@@ -54,6 +60,7 @@ async function main(){
   assert.equal(created.body.data.status,"pending");
   assert.equal(created.body.data.version,1);
   const id=created.body.data.id as string;
+  diagnosticPhase="verify-persisted-hash";
   const db=await pool.query(
    "SELECT token_hash,status,recipient_email FROM p4_synthetic.invitations"+
    " WHERE id=$1",[id]);
@@ -61,20 +68,24 @@ async function main(){
   assert.match(db.rows[0].token_hash,/^[0-9a-f]{64}$/);
   assert.equal(db.rows[0].status,"pending");
   assert.equal(db.rows[0].recipient_email,email);
+  diagnosticPhase="list-invitations";
   const listed=await request(alice).get(base);
   assert.equal(listed.status,200);
   assert.equal(listed.body.data.length,1);
   assert.deepEqual(listed.body.data[0],created.body.data);
   assert.equal((await request(bob).get(base)).status,403);
+  diagnosticPhase="duplicate-invitation";
   const duplicate=await request(alice).post(base).send({recipientEmail:email});
   assert.equal(duplicate.status,409);
   assert.deepEqual(duplicate.body,{error:{code:"CONFLICT"}});
+  diagnosticPhase="revoke-invitation";
   const revoked=await request(alice).post(base+"/"+id+"/revoke");
   assert.equal(revoked.status,200);
   assert.equal(revoked.body.data.status,"revoked");
   assert.equal(revoked.body.data.version,2);
   assert.equal((await request(alice).post(base+"/"+id+"/revoke")).status,409);
   assert.equal((await request(bob).post(base+"/"+id+"/revoke")).status,403);
+  diagnosticPhase="replacement-invitation";
   const replacement=await request(alice).post(base).send({recipientEmail:email});
   assert.equal(replacement.status,201);
   assert.notEqual(replacement.body.data.id,id);
@@ -82,16 +93,19 @@ async function main(){
   await pool.query(
    "UPDATE p4_synthetic.invitations SET expires_at=now()-interval '1 minute'"+
    " WHERE id=$1",[replacement.body.data.id]);
+  diagnosticPhase="expired-replacement";
   const refresh=await request(alice).post(base).send({recipientEmail:email});
   assert.equal(refresh.status,201);
   const old=await pool.query(
    "SELECT status,version FROM p4_synthetic.invitations WHERE id=$1",
    [replacement.body.data.id]);
   assert.deepEqual(old.rows,[{status:"expired",version:2}]);
+  diagnosticPhase="foreign-organization";
   const foreignOrg="10000000-0000-4000-8000-000000000002";
   assert.equal((await request(alice).post(
    "/_p4_r29_ci/"+foreignOrg+"/invitations")
    .send({recipientEmail:"other@example.com"})).status,403);
+  diagnosticPhase="safe-response-projection";
   for(const item of [created,listed,revoked,refresh,foreign,denied]){
    const body=JSON.stringify(item.body);
    for(const hidden of ["token_hash","password","postgresql://","user_demo_alice",
@@ -99,6 +113,7 @@ async function main(){
     assert.equal(body.includes(hidden),false);
    }
   }
+  diagnosticPhase="pooled-session-cleanup";
   const ctx=await pool.query("SELECT current_user AS role,"+
    " nullif(current_setting('app.actor_id',true),'') AS actor,"+
    " nullif(current_setting('app.tenant_id',true),'') AS tenant");
@@ -108,6 +123,6 @@ async function main(){
  }finally{await pool.end();}
 }
 main().catch(()=>{
- process.stderr.write("P4 R29 persisted invitation CI smoke FAILED\n");
+ process.stderr.write("P4 R29 persisted invitation CI smoke FAILED at "+diagnosticPhase+"\n");
  process.exitCode=1;
 });
