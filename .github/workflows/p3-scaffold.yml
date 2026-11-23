@@ -199,6 +199,12 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r17-audit-rotation-smoke.js
 
+      - name: Verify P4 R22 fictional issuer expiry membership and tenant switch evidence
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r22-identity-membership-evidence-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
