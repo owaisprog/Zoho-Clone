@@ -12,7 +12,9 @@ import {P4R28Denied,type P4R28Actor} from "./p4-r28-ci-org-service.js";
 import type {P4R29Invite} from "./p4-r29-ci-invitation-service.js";
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const EMAIL=/^[a-z0-9][a-z0-9._-]{0,60}@example\.com$/;
-const OWNERS=new Set(["user_demo_alice","user_demo_bob"]);
+const KNOWN_ACTORS=new Set(["user_demo_alice","user_demo_bob",
+ "user_demo_carla","user_demo_diana"]);
+// Actor recognition is not a role grant: SQL checks current active OWNER membership.
 const err=(status:400|401|403|409|503,code:P4R28Denied["code"]):never=>{
  throw new P4R28Denied(status,code);
 };
@@ -29,7 +31,7 @@ export class P4R32CiOutboxIssuer{
  async issue(actor:P4R28Actor|null,orgId:unknown,body:unknown):
   Promise<P4R29Invite>{
   envGuard(this.env);keyGuard(this.key);
-  if(!actor||actor.verified!==true||!OWNERS.has(actor.userId))
+  if(!actor||actor.verified!==true||!KNOWN_ACTORS.has(actor.userId))
    return err(401,"IDENTITY_REQUIRED");
   if(typeof orgId!=="string"||!UUID.test(orgId))
    return err(403,"ACCESS_DENIED");
