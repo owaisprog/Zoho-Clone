@@ -28,7 +28,7 @@ test("real original inventory is unchanged and all evidence links are partial",(
  assert.equal(result.originalCases,727);
  assert.equal(result.originalExecuted,0);
  assert.ok(result.p4FeatureCount>=4);
- assert.equal(result.linkedCases,12);
+ assert.equal(result.linkedCases,20);
 });
 test("changing original inventory execution state cannot be counted as a pass",()=>{
  const altered=inventory.replace("NOT_RUN_DOCUMENT_ONLY","PASS");
@@ -91,4 +91,29 @@ test("inventory schema, fake feature coverage and non-CI evidence are rejected",
  assert.equal(evaluate(inventory,features.replace('"implementation_phase"','"wrong_phase"')).valid,false);
  const m=fresh();m.rows[0].evidencePath="docs/engineering/unknown-file.md";
  assert.equal(evaluate(inventory,features,m,()=>false).valid,false);
+});
+
+
+test("Batch 22 evidence links never turn original identity cases into completed acceptance",()=>{
+ const result=evaluate(inventory,features,fresh());
+ assert.equal(result.valid,true);
+ assert.equal(result.originalExecuted,0);
+ assert.equal(result.linkedCases,20);
+ const m=fresh();
+ for(const id of ["AC-107","AC-108","PERM-T002","API-T002-NEG"]){
+  const link=m.rows.find(r=>r.plannedTestId===id);
+  assert.ok(link);
+  assert.equal(link.classification,"CI_ONLY_PARTIAL");
+  assert.equal(link.originalExecutionState,"NOT_RUN_DOCUMENT_ONLY");
+  assert.equal(link.ownerAccepted,false);
+ }
+});
+test("Batch 22 forbids replacing original owner-verification link with fake pass",()=>{
+ const m=fresh();
+ const link=m.rows.find(r=>r.plannedTestId==="PERM-T003");
+ assert.ok(link);
+ link.ownerAccepted=true;
+ const result=evaluate(inventory,features,m);
+ assert.equal(result.valid,false);
+ assert.equal(result.originalExecuted,0);
 });
