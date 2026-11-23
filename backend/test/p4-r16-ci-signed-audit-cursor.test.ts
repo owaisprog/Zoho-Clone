@@ -43,7 +43,7 @@ describe("P4 R16 CI-only signed audit cursor",()=>{
   assert.ok(body&&mac);
   for(const forged of [
    "A"+body.slice(1)+"."+mac,
-   body+"."+mac.slice(0,-1)+(mac.endsWith("A")?"B":"A"),
+   body+"."+(mac.startsWith("A")?"B":"A")+mac.slice(1),
    body+"."+mac.slice(0,-1),
    body+"."+mac+"x",
   ])assert.throws(()=>verifyP4R16CiAuditCursor(forged,S,5,NOW,KEY),
