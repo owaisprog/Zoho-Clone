@@ -87,6 +87,17 @@ async function main(){
    .send({recipientEmail:"carla@example.com"});
   phase="forged-signature-"+badSignature.status+"-"+String(badSignature.body?.error?.code??"ok");
   assert.equal(badSignature.status,401);
+  phase="direct-jwt-validation";
+  const {verifyP4R33CiToken}=await import("../platform/p4-r33-ci-jwt-verifier.js");
+  assert.equal(verifyP4R33CiToken(carlaJwt,[jwk],now,process.env).emailVerified,true);
+  phase="db-subject-mapping";
+  const mapping=await pool.query(
+   "SELECT user_id,canonical_email,email_verified FROM p4_synthetic.identity_subjects"+
+   " WHERE issuer=$1 AND external_subject=$2 AND email_verified=true LIMIT 2",
+   [CI_ISSUER,"auth0|user_demo_carla"]);
+  assert.equal(mapping.rowCount,1);
+  assert.equal(mapping.rows[0].email_verified,true);
+  assert.equal(mapping.rows[0].canonical_email,"carla@example.com");
   const nonOwner=await request(app).post(route)
    .set(carlaHeaders).set("x-role","OWNER")
    .send({recipientEmail:"carla@example.com"});
