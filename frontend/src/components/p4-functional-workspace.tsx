@@ -6,7 +6,7 @@ import {
  addSandboxInvitation,resolveSandboxInvitation,revokeSandboxMember,
  displayedSandboxStatus,summarizeSandboxInvitations,
  getRecipientSandboxInbox,acceptSandboxInvitationAsRecipient,
- SandboxWorkflowError,type SandboxState,type SandboxInvitation,type SandboxResult,
+ SandboxWorkflowError,type SandboxState,type SandboxResult,
 } from "@/lib/p4-functional-workflow";
 import {suggestFictionalSlug} from "@/lib/p4-organization-preview";
 
