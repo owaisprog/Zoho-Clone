@@ -167,6 +167,16 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r14-iam-read-smoke.js
 
+      - name: Prove P4 R15 restricted audit keyset in disposable PostgreSQL
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/019_p4_r15_ci_audit_keyset.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/019_p4_r15_ci_audit_keyset.sql
+      - name: Prove P4 R15 read-only paginated audit Prisma and synthetic HTTP
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r15-audit-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
