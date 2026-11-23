@@ -40,6 +40,7 @@ jobs:
           bash scripts/check-tracked-artifacts.sh
           node --test scripts/*.test.mjs
           node scripts/check-tracked-secrets.mjs
+          node scripts/p4-ci-route-isolation.mjs
           node scripts/p3-neon-first-preflight.mjs --ci
 
       - name: Verify local synthetic process and fail-closed readiness
