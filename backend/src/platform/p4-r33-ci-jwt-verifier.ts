@@ -55,7 +55,7 @@ export function verifyP4R33CiToken(
  const audience=typeof aud==="string"?[aud]:aud;
  if(payload.iss!==CI_ISSUER||
   typeof payload.sub!=="string"||
-  !/^auth0\|user_demo_[a-z]{3,16}$/.test(payload.sub)||
+  !/^auth0\|[a-z0-9_-]{3,100}$/.test(payload.sub)||
   !Array.isArray(audience)||audience.length!==1||
   audience[0]!==CI_AUDIENCE||
   payload.email_verified!==true||
