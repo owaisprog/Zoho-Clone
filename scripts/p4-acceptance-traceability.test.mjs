@@ -28,7 +28,7 @@ test("real original inventory is unchanged and all evidence links are partial",(
  assert.equal(result.originalCases,727);
  assert.equal(result.originalExecuted,0);
  assert.ok(result.p4FeatureCount>=4);
- assert.equal(result.linkedCases,30);
+ assert.equal(result.linkedCases,34);
 });
 test("changing original inventory execution state cannot be counted as a pass",()=>{
  const altered=inventory.replace("NOT_RUN_DOCUMENT_ONLY","PASS");
@@ -98,7 +98,7 @@ test("Batch 22 evidence links never turn original identity cases into completed 
  const result=evaluate(inventory,features,fresh());
  assert.equal(result.valid,true);
  assert.equal(result.originalExecuted,0);
- assert.equal(result.linkedCases,30);
+ assert.equal(result.linkedCases,34);
  const m=fresh();
  for(const id of ["AC-107","AC-108","PERM-T002","API-T002-NEG"]){
   const link=m.rows.find(r=>r.plannedTestId===id);
@@ -130,7 +130,7 @@ test("Batch 23 role and tenant evidence remains partial and never approves P4",(
  }
  const out=evaluate(inventory,features,m);
  assert.equal(out.valid,true);
- assert.equal(out.linkedCases,30);
+ assert.equal(out.linkedCases,34);
  assert.equal(out.originalExecuted,0);
  assert.equal(out.decision,"NO_GO");
 });
@@ -156,7 +156,7 @@ test("Batch 24 new limited security evidence remains unexecuted",()=>{
  }
  const out=evaluate(inventory,features,m);
  assert.equal(out.valid,true,JSON.stringify(out.errors));
- assert.equal(out.linkedCases,30);
+ assert.equal(out.linkedCases,34);
  assert.equal(out.originalExecuted,0);
  assert.equal(out.decision,"NO_GO");
 });
@@ -168,5 +168,32 @@ test("Batch 24 rejects invented audit acceptance or wrong evidence file",()=>{
  const n=fresh();
  const link=n.rows.find(row=>row.plannedTestId==="API-T013-NEG");
  assert.ok(link);link.evidencePath="../../private.csv";
+ assert.equal(evaluate(inventory,features,n).valid,false);
+});
+
+test("Batch 25 invitation and member references remain partial",()=>{
+ const m=fresh();
+ for(const id of ["PERM-T006","API-T006-NEG","API-T008-NEG","API-T009-NEG"]){
+  const link=m.rows.find(row=>row.plannedTestId===id);
+  assert.ok(link,id);
+  assert.equal(link.classification,"CI_ONLY_PARTIAL");
+  assert.equal(link.originalExecutionState,"NOT_RUN_DOCUMENT_ONLY");
+  assert.equal(link.ownerAccepted,false);
+  assert.ok(link.limitation.length>35);
+ }
+ const output=evaluate(inventory,features,m);
+ assert.equal(output.valid,true,JSON.stringify(output.errors));
+ assert.equal(output.linkedCases,34);
+ assert.equal(output.originalExecuted,0);
+ assert.equal(output.decision,"NO_GO");
+});
+test("Batch 25 rejects fake invitation redemption acceptance",()=>{
+ const m=fresh();
+ const link=m.rows.find(row=>row.plannedTestId==="PERM-T006");
+ assert.ok(link);
+ link.classification="ACCEPTANCE_PASS";
+ assert.equal(evaluate(inventory,features,m).valid,false);
+ const n=fresh();
+ n.rows.find(row=>row.plannedTestId==="API-T008-NEG").ownerAccepted=true;
  assert.equal(evaluate(inventory,features,n).valid,false);
 });
