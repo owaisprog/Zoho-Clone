@@ -274,6 +274,12 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r32-outbox-smoke.js
 
+      - name: Verify P4 R33 cryptographic signed JWT and DB identity mapping through real HTTP
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r33-signed-identity-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20

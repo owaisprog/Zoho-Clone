@@ -1,0 +1,65 @@
+/**
+ * P4 R33 CI-only verified-JWT-to-database identity adapter.
+ * Router is UNMOUNTED in backend/src/app.ts; never a live Auth0 JWKS client.
+ */
+import type pg from "pg";
+import {Router,type Request} from "express";
+import {assertP4V1CiPrismaEnvironment} from "./p4-v1-ci-prisma.js";
+import {P4R28Denied,type P4R28Actor} from "./p4-r28-ci-org-service.js";
+import {P4R32CiOutboxIssuer} from "./p4-r32-ci-outbox.js";
+import {P4R30CiAcceptanceService} from "./p4-r30-ci-invitation-acceptance.js";
+import {createP4R32CiOutboxRouter} from "./p4-r32-ci-outbox-router.js";
+import {createP4R30CiInvitationAcceptanceRouter}
+ from "./p4-r30-ci-invitation-accept-router.js";
+import {verifyP4R33CiToken,type P4R33CiJwk}
+ from "./p4-r33-ci-jwt-verifier.js";
+const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
+export class P4R33CiActorMapper{
+ constructor(private readonly pool:pg.Pool,
+  private readonly keys:readonly P4R33CiJwk[],
+  private readonly clock:()=>number,
+  private readonly env:NodeJS.ProcessEnv=process.env){}
+ async resolve(req:Request):Promise<P4R28Actor|null>{
+  try{assertP4V1CiPrismaEnvironment(this.env);}
+  catch{return deny();}
+  const auth=req.header("authorization");
+  if(typeof auth!=="string"||auth.length>10200||
+   !/^Bearer [A-Za-z0-9._-]+$/.test(auth))return deny();
+  const verified=verifyP4R33CiToken(auth.slice(7),this.keys,
+   this.clock(),this.env);
+  // The token is already RSA signature-checked. Only the DB maps the
+  // signed provider sub to our internal fictional actor ID.
+  try{
+   const rows=await this.pool.query(
+    "SELECT user_id,canonical_email,email_verified"+
+    " FROM p4_synthetic.identity_subjects"+
+    " WHERE issuer=$1 AND external_subject=$2 AND email_verified=true"+
+    " LIMIT 2",[verified.issuer,verified.subject]);
+   if(rows.rows.length!==1||rows.rows[0]?.email_verified!==true||
+    typeof rows.rows[0]?.user_id!=="string"||
+    !/^user_demo_[a-z]{3,16}$/.test(rows.rows[0].user_id)||
+    typeof rows.rows[0]?.canonical_email!=="string"||
+    !/^[a-z0-9._-]+@example\.com$/.test(rows.rows[0].canonical_email))
+    return deny();
+   return Object.freeze({userId:rows.rows[0].user_id,verified:true as const});
+  }catch{return deny();}
+ }
+}
+export function createP4R33CiVerifiedWorkflowRouter(deps:{
+ mapper:P4R33CiActorMapper;
+ issuer:P4R32CiOutboxIssuer;
+ acceptance:P4R30CiAcceptanceService;
+},env:NodeJS.ProcessEnv=process.env):Router{
+ assertP4V1CiPrismaEnvironment(env);
+ if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
+  !deps.acceptance)throw Error("P4_R33_CI_ONLY_ROUTER_DISABLED");
+ const router=Router();
+ const resolve=(req:Request)=>deps.mapper.resolve(req);
+ router.use("/owner",createP4R32CiOutboxRouter({
+  issuer:deps.issuer,resolveVerifiedActor:resolve,
+ }));
+ router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
+  service:deps.acceptance,resolveVerifiedActor:resolve,
+ }));
+ return router;
+}
