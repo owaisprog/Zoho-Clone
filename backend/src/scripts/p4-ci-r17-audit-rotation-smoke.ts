@@ -51,7 +51,9 @@ async function main(){
   const base=(org:string)=>"/_p4_r17_ci/"+org+"/iam/rotated-audit";
   const first=await request(owner).get(base(ORCHID)+"?limit=1");
   assert.equal(first.status,200);
-  assert.equal(first.headers["cache-control"],"no-store");
+  assert.equal(first.headers["cache-control"],"no-store, private");
+  assert.equal(first.headers["pragma"],"no-cache");
+  assert.equal(first.headers["x-content-type-options"],"nosniff");
   assert.deepEqual(Object.keys(first.body.data[0]).sort(),
    ["action","actorId","id","occurredAt"]);
   assert.equal(first.body.data[0].id,CURSOR);
@@ -102,6 +104,35 @@ async function main(){
   }finally{
    await setup.query("UPDATE p4_r7_ci.memberships SET active=true"+
     " WHERE organization_id=$1 AND actor_id=$2",[ORCHID,FELIX]);
+  }
+  // Batch 18 concurrency: alternating tenant reads must never borrow a
+  // previous request's transaction-local app.actor_id/app.tenant_id.
+  const concurrent=await Promise.all(Array.from({length:16},(_,i)=>{
+   const chosen=i%4;
+   return request(chosen===0?owner:chosen===1?reviewer:chosen===2?admin:owner)
+    .get(base(chosen===3?CEDAR:ORCHID));
+  }));
+  concurrent.forEach((response,i)=>{
+   const chosen=i%4;
+   assert.equal(response.status,chosen===2?403:200);
+   assert.equal(response.headers["cache-control"],"no-store, private");
+   assert.equal(response.headers["pragma"],"no-cache");
+   assert.equal(response.headers["x-content-type-options"],"nosniff");
+   if(response.status===200){
+    assert.equal(response.body.data.length,1);
+    assert.equal(response.body.data[0].id,chosen===3?
+      "70000000-0000-4000-8000-000000000002":CURSOR);
+    assert.deepEqual(Object.keys(response.body.data[0]).sort(),
+      ["action","actorId","id","occurredAt"]);
+   }else{
+    assert.deepEqual(response.body,{error:{code:"P4_ACCESS_DENIED"}});
+   }
+  });
+  for(const path of [base(ORCHID)+"?cursor=x&cursor=y",
+    base(ORCHID)+"?limit=1&limit=2",base(ORCHID)+"?export=csv"]){
+    const denied=await request(owner).get(path);
+    assert.equal(denied.status,403);
+    assert.deepEqual(denied.body,{error:{code:"P4_ACCESS_DENIED"}});
   }
   const context=await prisma.$queryRawUnsafe<Array<{
    role:string;tenant:string|null;actor:string|null;
