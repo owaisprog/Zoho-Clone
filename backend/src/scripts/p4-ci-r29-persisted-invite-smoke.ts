@@ -92,7 +92,9 @@ async function main(){
   assert.notEqual(replacement.body.data.id,id);
   // An old expired pending row is atomically terminalized before insert.
   await pool.query(
-   "UPDATE p4_synthetic.invitations SET expires_at=now()-interval '1 minute'"+
+   "UPDATE p4_synthetic.invitations"+
+   " SET issued_at=now()-interval '49 hours',"+
+   " expires_at=now()-interval '1 hour'"+
    " WHERE id=$1",[replacement.body.data.id]);
   diagnosticPhase="expired-replacement";
   const refresh=await request(alice).post(base).send({recipientEmail:email});
