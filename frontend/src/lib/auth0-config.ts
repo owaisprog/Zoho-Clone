@@ -14,7 +14,7 @@ export function readAuth0WebConfiguration(env: Readonly<Record<string, string | 
   if (!domain && !audience && !env.AUTH0_CLIENT_ID && !env.AUTH0_CLIENT_SECRET && !env.AUTH0_SECRET) {
     return null;
   }
-  if (!AUTH0_DOMAIN_RE.test(domain) || !audience || !env.AUTH0_CLIENT_ID?.trim() ||
+  if (!AUTH0_DOMAIN_RE.test(domain) || !/^(?:https:\/\/[^\\s]+|urn:[A-Za-z0-9:._/-]+)$/.test(audience) ||\n      audience.length > 256 || !env.AUTH0_CLIENT_ID?.trim() ||
       !env.AUTH0_CLIENT_SECRET?.trim() || !/^[a-f0-9]{64}$/i.test(env.AUTH0_SECRET ?? "")) {
     // Do not allow a partially configured application to silently initiate login.
     return null;
