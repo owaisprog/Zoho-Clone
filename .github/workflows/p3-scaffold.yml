@@ -35,6 +35,9 @@ jobs:
       - name: Validate P4 R36 staging blueprint and official NO_GO gate invariants
         run: node scripts/p4-r36-staging-preflight.mjs --ci
 
+      - name: Preserve P4 R37 browser-memory invitation UI security boundary
+        run: node scripts/p4-r37-browser-boundary.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
