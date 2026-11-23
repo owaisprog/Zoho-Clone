@@ -280,6 +280,12 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r33-signed-identity-smoke.js
 
+      - name: Verify P4 R34 real frontend typed client to signed localhost backend and member activation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r34-fullstack-smoke.ts
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
