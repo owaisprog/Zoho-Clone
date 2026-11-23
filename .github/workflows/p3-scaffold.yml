@@ -265,6 +265,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r31-invitation-lifecycle-smoke.js
 
+      - name: Install P4 R32 disposable encrypted invitation delivery outbox
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/024_p4_r32_ci_delivery_outbox.sql
+
+      - name: Verify P4 R32 atomic encrypted outbox, recovery, retry and redemption
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r32-outbox-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
