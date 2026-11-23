@@ -11,12 +11,10 @@ END $guard$;
 SET ROLE p4_v1_ci_runtime;
 DO $negative$
 BEGIN
- -- No direct audit table reads, even of seemingly innocuous metadata.
- BEGIN
-  PERFORM id FROM p4_r11_ci.audit_status;
-  RAISE EXCEPTION 'P4_R24_DIRECT_AUDIT_READ_ALLOWED';
- EXCEPTION WHEN insufficient_privilege THEN NULL;
- END;
+ -- R11 explicitly permits a small, RLS-scoped safe metadata projection.
+ -- It must expose zero rows outside an active tenant + actor transaction.
+ IF (SELECT count(*) FROM p4_r11_ci.audit_status)<>0
+ THEN RAISE EXCEPTION 'P4_R24_UNSCOPED_SAFE_METADATA_LEAK'; END IF;
  BEGIN
   PERFORM raw_payload_private FROM p4_r11_ci.audit_status;
   RAISE EXCEPTION 'P4_R24_PRIVATE_AUDIT_PAYLOAD_ALLOWED';
