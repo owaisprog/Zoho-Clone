@@ -28,7 +28,7 @@ test("real original inventory is unchanged and all evidence links are partial",(
  assert.equal(result.originalCases,727);
  assert.equal(result.originalExecuted,0);
  assert.ok(result.p4FeatureCount>=4);
- assert.equal(result.linkedCases,26);
+ assert.equal(result.linkedCases,30);
 });
 test("changing original inventory execution state cannot be counted as a pass",()=>{
  const altered=inventory.replace("NOT_RUN_DOCUMENT_ONLY","PASS");
@@ -98,7 +98,7 @@ test("Batch 22 evidence links never turn original identity cases into completed 
  const result=evaluate(inventory,features,fresh());
  assert.equal(result.valid,true);
  assert.equal(result.originalExecuted,0);
- assert.equal(result.linkedCases,26);
+ assert.equal(result.linkedCases,30);
  const m=fresh();
  for(const id of ["AC-107","AC-108","PERM-T002","API-T002-NEG"]){
   const link=m.rows.find(r=>r.plannedTestId===id);
@@ -130,7 +130,7 @@ test("Batch 23 role and tenant evidence remains partial and never approves P4",(
  }
  const out=evaluate(inventory,features,m);
  assert.equal(out.valid,true);
- assert.equal(out.linkedCases,26);
+ assert.equal(out.linkedCases,30);
  assert.equal(out.originalExecuted,0);
  assert.equal(out.decision,"NO_GO");
 });
@@ -142,4 +142,31 @@ test("Batch 23 prevents false role revocation acceptance signoff",()=>{
  const output=evaluate(inventory,features,m);
  assert.equal(output.valid,false);
  assert.equal(output.originalExecuted,0);
+});
+
+test("Batch 24 new limited security evidence remains unexecuted",()=>{
+ const m=fresh();
+ for(const id of ["API-T013-NEG","API-T015-NEG","PERM-T028","PERM-T029"]){
+  const l=m.rows.find(row=>row.plannedTestId===id);
+  assert.ok(l,id);
+  assert.equal(l.classification,"CI_ONLY_PARTIAL");
+  assert.equal(l.ownerAccepted,false);
+  assert.equal(l.originalExecutionState,"NOT_RUN_DOCUMENT_ONLY");
+  assert.ok(l.limitation.length>35);
+ }
+ const out=evaluate(inventory,features,m);
+ assert.equal(out.valid,true,JSON.stringify(out.errors));
+ assert.equal(out.linkedCases,30);
+ assert.equal(out.originalExecuted,0);
+ assert.equal(out.decision,"NO_GO");
+});
+test("Batch 24 rejects invented audit acceptance or wrong evidence file",()=>{
+ const m=fresh();
+ const r=m.rows.find(row=>row.plannedTestId==="PERM-T028");
+ assert.ok(r);r.ownerAccepted=true;
+ assert.equal(evaluate(inventory,features,m).valid,false);
+ const n=fresh();
+ const link=n.rows.find(row=>row.plannedTestId==="API-T013-NEG");
+ assert.ok(link);link.evidencePath="../../private.csv";
+ assert.equal(evaluate(inventory,features,n).valid,false);
 });
