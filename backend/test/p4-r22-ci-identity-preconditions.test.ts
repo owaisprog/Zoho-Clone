@@ -47,7 +47,7 @@ describe("P4 R22 synthetic identity precondition matrix",()=>{
  });
  it("denies expired token, long-lived future token, invalid current time",async()=>{
   for(const [expires,now] of [[NOW,NOW],[NOW-1,NOW],
-   [NOW+86_401,NOW],[NOW+1,Number.NaN],[NOW+100,2.5]]){
+   [NOW+86_401,NOW],[NOW+1,Number.NaN],[NOW+100,2.5]] as [number,number][]){
    const l=lookup();
    await assert.rejects(resolveP4V1CiActor({...good,
     expiresAtEpochSeconds:expires},expected,l.adapter,now),
