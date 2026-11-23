@@ -166,6 +166,54 @@
       "limitation": "Read-only organization metadata denial, not the full production listOrganizations API",
       "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
       "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T001-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r23-role-revocation-evidence-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Fictional stale actor and role denial is covered, not a production getSession contract",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T009",
+      "evidencePath": "backend/test/p4-r23-policy-revocation-matrix.test.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic administrative role cannot imply CRM access; merchant applications not covered",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T010",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic cross-company lead denial, not all MerchantOps read and update paths",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T026",
+      "evidencePath": "backend/src/scripts/p4-ci-r17-audit-rotation-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Safe synthetic audit projection does not prove complete production audit retention",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T027",
+      "evidencePath": "backend/src/scripts/p4-ci-r17-audit-rotation-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Fictional sales rep denied audit access, not the complete original audit journey",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "AC-099",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic hidden lead access is denied; no exhaustive sequential enumeration acceptance",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
     }
   ]
 }
