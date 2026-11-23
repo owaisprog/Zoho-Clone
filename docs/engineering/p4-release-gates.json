@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "phase": "P4",
+  "scope": "development-only",
+  "defaultDecision": "NO_GO",
+  "lastReviewed": "2026-11-23",
+  "originalP109Executed": 0,
+  "originalP109Total": 727,
+  "openRisks": 14,
+  "openDecisions": 12,
+  "ownerExitApproved": false,
+  "readinessClaim": "NOT_PRODUCTION_READY",
+  "gates": [
+    {
+      "id": "P4-IDENTITY",
+      "requirement": "Live Auth0 issuer/JWKS, MFA and verified subject-to-tenant membership",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-official-progress-ledger.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-TENANT-RLS",
+      "requirement": "Production least-privilege PostgreSQL roles, migrations and live tenant RLS",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-exit-integration-batch-19.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-WRITES",
+      "requirement": "Owner-reviewed R10-C1–C5 and write/role-team transfer safety",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-exit-integration-batch-10.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-STORAGE",
+      "requirement": "Private provider, anti-malware quarantine, signed download and retention",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-official-progress-ledger.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-AUDIT",
+      "requirement": "Persistent immutable production audit and retention review",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-exit-integration-batch-11.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-STAGING",
+      "requirement": "Two-tenant staging acceptance, rollback/recovery, P3 and P2 signoff",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-official-progress-ledger.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-ORIGINAL-ACCEPTANCE",
+      "requirement": "Original P1.09 727 acceptance cases executed and traceable",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-official-progress-ledger.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-RISK-DECISIONS",
+      "requirement": "Original 14 risks and 12 unresolved decisions formally dispositioned",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-official-progress-ledger.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-OWNER-EXIT",
+      "requirement": "Formal P4 exit review and explicit owner authorization",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-official-progress-ledger.md",
+      "acceptanceEvidence": null
+    },
+    {
+      "id": "P4-PRODUCTION-RELEASE",
+      "requirement": "Production deployment, live credential and data approvals",
+      "status": "OPEN",
+      "reference": "docs/engineering/p4-exit-integration-batch-19.md",
+      "acceptanceEvidence": null
+    }
+  ]
+}
