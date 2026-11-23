@@ -183,6 +183,12 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r16-signed-audit-smoke.js
 
+      - name: Prove P4 R17 previous and retired audit cursor keys with real disposable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r17-audit-rotation-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
