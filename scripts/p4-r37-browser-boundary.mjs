@@ -16,7 +16,8 @@ const paths=[
 ];
 const files=paths.map(source);
 const banned=[
- /\bfetch\s*\(/,/\b(?:window\.|globalThis\.)?localStorage\s*\./,\n /\b(?:window\.|globalThis\.)?sessionStorage\s*\./,
+ /\bfetch\s*\(/,/\b(?:window\.|globalThis\.)?localStorage\s*\./, 
+ /\b(?:window\.|globalThis\.)?sessionStorage\s*\./,
  /\bdocument\.cookie\b/,/\bWebSocket\b/,/\bEventSource\b/,
  /Authorization\s*:/,/\/api\/v1\//,
 ];
