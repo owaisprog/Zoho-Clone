@@ -36,7 +36,7 @@ async function main(){
   return signed+"."+sign("RSA-SHA256",Buffer.from(signed),pair.privateKey)
    .toString("base64url");
  };
- const aliceJwt=make("auth0|user_demo_alice");
+ const aliceJwt=make("auth0|demo-alice");
  const carlaJwt=make("auth0|user_demo_carla");
  const aliceHeaders={Authorization:"Bearer "+aliceJwt};
  const carlaHeaders={Authorization:"Bearer "+carlaJwt};
@@ -69,12 +69,12 @@ async function main(){
   phase="missing-"+missing.status+"-"+String(missing.body?.error?.code??"ok");
   assert.equal(missing.status,401);
   const badAudience=await request(app).post(route)
-   .set("Authorization","Bearer "+make("auth0|user_demo_alice",
+   .set("Authorization","Bearer "+make("auth0|demo-alice",
     {aud:"urn:forged"})).send({recipientEmail:"carla@example.com"});
   phase="bad-audience-"+badAudience.status+"-"+String(badAudience.body?.error?.code??"ok");
   assert.equal(badAudience.status,401);
   const invalidIssuer=await request(app).post(route)
-   .set("Authorization","Bearer "+make("auth0|user_demo_alice",
+   .set("Authorization","Bearer "+make("auth0|demo-alice",
     {iss:"https://evil.example.com/"}))
    .send({recipientEmail:"carla@example.com"});
   phase="invalid-issuer-"+invalidIssuer.status+"-"+String(invalidIssuer.body?.error?.code??"ok");
