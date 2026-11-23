@@ -12,7 +12,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const sourceRoot=resolve(root,"backend/src");
 const CI_MODULE=/(?:^|\/)(?:p4-(?:v1|r\d+)-ci-[^/]+|p4-ci-[^/]+)(?:\.[jt]sx?)?$/;
 const SPECIFIER=/(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s*|\brequire\s*\(\s*)["']([^"']+)["']/g;
-const DYNAMIC=/(?:\bimport|\brequire)\s*\(\s*(?!["'])/g;
+const DYNAMIC=/\b(?:import|require)\s*\(\s*(?!(?:"[^"]*"|'[^']*')\s*\))/;
 const ALLOWED_EXT=new Set([".ts",".tsx",".mts",".cts"]);
 function fail(){throw new Error("P4_CI_TEST_ROUTER_REACHABLE");}
 function inside(path){
