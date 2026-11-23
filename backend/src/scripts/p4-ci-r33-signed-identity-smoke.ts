@@ -98,6 +98,10 @@ async function main(){
   assert.equal(mapping.rowCount,1);
   assert.equal(mapping.rows[0].email_verified,true);
   assert.equal(mapping.rows[0].canonical_email,"carla@example.com");
+  phase="direct-mapped-resolver";
+  const mappedActor=await mapper.resolve({header:(name:string)=>
+   name==="authorization"?"Bearer "+carlaJwt:undefined} as never);
+  assert.equal(mappedActor?.userId,CARLA.userId);
   const nonOwner=await request(app).post(route)
    .set(carlaHeaders).set("x-role","OWNER")
    .send({recipientEmail:"carla@example.com"});
