@@ -211,6 +211,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r23-role-revocation-evidence-smoke.js
 
+      - name: Prove P4 R24 private audit history and immutable SQL isolation
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/020_p4_r24_ci_audit_failure_redaction.sql
+
+      - name: Exercise P4 R24 audit failure and secret redaction through restricted HTTP
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r24-audit-failure-redaction-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20

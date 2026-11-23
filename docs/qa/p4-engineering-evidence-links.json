@@ -214,6 +214,38 @@
       "limitation": "Synthetic hidden lead access is denied; no exhaustive sequential enumeration acceptance",
       "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
       "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T013-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic foreign-tenant lead list denial only; not production listLeads authorization acceptance",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T015-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r8-approved-authz-smoke.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic hidden and foreign lead direct reads denied; not live getLead or real customer data",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T028",
+      "evidencePath": "backend/test/p4-r23-policy-revocation-matrix.test.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic PLATFORM_SUPPORT default deny is verified for safe organization metadata, not merchant impersonation",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T029",
+      "evidencePath": "backend/test/p4-r23-policy-revocation-matrix.test.ts",
+      "classification": "CI_ONLY_PARTIAL",
+      "limitation": "Synthetic SYSTEM_WORKER default deny is checked in the role matrix; no real queue job or merchant read",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
     }
   ]
 }
