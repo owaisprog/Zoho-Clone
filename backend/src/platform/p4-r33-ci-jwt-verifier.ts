@@ -40,7 +40,7 @@ export function verifyP4R33CiToken(
   keys.length<1||keys.length>3)return denied();
  const parts=token.split(".");
  if(parts.length!==3||parts.some(p=>!p||!BASE64URL.test(p)))return denied();
- const header=decode(parts[0]),payload=decode(parts[1]);
+ const header=decode(parts[0]!),payload=decode(parts[1]!);
  if(!plain(header)||!plain(payload)||
   Object.keys(header).sort().join(",")!=="alg,kid,typ"||
   header.alg!=="RS256"||header.typ!=="JWT"||
