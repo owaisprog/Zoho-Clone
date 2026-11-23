@@ -8,7 +8,7 @@ import request from "supertest";
 import pg from "pg";
 import type {P4VerifiedProviderToken} from "../platform/p4-auth0-subject-bridge.js";
 import {assertP4V1CiPrismaEnvironment} from "../platform/p4-v1-ci-prisma.js";
-import {createP4R7CiPrismaClient} from "../platform/p4-r7-ci-prisma-reader.js";
+import {createP4R7CiPrismaClient,readP4R7CiLeads,P4R7CiReadDeniedError} from "../platform/p4-r7-ci-prisma-reader.js";
 import {
  createP4V1CiIdentityPool,createP4V1CiSubjectLookup,
 } from "../platform/p4-v1-ci-identity.js";
@@ -146,26 +146,40 @@ async function main(){
    await setup.query("UPDATE p4_r7_ci.app_grants SET active=true"+
      " WHERE organization_id=$1 AND app_code='platform'",[ORCHID]);
   }
-  // Batch 23: role removal is distinct from active membership. Disable
-  // only a CI fixture role, assert immediate next-read denial, then restore.
-  try{
-   await setup.query("UPDATE p4_r7_ci.role_grants SET active=false"+
-    " WHERE organization_id=$1 AND actor_id=$2 AND role_code='ORG_ADMIN'",
-    [ORCHID,EMMA]);
-   for(const path of ["/organization","/role-summaries"]){
-    const denied=await request(admin).get(prefix(ORCHID)+path)
-      .set("x-role","ORG_OWNER");
-    assert.equal(denied.status,403);
-    assert.deepEqual(denied.body,{error:{code:"P4_ACCESS_DENIED"}});
-   }
-   // An active organization owner retains their own distinct grant.
-   assert.equal((await request(owner).get(prefix(ORCHID)+"/organization")).status,200);
-  }finally{
-   await setup.query("UPDATE p4_r7_ci.role_grants SET active=true"+
-    " WHERE organization_id=$1 AND actor_id=$2 AND role_code='ORG_ADMIN'",
-    [ORCHID,EMMA]);
+  // The R9 CI audit trigger deliberately prevents direct admin-role toggles:
+  // only synthetic SALES_REP / SALES_MANAGER changes are owner-audited.
+  // Exercise permitted CI role mutation in the same transaction as its owner
+  // context and let the server-side R7 reader re-check current privilege.
+  const repScope={organizationId:ORCHID,actorId:CHARLIE};
+  assert.equal((await readP4R7CiLeads(prisma,repScope)).length,3);
+  async function guardedSalesToggle(active:boolean){
+   const client=await setup.connect();
+   try{
+    await client.query("BEGIN");
+    await client.query(
+     "SELECT set_config('app.tenant_id',$1,true),"+
+     " set_config('app.actor_id',$2,true)",
+     [ORCHID,"10000000-0000-4000-8000-0000000000a1"]);
+    const changed=await client.query(
+     "UPDATE p4_r7_ci.role_grants SET active=$1"+
+     " WHERE organization_id=$2 AND actor_id=$3"+
+     " AND role_code='SALES_REP'",[active,ORCHID,CHARLIE]);
+    assert.equal(changed.rowCount,1);
+    await client.query("COMMIT");
+   }catch(e){await client.query("ROLLBACK");throw e;}
+   finally{client.release();}
   }
-  assert.equal((await request(admin).get(prefix(ORCHID)+"/organization")).status,200);
+  try{
+   await guardedSalesToggle(false);
+   await assert.rejects(readP4R7CiLeads(prisma,repScope),P4R7CiReadDeniedError);
+   // The same member cannot impersonate ORG_OWNER for platform IAM.
+   const denied=await request(rep).get(prefix(ORCHID)+"/organization")
+     .set("x-role","ORG_OWNER");
+   assert.equal(denied.status,403);
+   assert.deepEqual(denied.body,{error:{code:"P4_ACCESS_DENIED"}});
+   assert.equal((await request(owner).get(prefix(ORCHID)+"/organization")).status,200);
+  }finally{await guardedSalesToggle(true);}
+  assert.equal((await readP4R7CiLeads(prisma,repScope)).length,3);
   // Disable a tenant's platform entitlement: all org/role read paths fail,
   // even if the synthetic role and membership remain valid.
   try{
