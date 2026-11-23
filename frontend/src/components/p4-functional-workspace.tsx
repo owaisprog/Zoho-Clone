@@ -4,8 +4,9 @@ import {useState,type FormEvent} from "react";
 import {
  INITIAL_SANDBOX,addSandboxOrganization,selectSandboxOrganization,
  addSandboxInvitation,resolveSandboxInvitation,revokeSandboxMember,
- displayedSandboxStatus,SandboxWorkflowError,type SandboxState,
- type SandboxResult,
+ displayedSandboxStatus,summarizeSandboxInvitations,
+ getRecipientSandboxInbox,acceptSandboxInvitationAsRecipient,
+ SandboxWorkflowError,type SandboxState,type SandboxResult,
 } from "@/lib/p4-functional-workflow";
 import {suggestFictionalSlug} from "@/lib/p4-organization-preview";
 
@@ -15,9 +16,17 @@ export function P4FunctionalWorkspace(){
  const [name,setName]=useState("Demo Maple Payments");
  const [slug,setSlug]=useState("demo-maple-payments");
  const [email,setEmail]=useState("new.member@example.com");
+ const [recipientEmail,setRecipientEmail]=useState("new.member@example.com");
+ const [filter,setFilter]=useState<"all"|"pending"|"accepted"|"revoked"|"expired">("all");
  const [message,setMessage]=useState("Create a fictional organization to begin.");
  const [error,setError]=useState(false);
  const selected=state.organizations.find(o=>o.id===state.selectedId);
+ const summary=selected?summarizeSandboxInvitations(state,Date.now()):null;
+ let inbox:ReturnType<typeof getRecipientSandboxInbox>=[];
+ if(selected){
+  try{inbox=getRecipientSandboxInbox(state,recipientEmail,Date.now());}
+  catch{/* invalid typed address simply shows no inbox items */}
+ }
  function run(fn:(value:SandboxState)=>SandboxResult){
   try{
    // All events originate in this tab. No backend calls and no persistence.
@@ -78,6 +87,16 @@ export function P4FunctionalWorkspace(){
     <h2>{selected?.name??"Select a workspace"}</h2>
     <p>Actions below modify actual in-tab demo state. All identities use example.com; there are no authentication tokens or emails.</p>
     {selected?<>
+     <div className="p4-invite-info" aria-label="Fictional invitation status summary">
+      <strong>Invitation status overview</strong>
+      <div className="p4-r37-stats">
+       <span>Pending <b>{summary?.pending??0}</b></span>
+       <span>Accepted <b>{summary?.accepted??0}</b></span>
+       <span>Revoked <b>{summary?.revoked??0}</b></span>
+       <span>Expired <b>{summary?.expired??0}</b></span>
+       <span>Active members <b>{summary?.activeMembers??0}</b></span>
+      </div>
+     </div>
      <div className="p4-invite-info">
       <strong>Members</strong>
       <div className="p4-functional-records">
@@ -100,19 +119,27 @@ export function P4FunctionalWorkspace(){
       <button className="p4-button p4-button-primary" type="submit">Create pending demo invitation</button>
      </form>
      <div className="p4-invite-info">
-      <strong>Invitations</strong>
+      <strong>Owner invitation management</strong>
+      <div className="p4-r37-filter">
+       <label htmlFor="p4-r37-status-filter">Filter by status</label>
+       <select id="p4-r37-status-filter" value={filter}
+        onChange={e=>setFilter(e.target.value as typeof filter)}>
+        <option value="all">All invitations</option>
+        <option value="pending">Pending</option>
+        <option value="accepted">Accepted</option>
+        <option value="revoked">Revoked</option>
+        <option value="expired">Expired</option>
+       </select>
+      </div>
       <div className="p4-functional-records">
        {selected.invitations.length===0&&<p>No invitations in this workspace.</p>}
-       {selected.invitations.map(inv=>{
+       {selected.invitations.filter(i=>filter==="all"||
+        displayedSandboxStatus(i,Date.now())===filter).map(inv=>{
         const status=displayedSandboxStatus(inv,initialNow());
         return <div className="p4-functional-record" key={inv.id}>
          <span><strong>{inv.email}</strong>
           <small>{status} · expires {new Date(inv.expiresAt).toLocaleDateString()}</small></span>
          {status==="pending"&&<div className="p4-actions">
-          <button type="button" className="p4-button p4-button-primary"
-           onClick={()=>run(s=>resolveSandboxInvitation(s,inv.id,"accept",initialNow()))}>
-           Simulate accept
-          </button>
           <button type="button" className="p4-button"
            onClick={()=>run(s=>resolveSandboxInvitation(s,inv.id,"revoke",initialNow()))}>
            Revoke
@@ -120,6 +147,29 @@ export function P4FunctionalWorkspace(){
          </div>}
         </div>;
        })}
+      </div>
+     </div>
+     <div className="p4-invite-info">
+      <strong>Recipient perspective · fictional inbox</strong>
+      <p>Type the exact example.com email of a fictional invited recipient to preview their inbox. This is not a login or identity check.</p>
+      <div className="p4-form-row">
+       <label htmlFor="p4-r37-recipient">Fictional recipient email</label>
+       <input id="p4-r37-recipient" type="email" autoComplete="off"
+        value={recipientEmail} onChange={e=>setRecipientEmail(e.target.value)}
+        placeholder="new.member@example.com"/>
+      </div>
+      <div className="p4-functional-records" aria-label="Selected fictional recipient inbox">
+       {inbox.length===0&&<p>No fictional invitations for this address in the selected workspace.</p>}
+       {inbox.map(inv=><div className="p4-functional-record" key={inv.id}>
+        <span><strong>{inv.email}</strong>
+         <small>{inv.displayedStatus} · {inv.role} (demo)</small></span>
+        {inv.displayedStatus==="pending"&&<button type="button"
+         className="p4-button p4-button-primary"
+         onClick={()=>run(s=>acceptSandboxInvitationAsRecipient(
+          s,inv.id,recipientEmail,initialNow()))}>
+         Simulate recipient acceptance
+        </button>}
+       </div>)}
       </div>
      </div>
     </>:<div className="p4-alert"><strong>No demo workspace yet</strong>

@@ -123,3 +123,50 @@ export function revokeSandboxMember(state:SandboxState,email:string):SandboxResu
 export function displayedSandboxStatus(i:SandboxInvitation,now:number):SandboxInviteStatus{
  return i.status==="pending"&&now>=Date.parse(i.expiresAt)?"expired":i.status;
 }
+
+/**
+ * P4 R37: recipient-perspective interface selectors for the fictional
+ * browser-memory workflow. Typing an email is NOT authentication; these
+ * functions only demonstrate which rows a verified server identity would see.
+ */
+export type SandboxInviteSummary=Readonly<{
+ pending:number;accepted:number;revoked:number;expired:number;
+ activeMembers:number;
+}>;
+export function summarizeSandboxInvitations(
+ state:SandboxState,now:number,
+):SandboxInviteSummary{
+ ensure(Number.isSafeInteger(now)&&now>=0,"INVALID_INPUT");
+ const org=activeOrg(state);
+ const counts={pending:0,accepted:0,revoked:0,expired:0,
+  activeMembers:org.members.filter(m=>m.active).length};
+ for(const invite of org.invitations){
+  const status=displayedSandboxStatus(invite,now);
+  counts[status]++;
+ }
+ return Object.freeze(counts);
+}
+export function getRecipientSandboxInbox(
+ state:SandboxState,recipientEmail:string,now:number,
+):readonly Readonly<SandboxInvitation & {displayedStatus:SandboxInviteStatus}>[]{
+ ensure(recipientEmail===recipientEmail.trim().toLowerCase()&&
+  EMAIL.test(recipientEmail),"INVALID_INPUT");
+ ensure(Number.isSafeInteger(now)&&now>=0,"INVALID_INPUT");
+ const org=activeOrg(state);
+ return Object.freeze(org.invitations
+  .filter(i=>i.email===recipientEmail)
+  .map(i=>Object.freeze({...i,displayedStatus:displayedSandboxStatus(i,now)})));
+}
+export function acceptSandboxInvitationAsRecipient(
+ state:SandboxState,id:string,recipientEmail:string,now:number,
+):SandboxResult{
+ const matches=getRecipientSandboxInbox(state,recipientEmail,now);
+ const invite=matches.find(i=>i.id===id);
+ ensure(invite,"FORBIDDEN");
+ ensure(invite.displayedStatus==="pending","INVALID_STATE");
+ // The demo owner state permits a transition for the mock recipient.
+ // THIS IS NOT A REAL IDENTITY OR AUTHORIZATION CHECK.
+ const result=resolveSandboxInvitation(state,id,"accept",now);
+ return {...result,
+  detail:"Simulated recipient acceptance; fictional membership added. No login or token."};
+}
