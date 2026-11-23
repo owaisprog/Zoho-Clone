@@ -259,6 +259,12 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r30-invite-redemption-smoke.js
 
+      - name: Verify P4 R31 complete fictional issuance, mailbox delivery and recipient redemption
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r31-invitation-lifecycle-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
