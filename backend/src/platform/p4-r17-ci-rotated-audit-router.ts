@@ -21,7 +21,9 @@ export function createP4R17CiRotatedAuditRouter(deps:Deps):Router{
   !deps?.syntheticKeyring)throw new Error("P4_R17_CI_ROUTER_DISABLED");
  const router=Router();
  router.get("/:orgId/iam/rotated-audit",async(req,res)=>{
-  res.setHeader("Cache-Control","no-store");
+  res.setHeader("Cache-Control","no-store, private");
+  res.setHeader("Pragma","no-cache");
+  res.setHeader("X-Content-Type-Options","nosniff");
   let actorId:string;
   try{
    actorId=await resolveP4V1CiActor(
