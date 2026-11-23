@@ -250,6 +250,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r29-persisted-invite-smoke.js
 
+      - name: Install P4 R30 disposable-only recipient redemption function
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/023_p4_r30_ci_invitation_redemption.sql
+
+      - name: Verify P4 R30 atomic recipient-bound invite acceptance and membership activation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r30-invite-redemption-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
