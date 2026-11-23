@@ -82,14 +82,18 @@ async function main(){
   const first=await fixture(org.id,"carla@example.com");
   const outsider=await request(diana).post(path).send({token:first.token})
    .set("x-recipient-email","carla@example.com").set("x-role","OWNER");
+  phase="outsider-http-"+outsider.status+"-"+String(outsider.body?.error?.code??"ok");
   assert.equal(outsider.status,403);
   assert.deepEqual(outsider.body,{error:{code:"ACCESS_DENIED"}});
   const owner=await request(alice).post(path).send({token:first.token});
+  phase="owner-http-"+owner.status+"-"+String(owner.body?.error?.code??"ok");
   assert.equal(owner.status,403);
   const unverified=await request(bob).post(path).send({token:first.token});
+  phase="unverified-http-"+unverified.status+"-"+String(unverified.body?.error?.code??"ok");
   assert.equal(unverified.status,403);
   const missing=await request(anonymous).post(path)
    .set("x-user-id",CARLA.userId).send({token:first.token});
+  phase="missing-http-"+missing.status+"-"+String(missing.body?.error?.code??"ok");
   assert.equal(missing.status,401);
   for(const body of [{token:"short"},{token:first.token,
    recipientEmail:"carla@example.com"},{token:first.token,role:"OWNER"},
