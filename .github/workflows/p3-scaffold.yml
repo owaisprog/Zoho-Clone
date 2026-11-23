@@ -220,6 +220,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r24-audit-failure-redaction-smoke.js
 
+      - name: Prove P4 R25 restricted invitation token/email and no writes in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/021_p4_r25_ci_invite_confidentiality.sql
+
+      - name: Exercise P4 R25 disposable Prisma invitation lifecycle and membership revocation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r25-invite-membership-evidence-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20

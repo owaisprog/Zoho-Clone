@@ -246,6 +246,38 @@
       "limitation": "Synthetic SYSTEM_WORKER default deny is checked in the role matrix; no real queue job or merchant read",
       "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
       "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "PERM-T006",
+      "evidencePath": "backend/src/scripts/p4-ci-r25-invite-membership-evidence-smoke.ts",
+      "limitation": "Expired and revoked synthetic invitations project terminal states; no redeem endpoint or membership-creation denial tested",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T006-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r11-iam-read-smoke.ts",
+      "limitation": "Fictional membership-list authorization and redaction only; no production listMembers API session acceptance",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T008-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r25-invite-membership-evidence-smoke.ts",
+      "limitation": "Synthetic tenant-scoped invitation metadata denial; no live Auth0 listInvitations endpoint acceptance",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T009-NEG",
+      "evidencePath": "backend/db/tests/021_p4_r25_ci_invite_confidentiality.sql",
+      "limitation": "Runtime SQL cannot create fictional invitation records; no real authenticated createInvitation API exists",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
     }
   ]
 }

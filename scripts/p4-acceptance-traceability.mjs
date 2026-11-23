@@ -86,7 +86,7 @@ export function evaluateP4R21Acceptance(
    links.originalInventory!=="docs/qa/test-inventory.csv"||
    links.originalPlannedTotal!==727||links.originalExecutedTotal!==0||
    links.evidenceDoesNotExecuteOriginalCases!==true||
-   !Array.isArray(links.rows)||links.rows.length!==30)
+   !Array.isArray(links.rows)||links.rows.length!==34)
   reject(errors,"EVIDENCE_MANIFEST_DRIFT");
  const seen=new Set();
  for(const link of Array.isArray(links?.rows)?links.rows:[]){
@@ -103,7 +103,7 @@ export function evaluateP4R21Acceptance(
   if(!fileExists(resolve(ROOT,link.evidencePath)))
    reject(errors,"MISSING_ENGINEERING_EVIDENCE");
  }
- if(seen.size!==30)reject(errors,"EVIDENCE_LINK_COUNT_DRIFT");
+ if(seen.size!==34)reject(errors,"EVIDENCE_LINK_COUNT_DRIFT");
  return Object.freeze({
   valid:errors.length===0,decision:"NO_GO",
   errors:Object.freeze([...new Set(errors)].sort()),

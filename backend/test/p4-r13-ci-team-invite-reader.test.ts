@@ -123,6 +123,47 @@ describe("P4 R13 scoped team reader and invite status",()=>{
     await assert.rejects(readP4R13CiInviteLifecycle(
       rep.prisma,scope,"2031-01-01T00:00:00.000Z",20,ENV),P4R7CiReadDeniedError);
   });
+  it("expiry is inclusive at exact timestamp but not one millisecond earlier",async()=>{
+    const f=fixture();
+    const before=await readP4R13CiInviteLifecycle(f.prisma,scope,
+      "2029-12-31T23:59:59.999Z",20,ENV);
+    const at=await readP4R13CiInviteLifecycle(f.prisma,scope,
+      "2030-01-01T00:00:00.000Z",20,ENV);
+    assert.equal(before[0]?.status,"pending");
+    assert.equal(at[0]?.status,"expired");
+    assert.equal(f.queryCount,2);
+  });
+  it("terminal accepted, revoked and expired invitations never become pending",async()=>{
+    for(const status of ["accepted","revoked","expired"]){
+      const f=fixture({inviteStatus:status});
+      for(const now of ["2028-01-01T00:00:00.000Z",
+        "2032-01-01T00:00:00.000Z"]){
+        const records=await readP4R13CiInviteLifecycle(
+          f.prisma,scope,now,20,ENV);
+        assert.equal(records[0]?.status,status);
+      }
+    }
+  });
+  it("deny invalid clock and bounds before querying any SQL",async()=>{
+    for(const asOf of ["2030-01-01","2030-01-01T00:00:00Z",
+      "2030-02-30T00:00:00.000Z","2030-01-01T00:00:00.001+00:00",
+      "yesterday","not-an-instant"]){
+      const f=fixture();
+      await assert.rejects(readP4R13CiInviteLifecycle(
+        f.prisma,scope,asOf,20,ENV),P4R7CiReadDeniedError);
+      assert.equal(f.transCount,0);
+    }
+  });
+  it("invite metadata is immutable safe projection without email or token",async()=>{
+    const f=fixture();
+    const r=await readP4R13CiInviteLifecycle(f.prisma,scope,
+      "2030-01-01T00:00:00.000Z",20,ENV);
+    assert.deepEqual(Object.keys(r[0]??{}).sort(),
+      ["expiresAt","id","roleCode","status"]);
+    assert.equal(JSON.stringify(r).includes("token_hash_private"),false);
+    assert.equal(JSON.stringify(r).includes("recipient_email_private"),false);
+    assert.ok(Object.isFrozen(r)&&Object.isFrozen(r[0]));
+  });
   it("refuses non-CI or owner Neon-style environments",async()=>{
     const f=fixture();
     await assert.rejects(readP4R13CiTeams(f.prisma,scope,20,
