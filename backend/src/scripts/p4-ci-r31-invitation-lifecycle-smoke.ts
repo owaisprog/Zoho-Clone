@@ -87,6 +87,7 @@ async function main(){
   assert.equal(forged.status,400);
   phase="issued-and-delivered";
   const issued=await create(primary.id,"carla@example.com");
+  phase="issue-http-"+issued.status+"-"+String(issued.body?.error?.code??"ok");
   assert.equal(issued.status,201);
   assert.equal(issued.headers["cache-control"],"no-store, private");
   assert.deepEqual(Object.keys(issued.body.data).sort(),[
@@ -95,17 +96,21 @@ async function main(){
   ]);
   assert.equal(issued.body.data.status,"pending");
   assert.equal(issued.body.data.role,"MEMBER");
+  phase="mailbox-count-"+mailbox.pendingCount();
   assert.equal(mailbox.pendingCount(),1);
+  phase="mailbox-pickup";
   const firstToken=mailbox.takeForFixtureTest("carla@example.com");
   assert.ok(firstToken);
   assert.match(firstToken,/^[0-9a-f]{64}$/);
   assert.equal(mailbox.takeForFixtureTest("carla@example.com"),null);
+  phase="persisted-hash-check";
   const stored=await pool.query(
    "SELECT token_hash,status,version FROM p4_synthetic.invitations WHERE id=$1",
    [issued.body.data.id]);
   assert.equal(stored.rows[0].token_hash,
    createHash("sha256").update(firstToken).digest("hex"));
   assert.notEqual(stored.rows[0].token_hash,firstToken);
+  phase="owner-list";
   const listed=await drafts.list(ALICE,primary.id);
   assert.equal(listed.length,1);
   assert.equal(listed[0]?.id,issued.body.data.id);
