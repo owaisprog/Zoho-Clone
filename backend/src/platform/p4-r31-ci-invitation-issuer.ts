@@ -97,8 +97,10 @@ export class P4R31CiInvitationIssuer {
     " AND status='pending' AND expires_at<=now()",[orgId,email]);
    const id=randomUUID();
    const tokenBuffer=randomBytes(32);
-   const hash=createHash("sha256").update(tokenBuffer).digest("hex");
    rawHex=tokenBuffer.toString("hex");
+   // R30 accepts the 64-character lowercase hex string, not 32 raw bytes.
+   // Hash that exact UTF-8 representation to match recipient redemption.
+   const hash=createHash("sha256").update(rawHex,"utf8").digest("hex");
    tokenBuffer.fill(0);
    const inserted=await client.query(
     "INSERT INTO p4_synthetic.invitations"+
