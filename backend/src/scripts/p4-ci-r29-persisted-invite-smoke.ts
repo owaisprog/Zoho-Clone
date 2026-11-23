@@ -87,6 +87,7 @@ async function main(){
   assert.equal((await request(bob).post(base+"/"+id+"/revoke")).status,403);
   diagnosticPhase="replacement-invitation";
   const replacement=await request(alice).post(base).send({recipientEmail:email});
+  diagnosticPhase="replacement-invitation-http-"+replacement.status+"-"+String(replacement.body?.error?.code??"ok");
   assert.equal(replacement.status,201);
   assert.notEqual(replacement.body.data.id,id);
   // An old expired pending row is atomically terminalized before insert.
