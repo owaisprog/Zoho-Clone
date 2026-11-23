@@ -10,7 +10,7 @@ import type pg from "pg";
 import {assertP4V1CiPrismaEnvironment} from "./p4-v1-ci-prisma.js";
 import {P4R28Denied,type P4R28Actor} from "./p4-r28-ci-org-service.js";
 
-const ACTORS=new Set(["user_demo_alice","user_demo_bob","user_demo_carla"]);
+const ACTORS=new Set(["user_demo_alice","user_demo_bob","user_demo_carla","user_demo_diana"]);
 const TOKEN=/^[0-9a-f]{64}$/;
 export type P4R30Acceptance=Readonly<{accepted:true;membershipActivated:true}>;
 export class P4R30CiAcceptanceService {
