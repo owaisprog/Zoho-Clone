@@ -229,6 +229,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r25-invite-membership-evidence-smoke.js
 
+      - name: Verify P4 R26 current SQL membership visibility and tenant/admin masking
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/022_p4_r26_ci_membership_consistency.sql
+
+      - name: Exercise P4 R26 fresh membership and entitlement checks across IAM HTTP readers
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r26-membership-consistency-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
