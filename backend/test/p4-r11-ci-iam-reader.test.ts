@@ -173,6 +173,44 @@ describe("P4 Batch 11 safe IAM projections",()=>{
       assert.equal(f.safeReads,0);
     }
   });
+  it("membership details are strictly three-field immutable output",async()=>{
+    const f=mock();const rows=await readP4R11CiMembershipStatus(
+      f.prisma,owner,20,ENV);
+    assert.deepEqual(Object.keys(rows[0]??{}).sort(),
+      ["active","roleCode","userId"]);
+    assert.equal(JSON.stringify(rows).includes("privateSubject"),false);
+    assert.equal(JSON.stringify(rows).includes("auth0|PRIVATE"),false);
+    assert.ok(Object.isFrozen(rows)&&Object.isFrozen(rows[0]));
+  });
+  it("all three IAM readers fail closed on revoked membership",async()=>{
+    for(const read of [readP4R11CiMembershipStatus,
+      readP4R11CiInvitationStatus,readP4R11CiAuditMetadata]){
+      const m=mock({noMember:true});
+      await assert.rejects(read(m.prisma,owner,20,ENV),P4R7CiReadDeniedError);
+      assert.equal(m.safeReads,0);
+    }
+  });
+  it("all three IAM readers fail closed on disabled platform entitlement",async()=>{
+    for(const read of [readP4R11CiMembershipStatus,
+      readP4R11CiInvitationStatus,readP4R11CiAuditMetadata]){
+      const m=mock({noPlatform:true});
+      await assert.rejects(read(m.prisma,owner,20,ENV),P4R7CiReadDeniedError);
+      assert.equal(m.safeReads,0);
+    }
+  });
+  it("owner and admin membership projections never become implicit invite and audit rights",async()=>{
+    const admin=mock({roles:["ORG_ADMIN"]});
+    const memberships=await readP4R11CiMembershipStatus(
+      admin.prisma,owner,20,ENV);
+    assert.equal(memberships.length,1);
+    await assert.rejects(readP4R11CiAuditMetadata(admin.prisma,owner,20,ENV),
+      P4R7CiReadDeniedError);
+    const reviewer=mock({roles:["SECURITY_REVIEWER"]});
+    assert.equal((await readP4R11CiMembershipStatus(
+      reviewer.prisma,owner,20,ENV)).length,1);
+    await assert.rejects(readP4R11CiInvitationStatus(
+      reviewer.prisma,owner,20,ENV),P4R7CiReadDeniedError);
+  });
   it("does not grant reader rights when actor has unknown forged business role",async()=>{
     const f=mock({roles:["SALES_REP","FAKE_ROOT"]});
     await assert.rejects(readP4R11CiAuditMetadata(f.prisma,owner,20,ENV),

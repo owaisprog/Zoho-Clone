@@ -278,6 +278,38 @@
       "classification": "CI_ONLY_PARTIAL",
       "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
       "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T004-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r22-identity-membership-evidence-smoke.ts",
+      "limitation": "Fictional restricted organization GET denial only; not a live getOrganization Auth0 session API test",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T005-NEG",
+      "evidencePath": "backend/test/p4-r19-public-app-denial.test.ts",
+      "limitation": "Unregistered internal organization write methods stay unavailable; production patchOrganization has not been implemented",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T007-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r26-membership-consistency-smoke.ts",
+      "limitation": "Current synthetic membership-revocation read denial, not a production patchMember mutation endpoint",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
+    },
+    {
+      "plannedTestId": "API-T010-NEG",
+      "evidencePath": "backend/src/scripts/p4-ci-r26-membership-consistency-smoke.ts",
+      "limitation": "Fictional platform app entitlement recheck, not a complete production listEntitlements API",
+      "classification": "CI_ONLY_PARTIAL",
+      "originalExecutionState": "NOT_RUN_DOCUMENT_ONLY",
+      "ownerAccepted": false
     }
   ]
 }
