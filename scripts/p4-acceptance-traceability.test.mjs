@@ -28,7 +28,7 @@ test("real original inventory is unchanged and all evidence links are partial",(
  assert.equal(result.originalCases,727);
  assert.equal(result.originalExecuted,0);
  assert.ok(result.p4FeatureCount>=4);
- assert.equal(result.linkedCases,20);
+ assert.equal(result.linkedCases,26);
 });
 test("changing original inventory execution state cannot be counted as a pass",()=>{
  const altered=inventory.replace("NOT_RUN_DOCUMENT_ONLY","PASS");
@@ -98,7 +98,7 @@ test("Batch 22 evidence links never turn original identity cases into completed 
  const result=evaluate(inventory,features,fresh());
  assert.equal(result.valid,true);
  assert.equal(result.originalExecuted,0);
- assert.equal(result.linkedCases,20);
+ assert.equal(result.linkedCases,26);
  const m=fresh();
  for(const id of ["AC-107","AC-108","PERM-T002","API-T002-NEG"]){
   const link=m.rows.find(r=>r.plannedTestId===id);
@@ -116,4 +116,30 @@ test("Batch 22 forbids replacing original owner-verification link with fake pass
  const result=evaluate(inventory,features,m);
  assert.equal(result.valid,false);
  assert.equal(result.originalExecuted,0);
+});
+
+test("Batch 23 role and tenant evidence remains partial and never approves P4",()=>{
+ const m=fresh();const ids=["API-T001-NEG","PERM-T009","PERM-T010",
+  "PERM-T026","PERM-T027","AC-099"];
+ for(const id of ids){
+  const entry=m.rows.find(row=>row.plannedTestId===id);
+  assert.ok(entry,id);
+  assert.equal(entry.classification,"CI_ONLY_PARTIAL");
+  assert.equal(entry.originalExecutionState,"NOT_RUN_DOCUMENT_ONLY");
+  assert.equal(entry.ownerAccepted,false);
+ }
+ const out=evaluate(inventory,features,m);
+ assert.equal(out.valid,true);
+ assert.equal(out.linkedCases,26);
+ assert.equal(out.originalExecuted,0);
+ assert.equal(out.decision,"NO_GO");
+});
+test("Batch 23 prevents false role revocation acceptance signoff",()=>{
+ const m=fresh();
+ const r=m.rows.find(row=>row.plannedTestId==="API-T001-NEG");
+ assert.ok(r);
+ r.ownerAccepted=true;
+ const output=evaluate(inventory,features,m);
+ assert.equal(output.valid,false);
+ assert.equal(output.originalExecuted,0);
 });

@@ -205,6 +205,12 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r22-identity-membership-evidence-smoke.js
 
+      - name: Verify P4 R23 CI-only roles revocation and per-org authorization
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r23-role-revocation-evidence-smoke.js
+
   synthetic-compose-boot:
     runs-on: ubuntu-latest
     timeout-minutes: 20
