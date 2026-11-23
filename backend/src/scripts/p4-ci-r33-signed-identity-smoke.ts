@@ -66,15 +66,18 @@ async function main(){
   const missing=await request(app).post(route)
    .set("x-user-id",ALICE.userId).set("x-role","OWNER")
    .send({recipientEmail:"carla@example.com"});
+  phase="missing-"+missing.status+"-"+String(missing.body?.error?.code??"ok");
   assert.equal(missing.status,401);
   const badAudience=await request(app).post(route)
    .set("Authorization","Bearer "+make("auth0|user_demo_alice",
     {aud:"urn:forged"})).send({recipientEmail:"carla@example.com"});
+  phase="bad-audience-"+badAudience.status+"-"+String(badAudience.body?.error?.code??"ok");
   assert.equal(badAudience.status,401);
   const invalidIssuer=await request(app).post(route)
    .set("Authorization","Bearer "+make("auth0|user_demo_alice",
     {iss:"https://evil.example.com/"}))
    .send({recipientEmail:"carla@example.com"});
+  phase="invalid-issuer-"+invalidIssuer.status+"-"+String(invalidIssuer.body?.error?.code??"ok");
   assert.equal(invalidIssuer.status,401);
   const forged=carlaJwt.split(".");
   forged[1]=encode({iss:CI_ISSUER,aud:CI_AUDIENCE,
@@ -82,10 +85,12 @@ async function main(){
   const badSignature=await request(app).post(route)
    .set("Authorization","Bearer "+forged.join("."))
    .send({recipientEmail:"carla@example.com"});
+  phase="forged-signature-"+badSignature.status+"-"+String(badSignature.body?.error?.code??"ok");
   assert.equal(badSignature.status,401);
   const nonOwner=await request(app).post(route)
    .set(carlaHeaders).set("x-role","OWNER")
    .send({recipientEmail:"carla@example.com"});
+  phase="non-owner-"+nonOwner.status+"-"+String(nonOwner.body?.error?.code??"ok");
   assert.equal(nonOwner.status,403);
   phase="signed-owner-issue";
   const issued=await request(app).post(route).set(aliceHeaders)
