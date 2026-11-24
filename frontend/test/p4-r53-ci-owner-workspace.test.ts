@@ -70,6 +70,17 @@ test("R53 tenant switch discards late responses from previous organization",asyn
   if(org===A&&initial){initial=false;return deferred;}
   return {...counts,activeMembers:0};
  };
+ // A signed owner endpoint never returns previous-organization records
+ // after changing the selected tenant. Keep that security invariant.
+ deps.invitations.page=async(org:string)=>({
+  items:org===A?[invitation]:[],nextCursor:null,
+ });
+ deps.members.page=async(org:string)=>({
+  items:org===A?[member]:[],nextCursor:null,
+ });
+ deps.activity.page=async(org:string)=>({
+  items:org===A?[activity]:[],nextCursor:null,
+ });
  const controller=new P4R53CiOwnerWorkspaceController(deps as never);
  const old=controller.refresh(A);
  const latest=await controller.refresh(B);
