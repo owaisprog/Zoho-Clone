@@ -6,6 +6,7 @@ import {
  addSandboxInvitation,resolveSandboxInvitation,renewSandboxInvitation,revokeSandboxMember,
  displayedSandboxStatus,summarizeSandboxInvitations,
  getRecipientSandboxInbox,acceptSandboxInvitationAsRecipient,
+ getSandboxMemberDirectory,listSandboxRoleChanges,changeSandboxMemberRole,
  SandboxWorkflowError,type SandboxState,type SandboxResult,
 } from "@/lib/p4-functional-workflow";
 import {suggestFictionalSlug} from "@/lib/p4-organization-preview";
@@ -18,10 +19,14 @@ export function P4FunctionalWorkspace(){
  const [email,setEmail]=useState("new.member@example.com");
  const [recipientEmail,setRecipientEmail]=useState("new.member@example.com");
  const [filter,setFilter]=useState<"all"|"pending"|"accepted"|"revoked"|"expired">("all");
+ const [memberQuery,setMemberQuery]=useState("");
+ const [memberStatus,setMemberStatus]=useState<"all"|"active"|"revoked">("all");
  const [message,setMessage]=useState("Create a fictional organization to begin.");
  const [error,setError]=useState(false);
  const selected=state.organizations.find(o=>o.id===state.selectedId);
  const summary=selected?summarizeSandboxInvitations(state,Date.now()):null;
+ const roleHistory=selected?listSandboxRoleChanges(state):[];
+ const visibleMembers=selected?getSandboxMemberDirectory(state,memberQuery,memberStatus):[];
  let inbox:ReturnType<typeof getRecipientSandboxInbox>=[];
  if(selected){
   try{inbox=getRecipientSandboxInbox(state,recipientEmail,Date.now());}
@@ -100,14 +105,48 @@ export function P4FunctionalWorkspace(){
      <div className="p4-invite-info">
       <strong>Members</strong>
       <p>Accepting a fresh invitation after revocation restores the same fictional membership row rather than duplicating it.</p>
-      <div className="p4-functional-records">
-       {selected.members.map(m=><div className="p4-functional-record" key={m.email}>
+      <div className="p4-r39-member-tools" role="group" aria-label="Fictional member filters">
+       <div className="p4-form-row">
+        <label htmlFor="p4-r39-member-search">Search members by email or role</label>
+        <input id="p4-r39-member-search" type="search" maxLength={64}
+         value={memberQuery} onChange={e=>setMemberQuery(e.target.value)}/>
+       </div>
+       <div className="p4-form-row">
+        <label htmlFor="p4-r39-member-filter">Membership status</label>
+        <select id="p4-r39-member-filter" value={memberStatus}
+         onChange={e=>setMemberStatus(e.target.value as typeof memberStatus)}>
+         <option value="all">All members</option>
+         <option value="active">Active</option>
+         <option value="revoked">Revoked</option>
+        </select>
+       </div>
+      </div>
+      <div className="p4-functional-records" aria-label="Fictional member directory">
+       {visibleMembers.length===0&&<p>No matching fictional members.</p>}
+       {visibleMembers.map(m=><div className="p4-functional-record" key={m.email}>
         <span><strong>{m.email}</strong><small>{m.role} · {m.active?"Active":"Revoked"}</small></span>
-        {m.role!=="ORG_OWNER"&&m.active&&<button type="button"
-          className="p4-button" onClick={()=>run(s=>revokeSandboxMember(s,m.email))}>
-          Revoke member
-         </button>}
+        {m.role!=="ORG_OWNER"&&m.active&&<div className="p4-actions p4-r39-member-actions">
+         <label>
+          Demo role
+          <select aria-label={"Fictional role for "+m.email} value={m.role}
+           onChange={e=>run(s=>changeSandboxMemberRole(s,m.email,e.target.value,initialNow()))}>
+           <option value="SALES_REP">Sales rep</option>
+           <option value="SALES_MANAGER">Sales manager</option>
+          </select>
+         </label>
+         <button type="button" className="p4-button"
+          onClick={()=>run(s=>revokeSandboxMember(s,m.email))}>Revoke member</button>
+        </div>}
        </div>)}
+      </div>
+      <div className="p4-r39-history" aria-label="Fictional role change history">
+       <strong>Role change history · in this tab only</strong>
+       <p>These events are a demo timeline, not a trusted audit log. Changing a role here grants no real app or tenant permissions.</p>
+       {roleHistory.length===0?<p>No fictional role changes yet.</p>:
+        <ol>{roleHistory.map(change=><li key={change.id}>
+         <span>{change.email}: {change.fromRole} → {change.toRole}</span>
+         <small>{new Date(change.occurredAt).toLocaleString()}</small>
+        </li>)}</ol>}
       </div>
      </div>
      <form className="p4-form" onSubmit={invite}>
