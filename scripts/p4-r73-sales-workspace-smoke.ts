@@ -110,6 +110,8 @@ async function main(){
   await pool.query("INSERT INTO p4_r69_ci.crm_entitlements VALUES($1,true),($2,true)",[a.id,b.id]);
   await assert.rejects(accounts.page(a.id),deny(403));
   await assert.rejects(owner.page(a.id),deny(403));
+  const existingEligible=(await workspace.list()).map(x=>x.id);
+  assert.ok(!existingEligible.includes(a.id)&&!existingEligible.includes(b.id));
   await pool.query("INSERT INTO p4_r40_ci.sales_roles(org_id,user_id,role_code) VALUES($1,'user_demo_bob','SALES_REP'),($2,'user_demo_bob','SALES_REP')",[a.id,b.id]);
   phase="provision fictional pipeline fixtures";
   for(const org of [a,b]){
@@ -120,7 +122,7 @@ async function main(){
    }
   }
   phase="workspace discovery and scope";
-  assert.deepEqual(new Set((await workspace.list()).map(x=>x.id)),new Set([a.id,b.id]));
+  assert.deepEqual(new Set((await workspace.list()).map(x=>x.id)),new Set([...existingEligible,a.id,b.id]));
   assert.deepEqual(await ownerWorkspace.list(),[]);
   await assert.rejects(ownerWorkspace.overview(a.id),deny(403));
   const lead=await leads.create(a.id,{companyName:"Demo Workspace Company",contactName:"Demo Workspace Contact",email:"r73contact@example.com"});
@@ -143,7 +145,7 @@ async function main(){
   v=await ctl.select(b.id);
   assert.equal(v.orgId,b.id);assert.equal(v.overview?.leads,0);assert.equal(v.overview?.deals,0);
   await pool.query("UPDATE p4_r69_ci.crm_entitlements SET active=false WHERE org_id=$1",[a.id]);
-  assert.deepEqual((await workspace.list()).map(x=>x.id),[b.id]);
+  assert.deepEqual(new Set((await workspace.list()).map(x=>x.id)),new Set([...existingEligible,b.id]));
   v=await ctl.select(a.id);assert.equal(v.phase,"denied");assert.equal(v.orgId,null);assert.equal(v.overview,null);
   await assert.rejects(workspace.overview(a.id),deny(403));
   process.stdout.write("R73 workspace discovery, own counts, conversion navigation, fresh tenant selection and entitlement revocation PASS; NO_GO\n");
