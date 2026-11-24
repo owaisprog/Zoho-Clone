@@ -38,6 +38,9 @@ jobs:
       - name: Preserve P4 R37 browser-memory invitation UI security boundary
         run: node scripts/p4-r37-browser-boundary.mjs
 
+      - name: Validate P4 R38 fictional renewal and member reactivation UI boundary
+        run: node scripts/p4-r38-demo-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
