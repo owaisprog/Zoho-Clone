@@ -616,6 +616,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r68-due-queue-fullstack-smoke.ts
 
+      - name: Install R69 sales accounts in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/046_p4_r69_ci_sales_accounts.sql
+
+      - name: Verify R69 signed explicit-sales-rep Accounts workflow
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r69-accounts-fullstack-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'

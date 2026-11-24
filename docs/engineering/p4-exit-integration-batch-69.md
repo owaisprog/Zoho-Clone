@@ -1,0 +1,3 @@
+# R69 — CRM Accounts (synthetic CI)
+Five slices: SQL tenant/own-record persistence and immutable audit; explicit SALES_REP grant + active fictional entitlement; signed Express create/update/page; typed client + React create/edit directory; disposable PostgreSQL acceptance rehearsal.
+Own-record scope only: managers, shared team records, archive and general duplicate matching remain unimplemented. Exact same-owner name duplicates return conflict with visible warning; no merge, no global uniqueness. The entitlement is fixture-only. No live route, production grants, migration or deployment. Formal P1.09 remains 0/727; all gates open, NO_GO.
