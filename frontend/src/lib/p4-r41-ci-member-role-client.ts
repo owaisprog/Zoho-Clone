@@ -6,6 +6,8 @@ import {parseP4R41Member,parseP4R41Members,type P4R41Role,
  type P4R41Member} from "./p4-r41-ci-member-role-contract";
 import {parseP4R42HistoryPage,type P4R42RoleHistory}
  from "./p4-r42-ci-role-history-contract";
+import {parseP4R44DirectoryPage,type P4R44CiDirectoryMember,
+ type P4R44CiFilter} from "./p4-r44-ci-member-directory-contract";
 export class P4R41CiError extends Error{
  constructor(public readonly status:number,public readonly code:
  "INVALID_INPUT"|"IDENTITY_REQUIRED"|"ACCESS_DENIED"|"CONFLICT"|"UNAVAILABLE"|"INVALID_RESPONSE"){
@@ -74,6 +76,23 @@ export class P4R41CiMemberRoleClient{
    if(e instanceof P4R41CiError)throw e;
    return deny(503,"UNAVAILABLE");
   }
+ }
+ async directory(orgId:string,filter:P4R44CiFilter,
+  search:string=""):Promise<readonly P4R44CiDirectoryMember[]>{
+  if(!UUID.test(orgId)||(filter!=="all"&&filter!=="active"&&
+   filter!=="revoked")||typeof search!=="string"||search.length>40||
+   !/^[a-zA-Z0-9._@-]*$/.test(search))
+   return deny(400,"INVALID_INPUT");
+  const q=search.toLowerCase();
+  const path="/_p4_r33_ci/owner/"+orgId+"/member-directory?status="+
+   filter+"&q="+encodeURIComponent(q);
+  const raw=await this.call(path,"GET");
+  const records=parseP4R44DirectoryPage(raw,filter);
+  if(records===null||records.some(row=>q!==""&&
+   !row.userId.toLowerCase().includes(q)&&
+   !(row.email??"").toLowerCase().includes(q)))
+   return deny(503,"INVALID_RESPONSE");
+  return records;
  }
  async members(orgId:string):Promise<readonly P4R41Member[]>{
   if(!UUID.test(orgId))deny(400,"INVALID_INPUT");

@@ -1,0 +1,13 @@
+# P4 Batch 44 — actual CI PostgreSQL member directory and lifecycle view
+
+Date: 2026-11-24. Stacked on verified Batch 43, draft only.
+
+## Five engineering subphases
+1. **Database member directory.** Disposable PostgreSQL candidate 028 adds a narrow owner-checked SQL function returning tenant-scoped MEMBER records and their active/revoked state, current fictional SALES_REP/SALES_MANAGER assignment, optimistic revision and optional verified `@example.com` email. Fixed literal search by member ID/email, three status filters, sorted bounded 20-item projection (21st row causes safe 503). The CI runtime gets function EXECUTE only, not direct table SELECT.
+2. **Backend API.** R40 restricted-transaction service adds `directory`; test-only signed Express adds `GET /owner/:orgId/member-directory?status=...&q=...`. Strict query-key validation, verified-owner and tenant checks, fresh DB membership on every request, no caller-set role/actor or SQL.
+3. **Typed frontend API.** R41 CI-only client parses a strict immutable member projection, rejects extra fields, cross-filter results, wrong search matches and unsafe emails, enforces localhost-only origin and no-store, no browser credentials/storage.
+4. **Workflow controller.** Isolated R44 directory interaction model supports filtered/search reads, revoke-and-refetch and reset/denied clearing; after R43 invitation-only reactivation the same API reflects a new active member and downgraded default sales role. This is an executable CI interaction model, **not** a live Next.js page.
+5. **Verification.** New frontend/backend regressions, mandatory CI source boundary, signed RS256 localhost real HTTP -> disposable PostgreSQL smoke for owner/member, tenant, query restrictions, revoked manager, recipient-bound reactivation, verified-email minimization, >20 member rejection, cleared stale views, redacted response and transaction pool safety.
+
+## Release gating and incomplete production work
+All SQL remains CI-disposable only; its SECURITY DEFINER owner is not approved production privilege architecture. The directory intentionally lacks pagination, tenant-wide real email/PII handling, real session/JWKS/MFA and commercial accessibility sign-off. No normal app code import or live membership endpoint added, no owner Neon mutation, staging, deployment or merge. P1.09 original **727 formal cases, 0 executed**, Phase 4 **NO_GO**; all 10 original release gates, 14 risks, 12 unresolved decisions, R10-C1–C5 and issue #61 remain OPEN. Successful CI is engineering evidence only. Exact final head CI must pass before Batch 44 is marked verified.
