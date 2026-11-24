@@ -9,6 +9,7 @@ import request from "supertest";
 import pg from "pg";
 import {assertP4V1CiPrismaEnvironment} from "../platform/p4-v1-ci-prisma.js";
 import {P4R40CiMemberRoles} from "../platform/p4-r40-ci-member-roles.js";
+import {P4R28CiOrganizationService} from "../platform/p4-r28-ci-org-service.js";
 import {P4R32CiOutboxIssuer} from "../platform/p4-r32-ci-outbox.js";
 import {P4R30CiAcceptanceService}
  from "../platform/p4-r30-ci-invitation-acceptance.js";
@@ -17,8 +18,8 @@ import {P4R33CiActorMapper,createP4R33CiVerifiedWorkflowRouter}
 import {CI_ISSUER,CI_AUDIENCE,type P4R33CiJwk}
  from "../platform/p4-r33-ci-jwt-verifier.js";
 
-const O1="10000000-0000-4000-8000-000000000001";
-const O2="10000000-0000-4000-8000-000000000002";
+let O1="";
+let O2="";
 const BOB="user_demo_bob",ALICE="user_demo_alice";
 let phase="init";
 async function main(){
@@ -60,6 +61,19 @@ async function main(){
   await pool.query("UPDATE p4_synthetic.identity_subjects"+
    " SET email_verified=true,canonical_email='bob@example.com'"+
    " WHERE user_id=$1",[BOB]);
+  // Create truly isolated organizations; do not rely on mutable CI fixtures
+  // from earlier identity and membership lifecycle smoke steps.
+  phase="create-isolated-tenant-fixtures";
+  const orgService=new P4R28CiOrganizationService(pool,process.env);
+  O1=(await orgService.create({userId:ALICE,verified:true},{
+   name:"Demo R40 Roles",slug:"demo-r40-role-tests",
+  })).id;
+  O2=(await orgService.create({userId:ALICE,verified:true},{
+   name:"Demo R40 Secondary",slug:"demo-r40-secondary",
+  })).id;
+  await pool.query(
+   "INSERT INTO p4_synthetic.memberships(org_id,user_id,role,active)"+
+   " VALUES($1,$2,'MEMBER',true)",[O1,BOB]);
   phase="ci-schema-and-privileges";
   const grants=await pool.query(
    "SELECT has_table_privilege('p4_synthetic_ci_runtime',"+
@@ -79,34 +93,11 @@ async function main(){
   assert.ok(rls.rows.every(r=>r.relrowsecurity&&r.relforcerowsecurity));
   phase="owner-read-and-tenant";
   const initial=await request(app).get(route()).set(aliceAuth);
-  if(initial.status!==200){
-   // Diagnostic is intentionally limited to fixed HTTP and SQLSTATE codes.
-   process.stderr.write("P4 R40 OWNER_HTTP_STATUS="+initial.status+
-    " CODE="+String(initial.body?.error?.code??"UNKNOWN")+"\\n");
-   const probe=await pool.connect();
-   try{
-    await probe.query("BEGIN");
-    await probe.query("SET LOCAL ROLE p4_synthetic_ci_runtime");
-    await probe.query("SELECT set_config('app.actor_id',$1,true),"+
-     "set_config('app.tenant_id',$2,true)",[ALICE,O1]);
-    try{
-     const result=await probe.query(
-      "SELECT user_id,role_code,revision FROM p4_r40_ci.list_member_sales_roles($1)",[O1]);
-     process.stderr.write("P4 R40 DIRECT_DB_ROWS="+result.rows.length+"\\n");
-    }catch(e){
-     const state=e&&typeof e==="object"&&"code" in e?String(e.code):"UNKNOWN";
-     process.stderr.write("P4 R40 DIRECT_SQLSTATE="+state+"\\n");
-    }
-   }finally{try{await probe.query("ROLLBACK");}finally{probe.release();}}
-  }
   phase="owner-http-status";
   assert.equal(initial.status,200,"R40_OWNER_READ_"+initial.status+"_"+String(initial.body?.error?.code??"UNKNOWN"));
   phase="owner-http-cache";
   assert.equal(initial.headers["cache-control"],"no-store, private");
   phase="owner-http-projection";
-  if(!Array.isArray(initial.body.data)||initial.body.data.length!==1)
-   process.stderr.write("P4 R40 OWNER_MEMBER_COUNT="+
-    String(initial.body.data?.length??"unknown")+"\\n");
   assert.deepEqual(initial.body.data,[{userId:BOB,role:"SALES_REP",revision:0}]);
   phase="other-tenant-http-status";
   const other=await request(app).get(route(O2)).set(aliceAuth);
@@ -199,7 +190,7 @@ async function main(){
   process.stdout.write("P4 R40 real signed fictional owner, concurrent CAS, denied member and tenant, atomic role audit PASS; NO_GO\n");
  }finally{
   // Other tests use disposable shared fixtures; restore regardless of failure.
-  await pool.query("UPDATE p4_synthetic.memberships SET active=true"+
+  if(O1)await pool.query("UPDATE p4_synthetic.memberships SET active=true"+
    " WHERE org_id=$1 AND user_id=$2",[O1,BOB]);
   await pool.query("UPDATE p4_synthetic.identity_subjects"+
    " SET email_verified=false,canonical_email='alice@example.com'"+
