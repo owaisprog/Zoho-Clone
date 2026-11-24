@@ -4,6 +4,8 @@
  */
 import {parseP4R41Member,parseP4R41Members,type P4R41Role,
  type P4R41Member} from "./p4-r41-ci-member-role-contract";
+import {parseP4R42HistoryPage,type P4R42RoleHistory}
+ from "./p4-r42-ci-role-history-contract";
 export class P4R41CiError extends Error{
  constructor(public readonly status:number,public readonly code:
  "INVALID_INPUT"|"IDENTITY_REQUIRED"|"ACCESS_DENIED"|"CONFLICT"|"UNAVAILABLE"|"INVALID_RESPONSE"){
@@ -79,6 +81,13 @@ export class P4R41CiMemberRoleClient{
   const rows=parseP4R41Members(raw);
   if(rows===null)return deny(503,"INVALID_RESPONSE");
   return rows;
+ }
+ async history(orgId:string):Promise<readonly P4R42RoleHistory[]>{
+  if(!UUID.test(orgId))return deny(400,"INVALID_INPUT");
+  const raw=await this.call("/_p4_r33_ci/owner/"+orgId+"/role-history","GET");
+  const entries=parseP4R42HistoryPage(raw);
+  if(entries===null)return deny(503,"INVALID_RESPONSE");
+  return entries;
  }
  async change(orgId:string,userId:string,role:P4R41Role,
   expectedRevision:number):Promise<P4R41Member>{
