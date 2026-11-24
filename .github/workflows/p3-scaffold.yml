@@ -661,6 +661,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r73-sales-workspace-smoke.ts
 
+      - name: Install R74 manager team reporting in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/051_p4_r74_ci_team_sales_reports.sql
+
+      - name: Verify R74 managed-team deal reporting and acceptance assertions
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r74-team-report-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
