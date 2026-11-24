@@ -79,6 +79,26 @@ async function main(){
   assert.ok(rls.rows.every(r=>r.relrowsecurity&&r.relforcerowsecurity));
   phase="owner-read-and-tenant";
   const initial=await request(app).get(route()).set(aliceAuth);
+  if(initial.status!==200){
+   // Diagnostic is intentionally limited to fixed HTTP and SQLSTATE codes.
+   process.stderr.write("P4 R40 OWNER_HTTP_STATUS="+initial.status+
+    " CODE="+String(initial.body?.error?.code??"UNKNOWN")+"\\n");
+   const probe=await pool.connect();
+   try{
+    await probe.query("BEGIN");
+    await probe.query("SET LOCAL ROLE p4_synthetic_ci_runtime");
+    await probe.query("SELECT set_config('app.actor_id',$1,true),"+
+     "set_config('app.tenant_id',$2,true)",[ALICE,O1]);
+    try{
+     const result=await probe.query(
+      "SELECT user_id,role_code,revision FROM p4_r40_ci.list_member_sales_roles($1)",[O1]);
+     process.stderr.write("P4 R40 DIRECT_DB_ROWS="+result.rows.length+"\\n");
+    }catch(e){
+     const state=e&&typeof e==="object"&&"code" in e?String(e.code):"UNKNOWN";
+     process.stderr.write("P4 R40 DIRECT_SQLSTATE="+state+"\\n");
+    }
+   }finally{try{await probe.query("ROLLBACK");}finally{probe.release();}}
+  }
   assert.equal(initial.status,200,"R40_OWNER_READ_"+initial.status+"_"+String(initial.body?.error?.code??"UNKNOWN"));
   assert.equal(initial.headers["cache-control"],"no-store, private");
   assert.deepEqual(initial.body.data,[{userId:BOB,role:"SALES_REP",revision:0}]);
