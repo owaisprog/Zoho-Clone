@@ -101,6 +101,9 @@ jobs:
       - name: Enforce P4 R58 CRM lead progression and immutable audit source boundary
         run: node scripts/p4-r58-crm-lead-stages-contract.mjs
 
+      - name: Preserve P4 R59 real CRM React UI and no normal app activation
+        run: node scripts/p4-r59-crm-react-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -516,6 +519,12 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r58-crm-lead-stages-smoke.ts
+
+      - name: Verify P4 R59 real signed React CRM workflows in disposable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r59-crm-react-workspace-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
