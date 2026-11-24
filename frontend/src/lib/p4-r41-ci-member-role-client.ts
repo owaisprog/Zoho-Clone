@@ -77,7 +77,7 @@ export class P4R41CiMemberRoleClient{
   if(!UUID.test(orgId))deny(400,"INVALID_INPUT");
   const raw=await this.call("/_p4_r33_ci/owner/"+orgId+"/members","GET");
   const rows=parseP4R41Members(raw);
-  if(!rows)deny(503,"INVALID_RESPONSE");
+  if(rows===null)return deny(503,"INVALID_RESPONSE");
   return rows;
  }
  async change(orgId:string,userId:string,role:P4R41Role,
@@ -90,8 +90,8 @@ export class P4R41CiMemberRoleClient{
    "/_p4_r33_ci/owner/"+orgId+"/members/"+userId+"/role",
    "PATCH",{role,expectedRevision});
   const item=parseP4R41Member(raw);
-  if(!item||item.userId!==userId||item.role!==role||
-   item.revision!==expectedRevision+1)deny(503,"INVALID_RESPONSE");
+  if(item===null||item.userId!==userId||item.role!==role||
+   item.revision!==expectedRevision+1)return deny(503,"INVALID_RESPONSE");
   return item;
  }
 }
