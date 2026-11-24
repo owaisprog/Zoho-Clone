@@ -20,6 +20,8 @@ import {P4R43CiMemberRevokeService}
  from "./p4-r43-ci-member-revoke-service.js";
 import {createP4R43CiMemberRevokeRouter}
  from "./p4-r43-ci-member-revoke-router.js";
+import {P4R45CiRenewalIssuer} from "./p4-r45-ci-renewal-issuer.js";
+import {createP4R45CiRenewalRouter} from "./p4-r45-ci-renewal-router.js";
 const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
 export class P4R33CiActorMapper{
  constructor(private readonly pool:pg.Pool,
@@ -58,6 +60,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  acceptance:P4R30CiAcceptanceService;
  roles?:P4R40CiMemberRoles;
  revoker?:P4R43CiMemberRevokeService;
+ renewer?:P4R45CiRenewalIssuer;
 },env:NodeJS.ProcessEnv=process.env):Router{
  assertP4V1CiPrismaEnvironment(env);
  if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
@@ -72,6 +75,9 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  },env));
  if(deps.revoker)router.use("/owner",createP4R43CiMemberRevokeRouter({
   service:deps.revoker,resolveVerifiedActor:resolve,
+ },env));
+ if(deps.renewer)router.use("/owner",createP4R45CiRenewalRouter({
+  issuer:deps.renewer,resolveVerifiedActor:resolve,
  },env));
  router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
   service:deps.acceptance,resolveVerifiedActor:resolve,
