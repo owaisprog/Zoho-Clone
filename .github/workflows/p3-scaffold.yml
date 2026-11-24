@@ -95,6 +95,9 @@ jobs:
       - name: Enforce P4 R56 secure fictional recipient React one-use token form
         run: node scripts/p4-r56-recipient-react-contract.mjs
 
+      - name: Enforce P4 R57 persisted owner-only CRM and live import boundary
+        run: node scripts/p4-r57-crm-leads-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -492,6 +495,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r56-recipient-react-smoke.ts
+
+      - name: Install P4 R57 fictional CRM leads and immutable audit in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/038_p4_r57_ci_crm_leads.sql
+
+      - name: Verify P4 R57 signed CRM lead persistence, owner isolation and immutable audit
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r57-crm-lead-fullstack-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
