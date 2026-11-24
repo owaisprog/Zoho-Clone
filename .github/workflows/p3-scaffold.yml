@@ -107,6 +107,9 @@ jobs:
       - name: Preserve P4 R60 signed owner CRM keyset page boundary
         run: node scripts/p4-r60-crm-lead-page-contract.mjs
 
+      - name: Preserve P4 R61 immutable signed CRM note and live import boundary
+        run: node scripts/p4-r61-crm-lead-notes-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -537,6 +540,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r60-crm-lead-page-smoke.ts
+
+      - name: Install P4 R61 immutable fictional CRM lead notes in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/041_p4_r61_ci_crm_lead_notes.sql
+
+      - name: Verify P4 R61 signed immutable CRM notes owner RLS and cross-org denial
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r61-crm-lead-notes-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
