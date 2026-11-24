@@ -30,7 +30,7 @@ const orgs=[
  {id:A,name:"Demo Alpha",slug:"demo-alpha",ownerRole:"OWNER" as const},
  {id:B,name:"Demo Beta",slug:"demo-beta",ownerRole:"OWNER" as const},
 ];
-const ready=(org=A,selected:string|null=LEAD)=>({
+const ready=(org:string=A,selected:string|null=LEAD)=>({
  phase:"ready" as const,orgId:org,organizations:orgs,
  leads:org===A?[company]:[],selectedLeadId:selected,
  history:selected?[entry]:[],notes:[],
