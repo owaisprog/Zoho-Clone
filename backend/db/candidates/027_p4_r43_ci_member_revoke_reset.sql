@@ -102,9 +102,8 @@ CREATE TRIGGER r43_reset_on_member_reactivation
  WHEN (OLD.active=false AND NEW.active=true AND NEW.role='MEMBER')
  EXECUTE FUNCTION p4_r43_ci.reset_after_member_reactivation();
 
--- Update the disposable-only R30 redemption to support an existing
--- revoked MEMBER. Strict token/verified DB-email checks remain mandatory.
--- This is NOT a production-compatible migration of R30.
+-- CI-only extension of R30 recipient-bound redemption to revoked MEMBERs.
+-- No live activation, owner Neon migration, or unrestricted membership writes.
 CREATE OR REPLACE FUNCTION p4_r30_ci.redeem_fictional_invitation(
  supplied_hash text
 ) RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER
@@ -119,24 +118,10 @@ DECLARE
 BEGIN
  IF current_database()<>'zoho_clone_synthetic_ci'
   OR current_setting('role',true)<>'p4_synthetic_ci_runtime'
-  OR supplied_hash !~ '^[0-9a-f]{64}
-REVOKE ALL ON FUNCTION p4_r43_ci.reset_after_member_reactivation() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION p4_r43_ci.revoke_member(uuid,text,uuid)
- TO p4_synthetic_ci_runtime;
--- No direct table grants and no API for reactivation. A valid recipient-bound
--- single-use invitation acceptance is the only planned reactivation path.
-COMMIT;
-
+  OR supplied_hash !~ '^[0-9a-f]{64}$'
  THEN RETURN false; END IF;
  actor:=nullif(current_setting('app.actor_id',true),'');
- IF actor IS NULL OR actor !~ '^user_demo_[a-z]{2,16}
-REVOKE ALL ON FUNCTION p4_r43_ci.reset_after_member_reactivation() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION p4_r43_ci.revoke_member(uuid,text,uuid)
- TO p4_synthetic_ci_runtime;
--- No direct table grants and no API for reactivation. A valid recipient-bound
--- single-use invitation acceptance is the only planned reactivation path.
-COMMIT;
-
+ IF actor IS NULL OR actor !~ '^user_demo_[a-z]{2,16}$'
  THEN RETURN false; END IF;
  SELECT i.id,i.org_id,i.recipient_email,i.status,i.expires_at
  INTO invite
@@ -151,7 +136,7 @@ COMMIT;
  FROM p4_synthetic.memberships m
  WHERE m.org_id=invite.org_id AND m.user_id=actor FOR UPDATE;
  had_member:=FOUND;
- -- Never grant an active user another membership or revive an OWNER.
+ -- Never grant another active membership or elevate a previous owner.
  IF had_member AND (prior_active IS DISTINCT FROM false
   OR prior_role<>'MEMBER') THEN RETURN false; END IF;
  UPDATE p4_synthetic.invitations
@@ -165,7 +150,7 @@ COMMIT;
   WHERE org_id=invite.org_id AND user_id=actor
    AND role='MEMBER' AND active=false;
   GET DIAGNOSTICS changed=ROW_COUNT;
-  -- Reactivation must trigger R43 role reset and audit within this txn.
+  -- Trigger resets sales role, increments its revision and appends audit.
   IF changed<>1 THEN
    RAISE EXCEPTION 'P4_R43_REACTIVATION_CONFLICT';
   END IF;
