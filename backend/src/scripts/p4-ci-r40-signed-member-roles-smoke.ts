@@ -99,11 +99,20 @@ async function main(){
     }
    }finally{try{await probe.query("ROLLBACK");}finally{probe.release();}}
   }
+  phase="owner-http-status";
   assert.equal(initial.status,200,"R40_OWNER_READ_"+initial.status+"_"+String(initial.body?.error?.code??"UNKNOWN"));
+  phase="owner-http-cache";
   assert.equal(initial.headers["cache-control"],"no-store, private");
+  phase="owner-http-projection";
+  if(!Array.isArray(initial.body.data)||initial.body.data.length!==1)
+   process.stderr.write("P4 R40 OWNER_MEMBER_COUNT="+
+    String(initial.body.data?.length??"unknown")+"\\n");
   assert.deepEqual(initial.body.data,[{userId:BOB,role:"SALES_REP",revision:0}]);
+  phase="other-tenant-http-status";
   const other=await request(app).get(route(O2)).set(aliceAuth);
-  assert.equal(other.status,200);assert.deepEqual(other.body.data,[]);
+  assert.equal(other.status,200);
+  phase="other-tenant-http-projection";
+  assert.deepEqual(other.body.data,[]);
   phase="authentication-and-non-owner-denial";
   const unauthed=await request(app).get(route()).set("x-user-id",ALICE)
    .set("x-role","OWNER");
