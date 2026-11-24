@@ -6,7 +6,14 @@
 import { fictionalOrganizationPreview } from "./p4-organization-preview";
 
 export type SandboxInviteStatus="pending"|"accepted"|"revoked"|"expired";
-export type SandboxRole="ORG_OWNER"|"SALES_REP";
+export type SandboxRole="ORG_OWNER"|"SALES_REP"|"SALES_MANAGER";
+export type SandboxAssignableRole="SALES_REP"|"SALES_MANAGER";
+export type SandboxMemberFilter="all"|"active"|"revoked";
+export interface SandboxRoleChange {
+ readonly id:string; readonly email:string;
+ readonly fromRole:SandboxAssignableRole;
+ readonly toRole:SandboxAssignableRole; readonly occurredAt:string;
+}
 export interface SandboxMember {
  readonly email:string; readonly role:SandboxRole; readonly active:boolean;
 }
@@ -19,6 +26,7 @@ export interface SandboxOrganization {
  readonly id:string; readonly name:string; readonly slug:string;
  readonly members:readonly SandboxMember[];
  readonly invitations:readonly SandboxInvitation[];
+ readonly roleChanges:readonly SandboxRoleChange[];
 }
 export interface SandboxState {
  readonly organizations:readonly SandboxOrganization[];
@@ -63,7 +71,7 @@ export function addSandboxOrganization(state:SandboxState,name:string,slug:strin
  const org:SandboxOrganization=Object.freeze({
   id:"sandbox-org-"+(state.revision+1),name:draft.name,slug:draft.slug,
   members:Object.freeze([{email:OWNER,role:"ORG_OWNER" as const,active:true}]),
-  invitations:Object.freeze([]),
+  invitations:Object.freeze([]),roleChanges:Object.freeze([]),
  });
  const next=Object.freeze({organizations:Object.freeze([...state.organizations,org]),
   selectedId:org.id,revision:state.revision+1});
@@ -108,7 +116,7 @@ export function resolveSandboxInvitation(
  if(action==="accept")ensure(prior.length<=1&&!prior.some(m=>m.active),"CONFLICT");
  const members=action==="accept"?
   Object.freeze(prior.length>0?org.members.map(m=>m.email===current.email?
-   Object.freeze({...m,active:true}):m):
+   Object.freeze({...m,role:current.role,active:true}):m):
    [...org.members,Object.freeze({email:current.email,role:"SALES_REP" as const,active:true})]):
   org.members;
  return {state:replace(state,{...org,invitations:invites,members}),
@@ -206,4 +214,54 @@ export function acceptSandboxInvitationAsRecipient(
  const result=resolveSandboxInvitation(state,id,"accept",now);
  return {...result,
   detail:"Simulated recipient acceptance; fictional membership added. No login or token."};
+}
+
+/**
+ * P4 R39: in-tab owner-managed directory and bounded role change history.
+ * Neither editable roles nor demo event history authorize any server API.
+ * A previously revoked manager is always re-invited as SALES_REP, not
+ * silently restored to privileged access.
+ */
+export function getSandboxMemberDirectory(
+ state:SandboxState,query:string,filter:SandboxMemberFilter="all",
+):readonly SandboxMember[]{
+ ensure(typeof query==="string"&&query.length<=64,"INVALID_INPUT");
+ ensure(filter==="all"||filter==="active"||filter==="revoked","INVALID_INPUT");
+ const org=activeOrg(state);
+ const needle=query.trim().toLowerCase();
+ return Object.freeze(org.members.filter(m=>
+  (filter==="all"||(filter==="active"?m.active:!m.active))&&
+  (m.email.includes(needle)||m.role.toLowerCase().includes(needle)))
+  .map(m=>Object.freeze({...m}))
+  .sort((a,b)=>a.email.localeCompare(b.email)));
+}
+export function listSandboxRoleChanges(state:SandboxState):readonly SandboxRoleChange[]{
+ const org=activeOrg(state);
+ return Object.freeze(org.roleChanges.slice().reverse()
+  .map(entry=>Object.freeze({...entry})));
+}
+export function changeSandboxMemberRole(
+ state:SandboxState,email:string,role:string,now:number,
+):SandboxResult{
+ const org=activeOrg(state);
+ ensure(role==="SALES_REP"||role==="SALES_MANAGER","INVALID_INPUT");
+ ensure(email!==OWNER&&EMAIL.test(email),"FORBIDDEN");
+ const matching=org.members.filter(m=>m.email===email);
+ ensure(matching.length<=1,"CONFLICT");
+ const member=matching[0];
+ ensure(member,"NOT_FOUND");
+ ensure(member.active&&
+  (member.role==="SALES_REP"||member.role==="SALES_MANAGER"),"FORBIDDEN");
+ ensure(member.role!==role,"CONFLICT");
+ ensure(org.roleChanges.length<30,"INVALID_STATE");
+ const occurredAt=iso(now);
+ const change:SandboxRoleChange=Object.freeze({
+  id:"sandbox-role-change-"+(state.revision+1),email,
+  fromRole:member.role,toRole:role,occurredAt,
+ });
+ const members=Object.freeze(org.members.map(m=>m.email===email?
+  Object.freeze({...m,role}):m));
+ return {state:replace(state,{...org,members,
+  roleChanges:Object.freeze([...org.roleChanges,change])}),
+  detail:"Changed fictional member role in this tab. No server permissions were granted."};
 }
