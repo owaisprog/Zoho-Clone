@@ -62,6 +62,8 @@ import {P4R68CiDueQueue} from "./p4-r68-ci-due-queue.js";
 import {createP4R68CiDueQueueRouter} from "./p4-r68-ci-due-queue-router.js";
 import {P4R69CiAccounts} from "./p4-r69-ci-accounts.js";
 import {createP4R69CiAccountsRouter} from "./p4-r69-ci-accounts-router.js";
+import {P4R70CiContacts} from "./p4-r70-ci-contacts.js";
+import {createP4R70CiContactsRouter} from "./p4-r70-ci-contacts-router.js";
 const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
 export class P4R33CiActorMapper{
  constructor(private readonly pool:pg.Pool,
@@ -118,6 +120,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  crmTaskPages?:P4R66CiTaskPager;
  crmDueQueue?:P4R68CiDueQueue;
  salesAccounts?:P4R69CiAccounts;
+ salesContacts?:P4R70CiContacts;
 },env:NodeJS.ProcessEnv=process.env):Router{
  assertP4V1CiPrismaEnvironment(env);
  if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
@@ -186,6 +189,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
   queue:deps.crmDueQueue,resolveVerifiedActor:resolve,
  },env));
  if(deps.salesAccounts)router.use("/sales",createP4R69CiAccountsRouter(deps.salesAccounts,resolve,env));
+ if(deps.salesContacts)router.use("/sales",createP4R70CiContactsRouter(deps.salesContacts,resolve,env));
  router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
   service:deps.acceptance,resolveVerifiedActor:resolve,
  }));

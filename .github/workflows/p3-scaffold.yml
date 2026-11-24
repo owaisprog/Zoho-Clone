@@ -625,6 +625,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r69-accounts-fullstack-smoke.ts
 
+      - name: Install R70 sales contacts in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/047_p4_r70_ci_sales_contacts.sql
+
+      - name: Verify R70 signed Contacts and same-org Account association
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r70-contacts-fullstack-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
