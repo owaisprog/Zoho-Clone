@@ -104,6 +104,9 @@ jobs:
       - name: Preserve P4 R59 real CRM React UI and no normal app activation
         run: node scripts/p4-r59-crm-react-contract.mjs
 
+      - name: Preserve P4 R60 signed owner CRM keyset page boundary
+        run: node scripts/p4-r60-crm-lead-page-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -525,6 +528,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r59-crm-react-workspace-smoke.ts
+
+      - name: Install P4 R60 CRM keyset pages in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/040_p4_r60_ci_crm_lead_keyset.sql
+
+      - name: Verify P4 R60 signed 25-lead HMAC paginated CRM in PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r60-crm-lead-page-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:

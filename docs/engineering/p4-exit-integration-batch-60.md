@@ -1,0 +1,5 @@
+# P4 Batch 60 — Signed paginated persisted CRM leads, CI only
+
+Five subphases: (1) real bounded 21-row RLS-backed SQL keyset over (created_at, lead_id) filtered by stage and fictional name/email search; (2) owner-checked backend signing/verifying 10-minute HMAC cursors bound to org/filter/search, strict Base64URL and fail-closed errors; (3) optional signed R33 Express GET /owner/:orgId/leads/page route; (4) frontend typed page client/controller preserving non-overlapping pages and clearing stale tenant data on denial; (5) frontend/backend regression + real signed localhost 25 CRM lead creation and 20+5 pagination through disposable PostgreSQL, forged/expired/mismatched cursor and revoked owner tests.
+
+The old R57 unpaginated GET intentionally still fails closed beyond 20 rather than silently truncating. For new CRM workflows use R60 pagination. Keyset pages are not a frozen snapshot when leads change between requests. No real Auth0, customer PII, SMTP, production/Neon writes, merge, deployment or normal Next.js mount. Original formal P1.09 acceptance 0/727 executed, P4 NO_GO, all gates open.
