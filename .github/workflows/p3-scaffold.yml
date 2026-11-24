@@ -643,6 +643,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r71-deals-fullstack-smoke.ts
 
+      - name: Install R72 sales lead conversion in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/049_p4_r72_ci_sales_lead_conversion.sql
+
+      - name: Verify R72 signed atomic lead conversion and rollback
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r72-lead-conversion-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
