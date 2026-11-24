@@ -592,6 +592,9 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r65-followup-react-smoke.ts
 
+      - name: Install P4 R66 task keyset in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/044_p4_r66_ci_crm_task_keyset.sql
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
