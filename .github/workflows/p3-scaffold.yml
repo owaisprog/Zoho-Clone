@@ -92,6 +92,9 @@ jobs:
       - name: Enforce P4 R55 React owner selector, scoped writes and live import boundary
         run: node scripts/p4-r55-owner-switcher-contract.mjs
 
+      - name: Enforce P4 R56 secure fictional recipient React one-use token form
+        run: node scripts/p4-r56-recipient-react-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -483,6 +486,12 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r55-owner-switcher-smoke.ts
+
+      - name: Exercise P4 R56 recipient masked React UI with signed HTTP and real synthetic PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r56-recipient-react-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
