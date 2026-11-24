@@ -104,7 +104,7 @@ export class P4R40CiMemberRoles {
    const result=rows.rows.map(row=>{
     if(!USER.test(String(row.user_id))||
      (row.email!==null&&(typeof row.email!=="string"||
-      !/^[a-z0-9._-]+@example\\.com$/.test(row.email)))||
+      !/^[a-z0-9._-]+@example[.]com$/.test(row.email)))||
      (row.role_code!=="SALES_REP"&&row.role_code!=="SALES_MANAGER")||
      !Number.isSafeInteger(row.revision)||row.revision<0||
      row.revision>10000000||typeof row.active!=="boolean")
