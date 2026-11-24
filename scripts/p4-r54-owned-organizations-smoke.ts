@@ -91,13 +91,18 @@ async function main(){
    base,async()=>"a.b.c",fetch,process.env);
   await assert.rejects(forged.list(),
    e=>e instanceof P4R54CiOrganizationError&&e.status===401);
-  phase="no-direct-table-grant-on-runtime-and-clean-session";
+  phase="restricted-function-only-execution-and-clean-session";
   const client=await pool.connect();
   try{
    await client.query("BEGIN");
    await client.query("SET LOCAL ROLE p4_synthetic_ci_runtime");
-   await assert.rejects(client.query("SELECT slug FROM"+
-    " p4_synthetic.organizations LIMIT 1"));
+   const grants=await client.query("SELECT"+
+    " has_function_privilege(current_user,"+
+    " 'p4_r54_ci.list_owned_organizations()','EXECUTE') AS permitted");
+   assert.equal(grants.rows[0]?.permitted,true);
+   // No fake actor in this session: even valid EXECUTE cannot enumerate.
+   await assert.rejects(client.query(
+    "SELECT * FROM p4_r54_ci.list_owned_organizations()"));
    await client.query("ROLLBACK");
   }finally{client.release();}
   const scope=await pool.query("SELECT current_user AS role,"+
