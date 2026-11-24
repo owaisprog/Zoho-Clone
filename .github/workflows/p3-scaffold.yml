@@ -98,6 +98,9 @@ jobs:
       - name: Enforce P4 R57 persisted owner-only CRM and live import boundary
         run: node scripts/p4-r57-crm-leads-contract.mjs
 
+      - name: Enforce P4 R58 CRM lead progression and immutable audit source boundary
+        run: node scripts/p4-r58-crm-lead-stages-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -504,6 +507,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r57-crm-lead-fullstack-smoke.ts
+
+      - name: Install P4 R58 CRM lead stage CAS and immutable audit history in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/039_p4_r58_ci_crm_lead_stage.sql
+
+      - name: Verify P4 R58 signed CRM qualified lost stage progression and audit in CI PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r58-crm-lead-stages-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
