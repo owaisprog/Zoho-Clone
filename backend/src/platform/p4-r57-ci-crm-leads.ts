@@ -17,7 +17,7 @@ const STATUSES=new Set<P4R57LeadStatus>(["NEW","CONTACTED","QUALIFIED","LOST"]);
 const fail=(status:400|401|403|409|503,code:P4R28Denied["code"]):never=>{
  throw new P4R28Denied(status,code);
 };
-function parse(row:Record<string,unknown>):P4R57Lead{
+export function parseP4R57CiLeadRow(row:Record<string,unknown>):P4R57Lead{
  if(Object.keys(row).sort().join(",")!==
   "company_name,contact_email,created_at,lead_id,revision,source,status"||
   typeof row.lead_id!=="string"||!UUID.test(row.lead_id)||
@@ -90,7 +90,7 @@ export class P4R57CiCrmLeads{
     " p4_r57_ci.create_lead($1,$2,$3,$4,$5,$6)",
     [id,randomUUID(),randomUUID(),v.companyName,v.contactEmail,v.source]);
    if(rows.rows.length!==1)return fail(503,"UNAVAILABLE");
-   return parse(rows.rows[0]);
+   return parseP4R57CiLeadRow(rows.rows[0]);
   });
  }
  async list(actor:P4R28Actor|null,org:string):Promise<readonly P4R57Lead[]>{
@@ -99,7 +99,7 @@ export class P4R57CiCrmLeads{
     "contact_email,source,status,revision,created_at FROM"+
     " p4_r57_ci.list_leads($1)",[id]);
    if(rows.rows.length>20)return fail(503,"UNAVAILABLE");
-   const output=rows.rows.map(parse);
+   const output=rows.rows.map(parseP4R57CiLeadRow);
    if(new Set(output.map(x=>x.leadId)).size!==output.length||
     new Set(output.map(x=>x.contactEmail)).size!==output.length||
     output.some((x,i)=>i>0&&x.createdAt>output[i-1]!.createdAt))
