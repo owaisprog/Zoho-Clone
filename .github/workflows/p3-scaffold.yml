@@ -74,6 +74,9 @@ jobs:
       - name: Preserve P4 R49 signed member cursor isolation and production boundary
         run: node scripts/p4-r49-keyset-contract.mjs
 
+      - name: Preserve P4 R50 signed aggregate-only owner summary boundaries
+        run: node scripts/p4-r50-owner-summary-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -417,6 +420,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r49-member-keyset-smoke.ts
+
+      - name: Install P4 R50 readonly owner operations metrics for disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/034_p4_r50_ci_owner_operations_summary.sql
+
+      - name: Verify P4 R50 signed member invitation audit operational counts via real CI Postgres
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r50-owner-operations-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
