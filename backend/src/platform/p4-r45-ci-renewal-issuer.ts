@@ -53,7 +53,17 @@ export class P4R45CiRenewalIssuer{
    if(role.rows.length!==1||role.rows[0]?.name!=="p4_synthetic_ci_runtime"||
     role.rows[0]?.privileged!==false)
     return fail(403,"ACCESS_DENIED");
-   await client.query("SELECT p4_r40_ci.require_current_owner($1)",[orgId]);
+   // Runtime has NO EXECUTE on require_current_owner: check fresh owner
+   // under restricted role, while R45's SECURITY DEFINER worker repeats
+   // that owner check before mutating any queued ciphertext outbox entry.
+   const owner=await client.query(
+    "SELECT 1 FROM p4_synthetic.memberships m"+
+    " JOIN p4_synthetic.identity_subjects s ON s.user_id=m.user_id"+
+    " AND s.email_verified=true"+
+    " WHERE m.org_id=$1 AND m.user_id=$2"+
+    " AND m.role='OWNER' AND m.active=true LIMIT 1",
+    [orgId,actor.userId]);
+   if(owner.rowCount!==1)return fail(403,"ACCESS_DENIED");
    const prior=await client.query(
     "SELECT id,recipient_email,status,expires_at,resend_count,version"+
     " FROM p4_synthetic.invitations WHERE org_id=$1 AND id=$2 FOR UPDATE",
