@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
+import {randomUUID} from "node:crypto";
 import {P4R60CiCrmLeadPager}
  from "../src/platform/p4-r60-ci-crm-lead-pager.js";
 import {P4R28Denied} from "../src/platform/p4-r28-ci-org-service.js";
 const ENV:NodeJS.ProcessEnv={CI:"true",GITHUB_ACTIONS:"true",
  PGHOST:"127.0.0.1",PGPORT:"5432",PGDATABASE:"zoho_clone_synthetic_ci",
  PGUSER:"demo_ci",PGPASSWORD:"fake_ci_not_for_real_accounts"};
-const ORG="10000000-0000-4000-8000-000000000001";
+const ORG=randomUUID();
 const OWNER={userId:"user_demo_alice",verified:true as const};
 const denied=(status:number,code:string)=>(e:unknown)=>
  e instanceof P4R28Denied&&e.status===status&&e.code===code;
