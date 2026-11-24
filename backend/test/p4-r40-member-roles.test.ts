@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
-import {P4R40CiMemberRoles} from "../src/platform/p4-r40-ci-member-roles";
-import {P4R28Denied} from "../src/platform/p4-r28-ci-org-service";
+import {P4R40CiMemberRoles} from "../src/platform/p4-r40-ci-member-roles.js";
+import {P4R28Denied} from "../src/platform/p4-r28-ci-org-service.js";
 import {createP4R40CiMemberRolesRouter}
- from "../src/platform/p4-r40-ci-member-roles-router";
+ from "../src/platform/p4-r40-ci-member-roles-router.js";
 
 const demoOrg="10000000-0000-4000-8000-000000000001";
 const actor={userId:"user_demo_alice",verified:true as const};
