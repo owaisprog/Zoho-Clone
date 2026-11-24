@@ -86,7 +86,7 @@ export class P4R55CiOwnerOrgSwitcher{
    return this.fail();
   const org=this.state.selectedId,seq=++this.epoch;
   this.state=Object.freeze({...this.state,phase:"loading",
-   workspace:{...this.state.workspace,phase:"loading",
+   workspace:{...this.state.workspace,phase:"loading" as const,
     counts:null,members:Object.freeze([]),invitations:Object.freeze([]),
     activity:Object.freeze([])}});
   try{
@@ -104,7 +104,7 @@ export class P4R55CiOwnerOrgSwitcher{
   if(this.state.phase!=="ready"||!this.state.selectedId)return this.fail();
   const org=this.state.selectedId,seq=++this.epoch;
   this.state=Object.freeze({...this.state,phase:"loading",
-   workspace:{...this.state.workspace,phase:"loading",counts:null,
+   workspace:{...this.state.workspace,phase:"loading" as const,counts:null,
     members:Object.freeze([]),invitations:Object.freeze([]),
     activity:Object.freeze([])}});
   try{
