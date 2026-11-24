@@ -17,6 +17,7 @@ export type P4R65CiFollowUpPanelProps=Readonly<{
  onSearch:(v:string)=>void;onMoreLeads:()=>void;
  onAddNote:(v:string)=>void;onMoreNotes:()=>void;
  onCreateTask:(v:P4R64NewTask)=>void;onCompleteTask:(id:string)=>void;
+ onMoreTasks?:()=>void;
 }>;
 const button="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50";
 export function P4R65CiFollowUpWorkspacePanel(p:P4R65CiFollowUpPanelProps){
@@ -60,7 +61,7 @@ export function P4R65CiFollowUpWorkspacePanel(p:P4R65CiFollowUpPanelProps){
       </p>
      </div>
      <div className="text-right">
-      <p className="text-xs font-semibold uppercase text-slate-600">Open tasks</p>
+      <p className="text-xs font-semibold uppercase text-slate-600">Open tasks shown</p>
       <p className="text-2xl font-bold">{ready?open:"—"}</p>
      </div>
     </div>
@@ -109,11 +110,15 @@ export function P4R65CiFollowUpWorkspacePanel(p:P4R65CiFollowUpPanelProps){
         Completed</span>}
       </li>)}
      </ul>
+     {v.taskNextCursor&&p.onMoreTasks&&<button type="button"
+      className={button+" mt-4"} onClick={p.onMoreTasks}>
+      Load more tasks
+     </button>}
      {v.tasks.length===0&&<p className="mt-4 text-sm text-slate-500">
       No follow-up tasks for this fictional lead.</p>}
      <p className="mt-4 text-xs text-slate-500">
-      Tasks are tied to the selected lead. Completion is permanent and audited.
-      Lists over 20 tasks remain blocked pending pagination.
+      Task counts reflect loaded pages. Completion is permanent and audited.
+      Use Load more tasks to access older persisted follow-ups.
      </p>
     </>}
    </div>
@@ -145,5 +150,6 @@ export function P4R65CiFollowUpWorkspaceBound({
   onAddNote={n=>call(controller.addNote(n))}
   onMoreNotes={()=>call(controller.moreNotes())}
   onCreateTask={task=>call(controller.createTask(task))}
+  onMoreTasks={()=>call(controller.moreTasks())}
   onCompleteTask={id=>call(controller.completeTask(id))}/>;
 }
