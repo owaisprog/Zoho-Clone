@@ -47,6 +47,9 @@ jobs:
       - name: Validate P4 R40 CI-only owner role API and production import isolation
         run: node scripts/p4-r40-source-contract.mjs
 
+      - name: Preserve P4 R41 typed localhost member roles client import contract
+        run: node scripts/p4-r41-client-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -312,6 +315,12 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node backend/dist/scripts/p4-ci-r40-signed-member-roles-smoke.js
+
+      - name: Verify P4 R41 frontend signed localhost HTTP through disposable Postgres
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r41-role-fullstack-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
