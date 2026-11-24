@@ -65,6 +65,9 @@ jobs:
       - name: Verify P4 R46 signed cancellation and immutable audit source isolation
         run: node scripts/p4-r46-cancellation-contract.mjs
 
+      - name: Preserve P4 R47 signed owner invitation directory and live-app isolation
+        run: node scripts/p4-r47-invitation-directory-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -381,6 +384,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r46-invitation-cancellation-smoke.ts
+
+      - name: Install P4 R47 read-only CI owner invitation directory
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/031_p4_r47_ci_invitation_directory.sql
+
+      - name: Verify P4 R47 signed owner issue cancel renew accept and filtered invitation listing
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r47-invitation-directory-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
