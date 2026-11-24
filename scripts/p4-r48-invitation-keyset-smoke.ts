@@ -105,8 +105,14 @@ async function main(){
   const expanded=await ctl.more(org.id);
   assert.equal(expanded.phase,"ready");assert.equal(expanded.items.length,25);
   phase="cursor-integrity-tenant-filter-and-expiry";
-  const badCursor=first.nextCursor.slice(0,-1)+
-   (first.nextCursor.endsWith("A")?"B":"A");
+  // A canonical 43-char SHA-256 signature ends in one of 16 base64url
+  // symbols. Incrementing its last symbol changes only discarded pad bits:
+  // decoding yields identical signature bytes, but it MUST still be denied.
+  const alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  const last=first.nextCursor.at(-1)!;
+  const position=alphabet.indexOf(last);
+  assert.equal(position%4,0);
+  const badCursor=first.nextCursor.slice(0,-1)+alphabet[position+1];
   for(const call of [
    ()=>owner.page(org.id,"revoked","",badCursor),
    ()=>owner.page(org.id,"all","",first.nextCursor),
