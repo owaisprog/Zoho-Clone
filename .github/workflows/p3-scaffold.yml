@@ -44,6 +44,9 @@ jobs:
       - name: Validate P4 R39 fictional member directory, role history and revoked-manager downgrade
         run: node scripts/p4-r39-member-role-contract.mjs
 
+      - name: Validate P4 R40 CI-only owner role API and production import isolation
+        run: node scripts/p4-r40-source-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -300,6 +303,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r34-fullstack-smoke.ts
+
+      - name: Install P4 R40 disposable owner-managed sales role state and immutable audit
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/025_p4_r40_ci_member_sales_roles.sql
+
+      - name: Verify P4 R40 signed fictional owner and transactionally audited roles in PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node backend/dist/scripts/p4-ci-r40-signed-member-roles-smoke.js
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
