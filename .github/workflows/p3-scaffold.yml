@@ -634,6 +634,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r70-contacts-fullstack-smoke.ts
 
+      - name: Install R71 sales deals in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/048_p4_r71_ci_sales_deals.sql
+
+      - name: Verify R71 signed Deals, linked records and stage history
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r71-deals-fullstack-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
