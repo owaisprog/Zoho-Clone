@@ -30,6 +30,22 @@ export function createP4R40CiMemberRolesRouter(deps:{
    res.status(status).json({error:{code}});
   }
  });
+ router.get("/:orgId/member-directory",async(req,res)=>{
+  try{
+   // Query is strictly one of all/active/revoked plus an optional literal
+   // search string; never use client-provided SQL, role or actor metadata.
+   if(Object.keys(req.query).sort().join(",")!=="q,status")
+    throw new P4R28Denied(400,"INVALID_INPUT");
+   const actor=await deps.resolveVerifiedActor(req);
+   const data=await deps.service.directory(actor,req.params.orgId,
+    req.query.status,req.query.q);
+   res.status(200).json({scope:"disposable-ci-only",data});
+  }catch(error){
+   const status=error instanceof P4R28Denied?error.status:503;
+   const code=error instanceof P4R28Denied?error.code:"UNAVAILABLE";
+   res.status(status).json({error:{code}});
+  }
+ });
  router.get("/:orgId/role-history",async(req,res)=>{
   try{
    const actor=await deps.resolveVerifiedActor(req);
