@@ -20,7 +20,7 @@ test("R44 owner actor must be verified; no caller-selected tenant",async()=>{
  const service=new P4R40CiMemberRoles({} as never,ENV);
  await assert.rejects(service.directory(null,ORG,"active",""),
   rejected(401,"IDENTITY_REQUIRED"));
- await assert.rejects(service.directory({userId:"user_demo_alice",verified:false},
+ await assert.rejects(service.directory({userId:"user_demo_alice",verified:false as never},
   ORG,"all",""),rejected(401,"IDENTITY_REQUIRED"));
  await assert.rejects(service.directory(ACTOR,"invalid-org","all",""),
   rejected(403,"ACCESS_DENIED"));
