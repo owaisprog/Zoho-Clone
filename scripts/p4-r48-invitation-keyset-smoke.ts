@@ -71,6 +71,11 @@ async function main(){
   const foreign=await orgs.create({userId:"user_demo_alice",verified:true},{
    name:"Demo R48 Other",slug:"demo-r48-other",
   });
+  // This regression must exercise a valid signed non-owner, not an
+  // unverified identity rejected by R33 before owner authorization.
+  await pool.query("UPDATE p4_synthetic.identity_subjects"+
+   " SET email_verified=true,canonical_email='bob@example.com'"+
+   " WHERE user_id='user_demo_bob'");
   phase="seed-25-tie-timestamp-invitations";
   const fixtureTime=new Date(Date.now()-3600000);
   const ids:string[]=[];
@@ -143,6 +148,9 @@ async function main(){
   assert.deepEqual(scoped.rows,[{role:"demo_ci",actor:null,tenant:null}]);
   process.stdout.write("P4 R48 signed HMAC keyset invitation paging 25/25 tie timestamp, filter/tenant/cursor/revocation isolation PASS; NO_GO\n");
  }finally{
+  await pool.query("UPDATE p4_synthetic.identity_subjects"+
+   " SET email_verified=false,canonical_email='alice@example.com'"+
+   " WHERE user_id='user_demo_bob'");
   aes.fill(0);hmac.fill(0);
   await new Promise<void>((resolve,reject)=>server.close(e=>e?reject(e):resolve()));
   await pool.end();
