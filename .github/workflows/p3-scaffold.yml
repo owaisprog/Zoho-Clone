@@ -62,6 +62,9 @@ jobs:
       - name: Preserve P4 R45 signed owner renewal, immutable audit and outbox boundaries
         run: node scripts/p4-r45-renewal-contract.mjs
 
+      - name: Verify P4 R46 signed cancellation and immutable audit source isolation
+        run: node scripts/p4-r46-cancellation-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -369,6 +372,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r45-invitation-renewal-smoke.ts
+
+      - name: Install P4 R46 disposable immutable invitation cancellation audit
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/030_p4_r46_ci_invitation_cancellation.sql
+
+      - name: Verify P4 R46 signed cancellation, dead outbox and safe renewal in PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r46-invitation-cancellation-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
