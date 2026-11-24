@@ -3,7 +3,7 @@
  * R53: A real React owner management panel, isolated from public Next.js routes.
  * CI-only fictional tenant. Source-graph guard forbids normal app mounting.
  */
-import {useEffect,useState,type FormEvent} from "react";
+import React,{useEffect,useState,type FormEvent} from "react";
 import type {P4R53CiOwnerWorkspaceController,
  P4R53CiWorkspaceSnapshot} from "../lib/p4-r53-ci-owner-workspace-controller";
 import type {P4R41Role} from "../lib/p4-r41-ci-member-role-contract";
