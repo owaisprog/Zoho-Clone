@@ -22,22 +22,22 @@ export class P4R54CiOwnedOrganizations{
   let client:pg.PoolClient;
   try{client=await this.pool.connect();}
   catch{return fail(503,"UNAVAILABLE");}
-  let active=false,discard=false;
+  let active=false,discard=false;let stage="begin";
   try{
    await client.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");active=true;
-   await client.query("SET LOCAL ROLE p4_synthetic_ci_runtime");
+   stage="role";await client.query("SET LOCAL ROLE p4_synthetic_ci_runtime");
    await client.query("SELECT set_config('app.actor_id',$1,true)",[actor.userId]);
-   const check=await client.query("SELECT current_user AS name,"+
+   stage="role-check";const check=await client.query("SELECT current_user AS name,"+
     "(SELECT rolsuper OR rolbypassrls FROM pg_roles"+
     " WHERE rolname=current_user) AS privileged,"+
     "nullif(current_setting('app.tenant_id',true),'') AS tenant");
    if(check.rows[0]?.name!=="p4_synthetic_ci_runtime"||
     check.rows[0]?.privileged!==false||check.rows[0]?.tenant!==null)
     return fail(403,"ACCESS_DENIED");
-   const response=await client.query("SELECT id::text,name,slug,owner_role"+
+   stage="function";const response=await client.query("SELECT id::text,name,slug,owner_role"+
     " FROM (SELECT id,display_name AS name,slug,owner_role"+
     " FROM p4_r54_ci.list_owned_organizations()) AS owned");
-   if(response.rows.length>20)return fail(503,"UNAVAILABLE");
+   stage="validation";if(response.rows.length>20)return fail(503,"UNAVAILABLE");
    const records: P4R54OwnedOrganization[]=[];
    for(const row of response.rows as Record<string,unknown>[]){
     if(typeof row.id!=="string"||!UUID.test(row.id)||
@@ -55,6 +55,12 @@ export class P4R54CiOwnedOrganizations{
    await client.query("COMMIT");active=false;
    return Object.freeze(records);
   }catch(error){
+   if(this.env.CI==="true"){
+    const code=error&&typeof error==="object"&&"code" in error?
+     String(error.code):"unknown";
+    process.stderr.write("P4 R54 safe diagnostic stage="+stage+
+     " code="+code+"\n");
+   }
    if(active){try{await client.query("ROLLBACK");}catch{discard=true;}}
    if(error instanceof P4R28Denied)throw error;
    if(error&&typeof error==="object"&&"code" in error&&
