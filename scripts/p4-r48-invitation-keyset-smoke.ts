@@ -32,7 +32,7 @@ async function main(){
   password:"fake_ci_not_for_real_accounts",max:5});
  const aes=randomBytes(32),hmac=randomBytes(32);
  const pair=generateKeyPairSync("rsa",{modulusLength:2048});
- const jwk={...pair.publicKey.export({format:"jwk"}),kid:"r48-local-test",
+ const jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-r48",
   alg:"RS256" as const,use:"sig" as const} as P4R33CiJwk;
  const time=Math.floor(Date.now()/1000);
  const enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
