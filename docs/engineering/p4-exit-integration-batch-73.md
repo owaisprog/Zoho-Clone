@@ -1,0 +1,3 @@
+# R73 — Integrated sales CRM workspace
+Five slices: eligible sales organization discovery; own-record aggregate counts in a single database snapshot; signed HTTP/client; integrated React tabs with selection/revocation clearing; signed disposable PostgreSQL smoke with lead conversion, stage counts, React SSR and a tenant switch.
+Own-record SALES_REP only. Panels are CI components, not a live Next.js route; client environment remains restricted to synthetic localhost. Prior owner-only Lead/Task/Note rehearsal is not exposed in this workspace. Browser interaction and real Auth0/staging are not verified. Original formal P1.09 remains 0/727; P4 NO_GO. No deployment, main merge or Neon mutation.

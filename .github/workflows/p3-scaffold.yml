@@ -652,6 +652,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r72-lead-conversion-smoke.ts
 
+      - name: Install R73 sales workspace in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/050_p4_r73_ci_sales_workspace.sql
+
+      - name: Verify R73 integrated sales workspace and scoped overview
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r73-sales-workspace-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
