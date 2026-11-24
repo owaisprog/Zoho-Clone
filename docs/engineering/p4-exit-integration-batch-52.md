@@ -1,0 +1,5 @@
+# P4 Batch 52 — Signed keyset audit timeline pages, CI only
+
+Five implemented subphases: (1) disposable read-only owner SQL for an ordered five-kind activity union using (event UTC timestamp, UUID) keyset; (2) HMAC scope/TTL-bound cursor that rejects noncanonical Base64URL, cross-tenant, cross-filter, expired and tampered signatures with a fixed 20-event page; (3) signed unmounted Express owner-only endpoint; (4) strict frontend activity page client and deduplicating fail-closed navigation controller; (5) frontend/backend tests, source import guard and real signed HTTP→PostgreSQL fullstack smoke of 25 genuine sequential audited role-change transactions, 20+5 pagination, legacy R51 >20 fail-closed, filter/cursor/tenant/owner denial and clean scoped connections.
+
+Cursor is not a legal audit export, cross-page snapshot, or commercial key-management mechanism. The user-facing Next.js app and real Auth0 remain unconnected. No customer PII, real email, SMTP, KMS, owner Neon writes, merge or deployment. Formal 0/727 original acceptance, P4 NO_GO, all 10 gates/14 risks/12 decisions, R10-C1–C5 and owner issue #61 OPEN.
