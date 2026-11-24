@@ -119,6 +119,9 @@ jobs:
       - name: Preserve P4 R64 signed CRM follow-up due-date task boundaries
         run: node scripts/p4-r64-crm-task-contract.mjs
 
+      - name: Verify P4 R65 integrated React follow-up tasks and paged notes source boundary
+        run: node scripts/p4-r65-followup-react-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -582,6 +585,12 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r64-crm-task-smoke.ts
+
+      - name: Exercise P4 R65 signed React CRM 25 notes and due tasks over disposable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r65-followup-react-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
