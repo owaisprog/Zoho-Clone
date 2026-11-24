@@ -19,7 +19,7 @@ const deny=(status:number,code:P4R54CiOrganizationError["code"]):never=>{
 };
 export function parseP4R54OwnedOrganizations(input:unknown):
  readonly P4R54OwnedOrganization[]|null{
- if(!Array.isArray(input)||input.length>20)return null;
+ if(!Array.isArray(input)||input.length>200)return null;
  const orgs:P4R54OwnedOrganization[]=[];
  for(const row of input){
   if(!row||typeof row!=="object"||Array.isArray(row))return null;
