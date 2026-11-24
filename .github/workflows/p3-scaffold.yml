@@ -80,6 +80,9 @@ jobs:
       - name: Preserve P4 R51 owner activity audit redaction and live import boundary
         run: node scripts/p4-r51-owner-activity-contract.mjs
 
+      - name: Preserve P4 R52 canonical HMAC owner audit paging source isolation
+        run: node scripts/p4-r52-owner-activity-keyset-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -441,6 +444,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r51-owner-activity-smoke.ts
+
+      - name: Install P4 R52 owner-only audit keyset projection in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/036_p4_r52_ci_owner_activity_keyset.sql
+
+      - name: Verify P4 R52 signed audit page 25 genuine role changes in PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r52-owner-activity-keyset-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
