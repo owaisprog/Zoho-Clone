@@ -31,6 +31,9 @@ import {createP4R48CiInvitationPagerRouter}
  from "./p4-r48-ci-invitation-pager-router.js";
 import {P4R49CiMemberPager} from "./p4-r49-ci-member-pager.js";
 import {createP4R49CiMemberPagerRouter} from "./p4-r49-ci-member-pager-router.js";
+import {P4R50CiOwnerOperations} from "./p4-r50-ci-owner-operations.js";
+import {createP4R50CiOwnerOperationsRouter}
+ from "./p4-r50-ci-owner-operations-router.js";
 const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
 export class P4R33CiActorMapper{
  constructor(private readonly pool:pg.Pool,
@@ -74,6 +77,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  invitations?:P4R47CiInvitationDirectory;
  invitationPages?:P4R48CiInvitationPager;
  memberPages?:P4R49CiMemberPager;
+ ownerSummary?:P4R50CiOwnerOperations;
 },env:NodeJS.ProcessEnv=process.env):Router{
  assertP4V1CiPrismaEnvironment(env);
  if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
@@ -103,6 +107,9 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  },env));
  if(deps.memberPages)router.use("/owner",createP4R49CiMemberPagerRouter({
   pager:deps.memberPages,resolveVerifiedActor:resolve,
+ },env));
+ if(deps.ownerSummary)router.use("/owner",createP4R50CiOwnerOperationsRouter({
+  service:deps.ownerSummary,resolveVerifiedActor:resolve,
  },env));
  router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
   service:deps.acceptance,resolveVerifiedActor:resolve,
