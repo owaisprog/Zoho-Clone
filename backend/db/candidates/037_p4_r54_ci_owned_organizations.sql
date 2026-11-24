@@ -34,7 +34,7 @@ BEGIN
  FROM p4_synthetic.organizations o
  JOIN p4_synthetic.memberships m ON m.org_id=o.id
   AND m.user_id=who AND m.role='OWNER' AND m.active=true
- ORDER BY o.display_name,o.id LIMIT 21;
+ ORDER BY o.display_name,o.id LIMIT 201;
 END $body$;
 REVOKE ALL ON FUNCTION p4_r54_ci.list_owned_organizations() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION p4_r54_ci.list_owned_organizations()
