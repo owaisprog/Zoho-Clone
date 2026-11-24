@@ -87,8 +87,10 @@ async function main(){
   }
   phase="page-1-and-page-2-no-gaps";
   const first=await owner.page(org.id,"revoked","");
+  process.stdout.write("P4 R48 first-page count="+first.items.length+" has-next="+Boolean(first.nextCursor)+"\n");
   assert.equal(first.items.length,20);assert.ok(first.nextCursor);
   const second=await owner.page(org.id,"revoked","",first.nextCursor);
+  process.stdout.write("P4 R48 second-page count="+second.items.length+" has-next="+Boolean(second.nextCursor)+"\n");
   assert.equal(second.items.length,5);assert.equal(second.nextCursor,null);
   const all=[...first.items,...second.items];
   assert.equal(new Set(all.map(x=>x.id)).size,25);
@@ -146,4 +148,14 @@ async function main(){
   await pool.end();
  }
 }
-main().catch(()=>{process.stderr.write("P4 R48 CI keyset integration FAILED at "+phase+"\n");process.exitCode=1;});
+main().catch(error=>{
+ const safe=error instanceof Error?error as Error&{status?:number;code?:string;actual?:unknown;expected?:unknown}:null;
+ process.stderr.write("P4 R48 CI keyset integration FAILED at "+phase+
+  " type="+(safe?.name??"unknown")+
+  " status="+(safe?.status??"none")+
+  " code="+(safe?.code??"none")+
+  " actualType="+typeof safe?.actual+
+  " actualCount="+(Array.isArray(safe?.actual)?safe.actual.length:"n/a")+
+  "\\n");
+ process.exitCode=1;
+});
