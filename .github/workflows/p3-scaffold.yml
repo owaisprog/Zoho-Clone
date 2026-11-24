@@ -110,6 +110,9 @@ jobs:
       - name: Preserve P4 R61 immutable signed CRM note and live import boundary
         run: node scripts/p4-r61-crm-lead-notes-contract.mjs
 
+      - name: Preserve P4 R62 integrated CRM React page and immutable notes import isolation
+        run: node scripts/p4-r62-crm-workspace-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -549,6 +552,12 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r61-crm-lead-notes-smoke.ts
+
+      - name: Verify P4 R62 signed React CRM 25 leads, stage actions and notes in disposable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r62-crm-workspace-fullstack-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
