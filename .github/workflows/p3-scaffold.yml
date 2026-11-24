@@ -86,6 +86,9 @@ jobs:
       - name: Preserve P4 R53 React CI owner management UI and no live Next.js route imports
         run: node scripts/p4-r53-owner-workspace-contract.mjs
 
+      - name: Preserve P4 R54 signed owner organization chooser and production isolation
+        run: node scripts/p4-r54-owned-organizations-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -462,6 +465,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r53-owner-workspace-smoke.ts
+
+      - name: Install P4 R54 limited verified owner organizations in disposable CI SQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/037_p4_r54_ci_owned_organizations.sql
+
+      - name: Verify P4 R54 signed owner switcher with multiple orgs and revoked ownership
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r54-owned-organizations-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
