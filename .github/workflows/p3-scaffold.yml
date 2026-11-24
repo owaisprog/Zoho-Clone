@@ -71,6 +71,9 @@ jobs:
       - name: Preserve P4 R48 signed cursor SQL and live separation
         run: node scripts/p4-r48-keyset-contract.mjs
 
+      - name: Preserve P4 R49 signed member cursor isolation and production boundary
+        run: node scripts/p4-r49-keyset-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -405,6 +408,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r48-invitation-keyset-smoke.ts
+
+      - name: Install P4 R49 owner member keyset CI-only SQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/033_p4_r49_ci_member_keyset.sql
+
+      - name: Verify P4 R49 signed member paging 25 records in real disposable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r49-member-keyset-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
