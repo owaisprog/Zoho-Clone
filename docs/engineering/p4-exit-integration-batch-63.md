@@ -1,0 +1,5 @@
+# P4 Batch 63 — CRM immutable follow-up note pagination
+
+Five subphases implemented in synthetic CI only: (1) a tenant- and lead-bound SQL keyset over immutable follow-up notes with a 21-row sentinel; (2) an owner-restricted HMAC signer/verifier binding each cursor to organization, lead, timestamp, ID and ten-minute expiry; (3) optional signed Express GET notes/page endpoint under the unmounted R33 CI router; (4) strict frontend HTTP client plus append/refresh controller, clearing stale tenant data on denial; (5) frontend/backend tests, source guard and real signed PostgreSQL smoke with **25 notes paged 20+5**, wrong lead/org, expired/forged token, forged actor, member and revoked-owner denial.
+
+R61's old unpaged list remains fail-closed above 20, not truncated. Cursor pagination is not a snapshot if new notes arrive during paging. No customer data, production route, main Next.js integration, merge, deploy, real Auth0/JWKS or Neon writes. P4 NO_GO, formal P1.09 original acceptance 0/727 executed, all release gates OPEN.
