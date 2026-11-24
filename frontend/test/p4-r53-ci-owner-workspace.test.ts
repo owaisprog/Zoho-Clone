@@ -48,7 +48,7 @@ test("R53 atomic owner workspace hydrates four signed read models",async()=>{
 test("R53 owner role mutation sends revision from fresh member view and refetches",async()=>{
  let revision=-1,role="";
  let reads=0;
- const deps=api();
+ const deps:any=api();
  deps.summary.summary=async()=>{reads++;return counts;};
  deps.roles.change=async(_org:string,_id:string,next:string,expected:number)=>{
   revision=expected;role=next;return {...member,role:next as "SALES_REP",revision:1};
@@ -65,7 +65,7 @@ test("R53 tenant switch discards late responses from previous organization",asyn
  let resolveA:(value:typeof counts)=>void=()=>{};
  let initial=true;
  const deferred=new Promise<typeof counts>(r=>resolveA=r);
- const deps=api();
+ const deps:any=api();
  deps.summary.summary=async(org:string)=>{
   if(org===A&&initial){initial=false;return deferred;}
   return {...counts,activeMembers:0};
@@ -80,7 +80,7 @@ test("R53 tenant switch discards late responses from previous organization",asyn
  assert.equal(controller.snapshot().counts?.activeMembers,0);
 });
 test("R53 partial read failure clears every previously visible record",async()=>{
- let fail=false;const deps=api();
+ let fail=false;const deps:any=api();
  deps.activity.page=async()=>{
   if(fail)throw Error("sensitive provider failure");
   return {items:[activity],nextCursor:null};
@@ -97,7 +97,7 @@ test("R53 partial read failure clears every previously visible record",async()=>
  assert.equal(JSON.stringify(denied).includes("provider failure"),false);
 });
 test("R53 pagination rejects duplicates and invalid member revocation",async()=>{
- const deps=api();
+ const deps:any=api();
  deps.members.page=async(_org:string,_f:string,_q:string,cursor:string|null)=>
   cursor===null?{items:[member],nextCursor:"fake.cursor"}:
    {items:[member],nextCursor:null};
