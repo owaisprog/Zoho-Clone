@@ -10,7 +10,7 @@ const checks=[
    "GRANT EXECUTE ON FUNCTION"]],
  ["backend/src/platform/p4-r54-ci-owned-organizations.ts",
   ["REPEATABLE READ READ ONLY","SET LOCAL ROLE p4_synthetic_ci_runtime",
-   "p4_r54_ci.list_owned_organizations","response.rows.length>20"]],
+   "p4_r54_ci.list_owned_organizations","response.rows.length>200"]],
  ["backend/src/platform/p4-r54-ci-owned-organizations-router.ts",
   ['"/organizations"',"resolveVerifiedActor(req)","no-store, private"]],
  ["frontend/src/lib/p4-r54-ci-owned-organizations-client.ts",
