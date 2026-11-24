@@ -1,4 +1,4 @@
-/** R66 signed owner-only paginated immutable CRM note route. */
+/** R66 signed owner-only paginated fictional CRM task route. */
 import {Router,type Request} from "express";
 import {assertP4V1CiPrismaEnvironment} from "./p4-v1-ci-prisma.js";
 import {P4R28Denied,type P4R28Actor} from "./p4-r28-ci-org-service.js";
