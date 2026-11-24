@@ -35,7 +35,7 @@ export class P4R41CiMemberRoleClient{
    x.pathname!=="/"||x.search||x.hash||x.username||x.password)
    deny(503,"UNAVAILABLE");
  }
- private async call(path:string,method:"GET"|"PATCH",body?:unknown):Promise<unknown>{
+ private async call(path:string,method:"GET"|"PATCH"|"POST",body?:unknown):Promise<unknown>{
   this.guard();
   let jwt:string;
   try{jwt=await this.token();}catch{return deny(401,"IDENTITY_REQUIRED");}
@@ -81,6 +81,16 @@ export class P4R41CiMemberRoleClient{
   const rows=parseP4R41Members(raw);
   if(rows===null)return deny(503,"INVALID_RESPONSE");
   return rows;
+ }
+ async revoke(orgId:string,userId:string):Promise<Readonly<{revoked:true}>>{
+  if(!UUID.test(orgId)||!USER.test(userId))return deny(400,"INVALID_INPUT");
+  const raw=await this.call(
+   "/_p4_r33_ci/owner/"+orgId+"/members/"+userId+"/revoke","POST");
+  if(!raw||typeof raw!=="object"||Array.isArray(raw)||
+   Object.keys(raw).join(",")!=="revoked"||
+   (raw as {revoked?:unknown}).revoked!==true)
+   return deny(503,"INVALID_RESPONSE");
+  return Object.freeze({revoked:true as const});
  }
  async history(orgId:string):Promise<readonly P4R42RoleHistory[]>{
   if(!UUID.test(orgId))return deny(400,"INVALID_INPUT");
