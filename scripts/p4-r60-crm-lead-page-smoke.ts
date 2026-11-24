@@ -90,11 +90,13 @@ async function main(){
    e=>e instanceof P4R57CiCrmError&&e.status===503);
   phase="signed-owner-pages-exactly-20-plus-5";
   let v=await controller.refresh(org.id);
-  assert.equal(v.phase,"ready");assert.equal(v.leads.length,20);
-  assert.ok(v.nextCursor);
+  phase="R60-first-page-phase";assert.equal(v.phase,"ready");
+  phase="R60-first-page-size";assert.equal(v.leads.length,20);
+  phase="R60-first-page-cursor";assert.ok(v.nextCursor);
   const first=v.nextCursor!;
-  v=await controller.more();
-  assert.equal(v.leads.length,25);assert.equal(v.nextCursor,null);
+  phase="R60-next-page";v=await controller.more();
+  phase="R60-next-page-size";assert.equal(v.leads.length,25);
+  phase="R60-next-page-end";assert.equal(v.nextCursor,null);
   assert.equal(new Set(v.leads.map(x=>x.leadId)).size,25);
   assert.equal(new Set(v.leads.map(x=>x.contactEmail)).size,25);
   phase="filter-and-search-scope";
