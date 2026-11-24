@@ -59,6 +59,9 @@ jobs:
       - name: Verify P4 R44 signed fictional directory and live-app separation
         run: node scripts/p4-r44-member-directory-contract.mjs
 
+      - name: Preserve P4 R45 signed owner renewal, immutable audit and outbox boundaries
+        run: node scripts/p4-r45-renewal-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -357,6 +360,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r44-member-directory-fullstack-smoke.ts
+
+      - name: Install P4 R45 restricted disposable renewal audit and queued-delivery guard
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/029_p4_r45_ci_invitation_renewal.sql
+
+      - name: Verify P4 R45 signed recipient renewal and encrypted outbox through real CI PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r45-invitation-renewal-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
