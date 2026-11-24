@@ -50,6 +50,9 @@ jobs:
       - name: Preserve P4 R41 typed localhost member roles client import contract
         run: node scripts/p4-r41-client-contract.mjs
 
+      - name: Validate P4 R42 role history owner-only and production import isolation
+        run: node scripts/p4-r42-history-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -321,6 +324,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r41-role-fullstack-smoke.ts
+
+      - name: Install P4 R42 disposable owner-only bounded member role history
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/026_p4_r42_ci_member_role_history.sql
+
+      - name: Verify P4 R42 signed owner role audit through real localhost HTTP and PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r42-role-history-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:

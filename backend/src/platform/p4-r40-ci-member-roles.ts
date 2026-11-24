@@ -12,6 +12,10 @@ const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}
 const USER=/^user_demo_[a-z]{2,16}$/;
 type Role="SALES_REP"|"SALES_MANAGER";
 type RecordRow=Readonly<{userId:string;role:Role;revision:number}>;
+export type P4R42CiHistoryEvent=Readonly<{
+ actorUserId:string;targetUserId:string;beforeRole:Role;afterRole:Role;
+ revision:number;occurredAt:string;
+}>;
 const fail=(status:400|401|403|409|503,code:P4R28Denied["code"]):never=>{
  throw new P4R28Denied(status,code);
 };
@@ -78,6 +82,37 @@ export class P4R40CiMemberRoles {
    if(new Set(entries.map(x=>x.userId)).size!==entries.length)
     return fail(503,"UNAVAILABLE");
    return Object.freeze(entries);
+  });
+ }
+ async history(actor:P4R28Actor|null,orgId:unknown):
+  Promise<readonly P4R42CiHistoryEvent[]>{
+  return this.inside(actor,orgId,async(client,org)=>{
+   const rows=await client.query(
+    "SELECT actor_user_id,target_user_id,before_role,after_role,"+
+    " revision,occurred_at FROM p4_r40_ci.read_member_role_history($1)",
+    [org]);
+   if(rows.rows.length>20)return fail(503,"UNAVAILABLE");
+   const output=rows.rows.map(row=>{
+    if(!USER.test(String(row.actor_user_id))||
+     !USER.test(String(row.target_user_id))||
+     !["SALES_REP","SALES_MANAGER"].includes(String(row.before_role))||
+     !["SALES_REP","SALES_MANAGER"].includes(String(row.after_role))||
+     row.before_role===row.after_role||
+     !Number.isSafeInteger(row.revision)||row.revision<1||
+     row.revision>10000000||
+     !(row.occurred_at instanceof Date)||
+     !Number.isFinite(row.occurred_at.getTime()))
+     return fail(503,"UNAVAILABLE");
+    return Object.freeze({
+     actorUserId:row.actor_user_id as string,
+     targetUserId:row.target_user_id as string,
+     beforeRole:row.before_role as Role,
+     afterRole:row.after_role as Role,
+     revision:row.revision as number,
+     occurredAt:row.occurred_at.toISOString(),
+    });
+   });
+   return Object.freeze(output);
   });
  }
  async change(actor:P4R28Actor|null,orgId:unknown,targetId:unknown,body:unknown)

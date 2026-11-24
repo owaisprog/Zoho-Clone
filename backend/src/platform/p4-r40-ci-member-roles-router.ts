@@ -30,6 +30,17 @@ export function createP4R40CiMemberRolesRouter(deps:{
    res.status(status).json({error:{code}});
   }
  });
+ router.get("/:orgId/role-history",async(req,res)=>{
+  try{
+   const actor=await deps.resolveVerifiedActor(req);
+   const data=await deps.service.history(actor,req.params.orgId);
+   res.status(200).json({scope:"disposable-ci-only",data});
+  }catch(error){
+   const status=error instanceof P4R28Denied?error.status:503;
+   const code=error instanceof P4R28Denied?error.code:"UNAVAILABLE";
+   res.status(status).json({error:{code}});
+  }
+ });
  router.patch("/:orgId/members/:memberId/role",async(req,res)=>{
   try{
    const actor=await deps.resolveVerifiedActor(req);
