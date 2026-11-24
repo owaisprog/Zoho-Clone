@@ -5,7 +5,7 @@ const read=p=>readFileSync(new URL("../"+p,import.meta.url),"utf8");
 const checks=[
  ["backend/db/candidates/037_p4_r54_ci_owned_organizations.sql",
   ["zoho_clone_synthetic_ci","SECURITY DEFINER","email_verified=true",
-   "m.role='OWNER' AND m.active=true","LIMIT 21",
+   "m.role='OWNER' AND m.active=true","LIMIT 201",
    "nullif(current_setting('app.tenant_id',true),'') IS NOT NULL",
    "GRANT EXECUTE ON FUNCTION"]],
  ["backend/src/platform/p4-r54-ci-owned-organizations.ts",
