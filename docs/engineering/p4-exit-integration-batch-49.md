@@ -1,0 +1,5 @@
+# P4 Batch 49 — CI owner member directory pagination
+
+Five subphases: (1) disposable PostgreSQL keyset member page ordered by fictional user ID with owner verification, filters all/active/revoked and safe verified example.com emails; (2) HMAC signed 10-minute cursor bound to organization/search/status and row ID, with restricted transaction and 20-row page; (3) optional signed test-only Express endpoint, exact allowed query keys and no production mount; (4) strict typed Next.js-side CI HTTP client and denial/duplicate-clearing page controller; (5) regression tests and real signed localhost Express → PostgreSQL smoke exercising 25 members, filtered 22 active/3 revoked, forged/non-owner/cross-tenant/cross-filter cursor denial, TTL, safe response and SQL-context cleanup.
+
+Cursor pagination is not a snapshot if membership status changes between requests. No production identities, live Auth0/JWKS/MFA, real email PII, owner Neon writes, SMTP, KMS, staging, main merge or deployment. Formal original P1.09 0/727 executed, P4 NO_GO; 10 release gates, 14 risks, 12 decisions, R10-C1–C5 and owner issue #61 remain OPEN.
