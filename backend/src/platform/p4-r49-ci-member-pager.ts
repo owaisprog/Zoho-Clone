@@ -48,7 +48,8 @@ export class P4R49CiMemberPager{
   if(!payload||!sig)return fail(400,"INVALID_INPUT");
   const expected=Buffer.from(this.sign(payload),"base64url");
   const received=Buffer.from(sig,"base64url");
-  if(expected.length!==received.length||
+  if(received.toString("base64url")!==sig||
+   expected.length!==received.length||
    !timingSafeEqual(expected,received))return fail(400,"INVALID_INPUT");
   let input:unknown;
   try{input=JSON.parse(Buffer.from(payload,"base64url").toString("utf8"));}

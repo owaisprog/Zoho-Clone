@@ -77,6 +77,9 @@ jobs:
       - name: Preserve P4 R50 signed aggregate-only owner summary boundaries
         run: node scripts/p4-r50-owner-summary-contract.mjs
 
+      - name: Preserve P4 R51 owner activity audit redaction and live import boundary
+        run: node scripts/p4-r51-owner-activity-contract.mjs
+
       - name: Run workspace tests (frontend, backend, shared demo contracts)
         run: npm run test
 
@@ -429,6 +432,15 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r50-owner-operations-smoke.ts
+
+      - name: Install P4 R51 owner-only read-only audit union in synthetic PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/035_p4_r51_ci_owner_activity.sql
+
+      - name: Verify P4 R51 signed real owner activity across member role invitation workflows
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r51-owner-activity-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
