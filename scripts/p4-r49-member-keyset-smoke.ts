@@ -108,7 +108,12 @@ async function main(){
   phase="cursor-scope-tamper-expiry";
   const cursor=first.nextCursor;
   assert.ok(cursor);
-  const tampered=cursor.slice(0,-1)+(cursor.endsWith("A")?"B":"A");
+  const alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  const last=cursor.at(-1)!;
+  const position=alphabet.indexOf(last);
+  assert.equal(position%4,0);
+  // Deliberately noncanonical base64url signature with same decoded bytes.
+  const tampered=cursor.slice(0,-1)+alphabet[position+1];
   for(const call of [
    ()=>owner.page(org.id,"all","",tampered),
    ()=>owner.page(org.id,"active","",cursor),
