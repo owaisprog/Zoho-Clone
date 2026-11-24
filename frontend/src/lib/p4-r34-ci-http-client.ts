@@ -101,6 +101,26 @@ export class P4R34CiHttpClient{
    return denied(503,"INVALID_RESPONSE");
   return parsed;
  }
+ async renew(orgId:string,invitationId:string,expectedVersion:number):
+  Promise<SafeInvitationDraft>{
+  if(!UUID.test(orgId)||!UUID.test(invitationId)||
+   !Number.isSafeInteger(expectedVersion)||expectedVersion<1||
+   expectedVersion>10000000)return denied(400,"INVALID_INPUT");
+  const res=await this.post(
+   "/_p4_r33_ci/owner/"+orgId+"/invitations/renew",
+   "owner",{invitationId,expectedVersion});
+  if(res.status!==201||!res.json||typeof res.json!=="object"||
+   Array.isArray(res.json))return denied(503,"INVALID_RESPONSE");
+  const envelope=res.json as Record<string,unknown>;
+  if(Object.keys(envelope).sort().join(",")!=="data,scope"||
+   envelope.scope!=="disposable-ci-only")
+   return denied(503,"INVALID_RESPONSE");
+  const parsed=parseSafeInvitationDraft(envelope.data);
+  if(!parsed||parsed.status!=="pending"||
+   parsed.organizationId!==orgId||parsed.id===invitationId)
+   return denied(503,"INVALID_RESPONSE");
+  return parsed;
+ }
  async accept(token:string):Promise<P4RecipientAcceptance>{
   if(typeof token!=="string"||!TOKEN.test(token))
    return denied(400,"INVALID_INPUT");
