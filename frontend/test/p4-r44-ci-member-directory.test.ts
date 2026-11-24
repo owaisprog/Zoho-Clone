@@ -104,7 +104,7 @@ test("R44 controller refreshes active/revoked lists and clears on denied refresh
  assert.equal(ctl.snapshot().members.length,1);
  assert.equal((await ctl.refresh(ORG,"revoked","carla")).phase,"ready");
  assert.deepEqual(calls,["active:bob","revoked:carla"]);
- assert.equal((await ctl.revokeAndRefresh(ORG,BOB)).phase,"updated");
+ assert.equal((await ctl.revokeAndRefresh(ORG,BOB.userId)).phase,"updated");
  assert.equal(calls[2],"revoked:carla");
  ctl.reset();assert.equal(ctl.snapshot().phase,"idle");
  const fail=new P4R44CiDirectoryController({
@@ -125,7 +125,7 @@ test("R44 controller does not retain stale directory after revoke refresh fails"
  };
  const ctl=new P4R44CiDirectoryController(api as never);
  assert.equal((await ctl.refresh(ORG,"all","")).members.length,1);
- assert.equal((await ctl.revokeAndRefresh(ORG,BOB)).phase,"denied");
+ assert.equal((await ctl.revokeAndRefresh(ORG,BOB.userId)).phase,"denied");
  assert.deepEqual(ctl.snapshot().members,[]);
  assert.equal(JSON.stringify(ctl.snapshot()).includes("secret"),false);
 });
