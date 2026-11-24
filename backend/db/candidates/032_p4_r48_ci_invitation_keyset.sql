@@ -17,7 +17,8 @@ CREATE FUNCTION p4_r48_ci.owner_invitation_page(
  p_after_time timestamptz,p_after_id uuid
 ) RETURNS TABLE(
  id uuid,org_id uuid,recipient_email text,granted_role text,
- status text,issued_at timestamptz,expires_at timestamptz,version integer
+ status text,issued_at timestamptz,expires_at timestamptz,version integer,
+ key_time text
 ) LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $body$
 BEGIN
  PERFORM p4_r40_ci.require_current_owner(p_org);
@@ -34,7 +35,9 @@ BEGIN
   FROM p4_synthetic.invitations i WHERE i.org_id=p_org
  )
  SELECT v.id,v.org_id,v.recipient_email::text,v.granted_role::text,
-  v.display_status,v.issued_at,v.expires_at,v.version
+  v.display_status,v.issued_at,v.expires_at,v.version,
+ to_char(v.issued_at AT TIME ZONE 'UTC',
+ 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')::text AS key_time
  FROM items v
  WHERE (p_status='all' OR v.display_status=p_status)
   AND (p_search='' OR strpos(lower(v.recipient_email),p_search)>0)
