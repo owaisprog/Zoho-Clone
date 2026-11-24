@@ -184,7 +184,7 @@ export class P4R62CiCrmWorkspaceController{
     return this.fail();
    const updated=v.leads.map(x=>x.leadId===lead.leadId?confirmed:x);
    this.state=Object.freeze({...v,phase:"ready",
-    filter:"all",leads:Object.freeze(updated),
+    leads:Object.freeze(updated),
     selectedLeadId:lead.leadId,history,notes,
     message:"Signed fictional CRM status saved with immutable audit"});
   }catch{if(seq===this.epoch)return this.fail();}
