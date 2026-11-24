@@ -1,0 +1,4 @@
+# R71 — CRM Deals (synthetic CI)
+Five slices: tenant composite foreign keys to Account, Contact, Pipeline and Stage; explicit sales rep own-record create/list with current entitlement; audited CAS stage transitions and signed API; typed client and React linked-record selectors; signed PostgreSQL workflow covering 25 deals, cross-org and mismatched-contact denial, stale revisions and terminal stages.
+
+Pipeline is a single fixture-provisioned DEMO_SALES pipeline per organization. Stages OPEN, DISCOVERY, PROPOSAL, NEGOTIATION, WON and LOST are provisional; WON has no processor meaning. Both Account and Contact must be selected and linked at creation; later Contact association edits do not rewrite historical Deal relationships. No title edit, pipeline configuration UI, team sharing, deal amount, live routes, Neon mutation, real Auth0, merge or deploy. Formal P1.09 stays 0/727; all release gates open and P4 NO_GO.
