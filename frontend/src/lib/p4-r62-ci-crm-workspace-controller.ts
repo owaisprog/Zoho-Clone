@@ -12,6 +12,8 @@ import type {P4R60CiCrmLeadPageClient,P4R60LeadFilter}
  from "./p4-r60-ci-crm-lead-page-client";
 import type {P4R61CiLeadNotesClient,P4R61LeadNote}
  from "./p4-r61-ci-lead-notes-client";
+import type {P4R63CiNotePageClient}
+ from "./p4-r63-ci-note-page-client";
 export type P4R62CiCrmView=Readonly<{
  phase:"idle"|"loading"|"ready"|"denied";
  orgId:string|null;organizations:readonly P4R54OwnedOrganization[];
@@ -36,7 +38,12 @@ export class P4R62CiCrmWorkspaceController{
   private readonly pager:Pick<P4R60CiCrmLeadPageClient,"page">,
   private readonly leads:Pick<P4R57CiCrmLeadClient,"create">,
   private readonly stages:Pick<P4R58CiLeadStageClient,"change"|"history">,
-  private readonly notes:Pick<P4R61CiLeadNotesClient,"add"|"list">){}
+  private readonly notes:Pick<P4R61CiLeadNotesClient,"add"|"list">,
+  private readonly notePages?:Pick<P4R63CiNotePageClient,"page">){}
+ private async readNotes(org:string,lead:string):Promise<readonly P4R61LeadNote[]>{
+  if(this.notePages)return (await this.notePages.page(org,lead,null)).items;
+  return this.notes.list(org,lead);
+ }
  snapshot():P4R62CiCrmView{return this.state;}
  private fail():P4R62CiCrmView{
   this.state=Object.freeze({...EMPTY,phase:"denied",
@@ -80,7 +87,7 @@ export class P4R62CiCrmWorkspaceController{
     if(!lead)return this.fail();
     [history,notes]=await Promise.all([
      this.stages.history(chosen,selection),
-     this.notes.list(chosen,selection),
+     this.readNotes(chosen,selection),
     ]);
     if(seq!==this.epoch)return this.state;
     if(!this.validateHistory(lead,history)||
@@ -140,7 +147,7 @@ export class P4R62CiCrmWorkspaceController{
   const seq=this.clear(v.orgId);
   try{
    const [history,notes]=await Promise.all([
-    this.stages.history(v.orgId,leadId),this.notes.list(v.orgId,leadId)]);
+    this.stages.history(v.orgId,leadId),this.readNotes(v.orgId,leadId)]);
    if(seq!==this.epoch)return this.state;
    if(!this.validateHistory(lead,history)||
     notes.some(n=>n.leadId!==leadId))return this.fail();
@@ -174,7 +181,7 @@ export class P4R62CiCrmWorkspaceController{
    if(seq!==this.epoch)return this.state;
    const [history,notes]=await Promise.all([
     this.stages.history(v.orgId,lead.leadId),
-    this.notes.list(v.orgId,lead.leadId),
+    this.readNotes(v.orgId,lead.leadId),
    ]);
    if(seq!==this.epoch)return this.state;
    if(confirmed.leadId!==lead.leadId||
@@ -197,7 +204,7 @@ export class P4R62CiCrmWorkspaceController{
   try{
    const saved=await this.notes.add(v.orgId,lead.leadId,text);
    if(seq!==this.epoch)return this.state;
-   const notes=await this.notes.list(v.orgId,lead.leadId);
+   const notes=await this.readNotes(v.orgId,lead.leadId);
    if(seq!==this.epoch)return this.state;
    if(saved.leadId!==lead.leadId||saved.noteText!==text||
     !notes.some(n=>n.noteId===saved.noteId)||
