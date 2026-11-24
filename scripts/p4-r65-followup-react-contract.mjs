@@ -15,7 +15,7 @@ const checks=[
  ["frontend/src/components/p4-r65-ci-followup-workspace.tsx",
   ['"use client"',"P4R65CiFollowUpWorkspaceBound",
    "P4R62CiCrmWorkspacePanel","Add follow-up task",
-   "Lead follow-up tasks","Mark Done","Load more notes"]],
+   "Lead follow-up tasks","Mark Done","onMoreNotes={p.onMoreNotes}"]],
  ["frontend/test/p4-r65-ci-followup-workspace.test.ts",
   ["renderToStaticMarkup","20+5","organization switching",
    "denied task read"]],
