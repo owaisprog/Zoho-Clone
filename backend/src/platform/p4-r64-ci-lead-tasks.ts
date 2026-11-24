@@ -19,7 +19,7 @@ const validDate=(v:unknown):v is string=>typeof v==="string"&&
 const deny=(status:400|401|403|409|503,code:P4R28Denied["code"]):never=>{
  throw new P4R28Denied(status,code);
 };
-function project(r:Record<string,unknown>):P4R64Task{
+export function project(r:Record<string,unknown>):P4R64Task{
  const done=r.status==="DONE";
  if(Object.keys(r).sort().join(",")!==
   "completed_at,created_at,created_by,due_date,lead_id,revision,status,task_id,title,updated_by"||
