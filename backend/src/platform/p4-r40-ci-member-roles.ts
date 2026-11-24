@@ -12,6 +12,10 @@ const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}
 const USER=/^user_demo_[a-z]{2,16}$/;
 type Role="SALES_REP"|"SALES_MANAGER";
 type RecordRow=Readonly<{userId:string;role:Role;revision:number}>;
+export type P4R44CiDirectoryMember=Readonly<{
+ userId:string;email:string|null;role:Role;revision:number;active:boolean;
+}>;
+export type P4R44CiMemberFilter="all"|"active"|"revoked";
 export type P4R42CiHistoryEvent=Readonly<{
  actorUserId:string;targetUserId:string;beforeRole:Role;afterRole:Role;
  revision:number;occurredAt:string;
@@ -82,6 +86,39 @@ export class P4R40CiMemberRoles {
    if(new Set(entries.map(x=>x.userId)).size!==entries.length)
     return fail(503,"UNAVAILABLE");
    return Object.freeze(entries);
+  });
+ }
+ async directory(actor:P4R28Actor|null,orgId:unknown,
+  status:unknown,query:unknown):Promise<readonly P4R44CiDirectoryMember[]>{
+  if(status!=="all"&&status!=="active"&&status!=="revoked")
+   return fail(400,"INVALID_INPUT");
+  if(typeof query!=="string"||query.length>40||
+   !/^[a-zA-Z0-9._@-]*$/.test(query))
+   return fail(400,"INVALID_INPUT");
+  return this.inside(actor,orgId,async(client,org)=>{
+   const rows=await client.query(
+    "SELECT user_id,email,role_code,revision,active"+
+    " FROM p4_r44_ci.search_member_directory($1,$2,$3)",
+    [org,status,query.toLowerCase()]);
+   if(rows.rows.length>20)return fail(503,"UNAVAILABLE");
+   const result=rows.rows.map(row=>{
+    if(!USER.test(String(row.user_id))||
+     (row.email!==null&&(typeof row.email!=="string"||
+      !/^[a-z0-9._-]+@example\\.com$/.test(row.email)))||
+     (row.role_code!=="SALES_REP"&&row.role_code!=="SALES_MANAGER")||
+     !Number.isSafeInteger(row.revision)||row.revision<0||
+     row.revision>10000000||typeof row.active!=="boolean")
+     return fail(503,"UNAVAILABLE");
+    return Object.freeze({
+     userId:row.user_id as string,email:row.email as string|null,
+     role:row.role_code as Role,revision:row.revision as number,
+     active:row.active as boolean,
+    });
+   });
+   if(new Set(result.map(x=>x.userId)).size!==result.length||
+    result.some((x,i)=>i>0&&result[i-1]!.userId>=x.userId))
+    return fail(503,"UNAVAILABLE");
+   return Object.freeze(result);
   });
  }
  async history(actor:P4R28Actor|null,orgId:unknown):
