@@ -30,6 +30,8 @@ if(!model.includes("acceptSandboxInvitationAsRecipient")||
  !model.includes("getRecipientSandboxInbox")||
  !model.includes("summarizeSandboxInvitations")||
  !ui.includes("Simulate recipient acceptance")||
+ !ui.includes("Renew demo invitation")||
+ !model.includes("renewSandboxInvitation")||
  !ui.includes("This is not a login or identity check")||
  !page.includes("not a live account.")||
  !source("frontend/src/components/workspace-shell.tsx")

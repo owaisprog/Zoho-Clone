@@ -3,7 +3,7 @@
 import {useState,type FormEvent} from "react";
 import {
  INITIAL_SANDBOX,addSandboxOrganization,selectSandboxOrganization,
- addSandboxInvitation,resolveSandboxInvitation,revokeSandboxMember,
+ addSandboxInvitation,resolveSandboxInvitation,renewSandboxInvitation,revokeSandboxMember,
  displayedSandboxStatus,summarizeSandboxInvitations,
  getRecipientSandboxInbox,acceptSandboxInvitationAsRecipient,
  SandboxWorkflowError,type SandboxState,type SandboxResult,
@@ -99,6 +99,7 @@ export function P4FunctionalWorkspace(){
      </div>
      <div className="p4-invite-info">
       <strong>Members</strong>
+      <p>Accepting a fresh invitation after revocation restores the same fictional membership row rather than duplicating it.</p>
       <div className="p4-functional-records">
        {selected.members.map(m=><div className="p4-functional-record" key={m.email}>
         <span><strong>{m.email}</strong><small>{m.role} · {m.active?"Active":"Revoked"}</small></span>
@@ -120,6 +121,7 @@ export function P4FunctionalWorkspace(){
      </form>
      <div className="p4-invite-info">
       <strong>Owner invitation management</strong>
+      <p>Expired or revoked demo invitations can be renewed for seven days. This creates a new fictional invitation in the tab and never sends an email.</p>
       <div className="p4-r37-filter">
        <label htmlFor="p4-r37-status-filter">Filter by status</label>
        <select id="p4-r37-status-filter" value={filter}
@@ -145,6 +147,11 @@ export function P4FunctionalWorkspace(){
            Revoke
           </button>
          </div>}
+         {(status==="revoked"||status==="expired")&&
+          <button type="button" className="p4-button p4-r38-renew"
+           onClick={()=>run(s=>renewSandboxInvitation(s,inv.id,initialNow()))}>
+           Renew demo invitation
+          </button>}
         </div>;
        })}
       </div>

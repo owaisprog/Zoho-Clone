@@ -104,8 +104,12 @@ export function resolveSandboxInvitation(
  const status:SandboxInviteStatus=action==="revoke"?"revoked":"accepted";
  const invites=Object.freeze(org.invitations.map(i=>i.id===id?
   Object.freeze({...i,status}):i));
+ const prior=org.members.filter(m=>m.email===current.email);
+ if(action==="accept")ensure(prior.length<=1&&!prior.some(m=>m.active),"CONFLICT");
  const members=action==="accept"?
-  Object.freeze([...org.members,Object.freeze({email:current.email,role:"SALES_REP" as const,active:true})]):
+  Object.freeze(prior.length>0?org.members.map(m=>m.email===current.email?
+   Object.freeze({...m,active:true}):m):
+   [...org.members,Object.freeze({email:current.email,role:"SALES_REP" as const,active:true})]):
   org.members;
  return {state:replace(state,{...org,invitations:invites,members}),
   detail:action==="accept"?"Simulated acceptance; fictional member added.":"Revoked fictional invitation."};
@@ -120,6 +124,39 @@ export function revokeSandboxMember(state:SandboxState,email:string):SandboxResu
  return {state:replace(state,{...org,members}),
   detail:"Revoked fictional membership immediately."};
 }
+
+/**
+ * P4 R38: simulated renewal, never an actual resend, link, or email.
+ * Only the selected fictional tenant is visible. Old invitations stay
+ * terminal, and a new expiry window is represented by a new ID.
+ */
+export function renewSandboxInvitation(
+ state:SandboxState,id:string,now:number,
+):SandboxResult{
+ const org=activeOrg(state);
+ const current=org.invitations.find(i=>i.id===id);
+ ensure(current,"NOT_FOUND");
+ const createdAt=iso(now),expiresAt=iso(now+TIME_MS);
+ ensure(current.createdAt<=createdAt,"INVALID_INPUT");
+ const status=displayedSandboxStatus(current,now);
+ ensure(status==="expired"||status==="revoked","INVALID_STATE");
+ ensure(!org.members.some(m=>m.email===current.email&&m.active),"CONFLICT");
+ ensure(!org.invitations.some(i=>i.id!==id&&i.email===current.email&&
+  displayedSandboxStatus(i,now)==="pending"),"CONFLICT");
+ ensure(org.invitations.length<15,"INVALID_STATE");
+ const renewed:SandboxInvitation=Object.freeze({
+  id:"sandbox-invite-"+(state.revision+1),email:current.email,
+  role:"SALES_REP",status:"pending",createdAt,expiresAt,
+ });
+ const invitations=Object.freeze([
+  ...org.invitations.map(i=>i.id===id&&i.status==="pending"?
+   Object.freeze({...i,status:"expired" as const}):i),
+  renewed,
+ ]);
+ return {state:replace(state,{...org,invitations}),
+  detail:"Renewed fictional invitation in this tab. No email or link was sent."};
+}
+
 export function displayedSandboxStatus(i:SandboxInvitation,now:number):SandboxInviteStatus{
  return i.status==="pending"&&now>=Date.parse(i.expiresAt)?"expired":i.status;
 }

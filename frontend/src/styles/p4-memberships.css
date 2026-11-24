@@ -33,3 +33,6 @@
 .p4-r37-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}
 .p4-r37-filter label{font-weight:600;font-size:12px}
 .p4-r37-filter select{min-height:38px;border:1px solid var(--border-control);border-radius:7px;padding:7px 10px;color:var(--ink);background:var(--surface)}
+
+/* P4 R38: prominent but neutral demo-only invitation renewal control. */
+.p4-r38-renew{white-space:normal;text-align:center}
