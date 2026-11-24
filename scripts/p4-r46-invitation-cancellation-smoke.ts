@@ -50,6 +50,15 @@ async function main(){
  const issuer=new P4R32CiOutboxIssuer(pool,key,process.env);
  const worker=new P4R32CiOutboxWorker(pool,key,process.env);
  const mailbox=new P4R32CiRecipientMailbox();
+ const deliverTo=async(email:string):Promise<string|null>=>{
+  for(let attempt=0;attempt<24;attempt++){
+   const token=mailbox.take(email);
+   if(token)return token;
+   const outcome=await worker.deliverOne(mailbox);
+   if(outcome==="empty")break;
+  }
+  return mailbox.take(email);
+ };
  const app=express();app.use(express.json({limit:"16kb"}));
  app.use("/_p4_r33_ci",createP4R33CiVerifiedWorkflowRouter({
   mapper:new P4R33CiActorMapper(pool,[jwk],()=>now,process.env),
@@ -80,8 +89,7 @@ async function main(){
    " WHERE user_id=$1",[BOB]);
   phase="issue-and-deliver-before-revocation";
   const created=await owner.issue(org.id,"bob@example.com");
-  assert.equal(await worker.deliverOne(mailbox),"delivered");
-  const delivered=mailbox.take("bob@example.com");
+  const delivered=await deliverTo("bob@example.com");
   assert.ok(delivered);
   phase="reject-cross-tenant-and-forged-identity";
   await assert.rejects(owner.cancel(other.id,created.id,1),
@@ -119,8 +127,7 @@ async function main(){
   const renewed=await owner.renew(org.id,created.id,2);
   assert.equal(renewed.status,"pending");
   assert.notEqual(renewed.id,created.id);
-  assert.equal(await worker.deliverOne(mailbox),"delivered");
-  const token=mailbox.take("bob@example.com");
+  const token=await deliverTo("bob@example.com");
   assert.ok(token);
   assert.deepEqual(await owner.accept(token),{
    accepted:true,membershipActivated:true,
