@@ -1,0 +1,3 @@
+# R74 — Managed-team sales reporting
+Five slices: explicit tenant-matching deal/team assignment; manager role, current membership and team gate; filtered authorized deal counts by owner/stage/UTC date; signed API/client and React report UI; signed PostgreSQL acceptance rehearsal.
+Original case trace: AC-070 (owner/week filtered deal counts); AC-071 and PERM-T016 (no unassigned-team counts), see scripts/p4-r74-team-report-smoke.ts and exact-head CI attached to PR. These are synthetic evidence, not approval of entire FR-021/022 or formal release acceptance. Task reports, manager CRUD, team assignment UI and production integration are still missing; assignments are fixtures only. No live Auth0, Neon mutation, merge or deploy. Formal sign-off pending, P4 NO_GO.
