@@ -9,7 +9,7 @@ export class P4R60CiPageError extends Error{
   "INVALID_INPUT"|"IDENTITY_REQUIRED"|"ACCESS_DENIED"|"CONFLICT"|
   "UNAVAILABLE"|"INVALID_RESPONSE"){super(code);}
 }
-const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{12}$/;
+const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const FILTERS=new Set(["all","NEW","CONTACTED","QUALIFIED","LOST"]);
 const ERRORS:Readonly<Record<number,P4R60CiPageError["code"]>>={
  400:"INVALID_INPUT",401:"IDENTITY_REQUIRED",403:"ACCESS_DENIED",
