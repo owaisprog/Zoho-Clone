@@ -16,6 +16,10 @@ import {verifyP4R33CiToken,type P4R33CiJwk}
 import {P4R40CiMemberRoles} from "./p4-r40-ci-member-roles.js";
 import {createP4R40CiMemberRolesRouter}
  from "./p4-r40-ci-member-roles-router.js";
+import {P4R43CiMemberRevokeService}
+ from "./p4-r43-ci-member-revoke-service.js";
+import {createP4R43CiMemberRevokeRouter}
+ from "./p4-r43-ci-member-revoke-router.js";
 const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
 export class P4R33CiActorMapper{
  constructor(private readonly pool:pg.Pool,
@@ -53,6 +57,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  issuer:P4R32CiOutboxIssuer;
  acceptance:P4R30CiAcceptanceService;
  roles?:P4R40CiMemberRoles;
+ revoker?:P4R43CiMemberRevokeService;
 },env:NodeJS.ProcessEnv=process.env):Router{
  assertP4V1CiPrismaEnvironment(env);
  if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
@@ -64,6 +69,9 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  }));
  if(deps.roles)router.use("/owner",createP4R40CiMemberRolesRouter({
   service:deps.roles,resolveVerifiedActor:resolve,
+ },env));
+ if(deps.revoker)router.use("/owner",createP4R43CiMemberRevokeRouter({
+  service:deps.revoker,resolveVerifiedActor:resolve,
  },env));
  router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
   service:deps.acceptance,resolveVerifiedActor:resolve,
