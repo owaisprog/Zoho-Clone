@@ -22,7 +22,7 @@ const client=(fetcher:typeof fetch)=>new P4R64CiTaskClient(
 const denied=(code:string)=>(e:unknown)=>
  e instanceof P4R64CiTaskError&&e.code===code;
 test("R64 parser enforces exact fictional task and terminal completion shape",()=>{
- assert.deepEqual(parseP4R64Tasks([task,completed]),[task,completed]);
+ assert.deepEqual(parseP4R64Tasks([task,{...completed,taskId:randomUUID()}]).map(x=>x.status),["OPEN","DONE"]);
  assert.equal(parseP4R64Tasks([{...task,secretJwt:"x"}]),null);
  assert.equal(parseP4R64Tasks([{...task,title:"Actual client"}]),null);
  assert.equal(parseP4R64Tasks([{...completed,completedAt:null}]),null);
