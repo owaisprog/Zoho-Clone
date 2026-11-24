@@ -10,7 +10,7 @@ const files=[
  ["backend/src/platform/p4-r57-ci-crm-leads.ts",
  ["BEGIN ISOLATION LEVEL REPEATABLE READ","SET LOCAL ROLE p4_synthetic_ci_runtime",
   "p4_r57_ci.create_lead","p4_r57_ci.list_leads",
-  "response.rows.length"]],
+  "rows.rows.length"]],
  ["backend/src/platform/p4-r57-ci-crm-leads-router.ts",
  ['"/:orgId/leads"',"resolveVerifiedActor(req)",
   "no-store, private"]],
