@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import {test} from "node:test";
+import {randomUUID} from "node:crypto";
 import {P4R60CiCrmLeadPageClient,P4R60CiPageError}
  from "../src/lib/p4-r60-ci-crm-lead-page-client";
 import {P4R60CiCrmLeadPageController}
  from "../src/lib/p4-r60-ci-crm-lead-page-controller";
 const ENV:NodeJS.ProcessEnv={CI:"true",GITHUB_ACTIONS:"true",NODE_ENV:"test"};
-const ORG="10000000-0000-4000-8000-000000000001";
+const ORG=randomUUID();
 const record=(i:number)=>({leadId:"10000000-0000-4000-8000-"+
  String(i).padStart(12,"0"),companyName:"Demo Lead Number "+i,
  contactEmail:"lead"+i+"@example.com",source:"WEBSITE" as const,
