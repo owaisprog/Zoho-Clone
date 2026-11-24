@@ -54,6 +54,8 @@ import {P4R61CiLeadNotes} from "./p4-r61-ci-lead-notes.js";
 import {createP4R61CiLeadNotesRouter} from "./p4-r61-ci-lead-notes-router.js";
 import {P4R63CiNotePager} from "./p4-r63-ci-note-pager.js";
 import {createP4R63CiNotePagerRouter} from "./p4-r63-ci-note-pager-router.js";
+import {P4R64CiLeadTasks} from "./p4-r64-ci-lead-tasks.js";
+import {createP4R64CiLeadTasksRouter} from "./p4-r64-ci-lead-tasks-router.js";
 const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
 export class P4R33CiActorMapper{
  constructor(private readonly pool:pg.Pool,
@@ -106,6 +108,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  crmLeadPages?:P4R60CiCrmLeadPager;
  crmLeadNotes?:P4R61CiLeadNotes;
  crmNotePages?:P4R63CiNotePager;
+ crmLeadTasks?:P4R64CiLeadTasks;
 },env:NodeJS.ProcessEnv=process.env):Router{
  assertP4V1CiPrismaEnvironment(env);
  if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
@@ -163,6 +166,9 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  },env));
  if(deps.crmNotePages)router.use("/owner",createP4R63CiNotePagerRouter({
   pager:deps.crmNotePages,resolveVerifiedActor:resolve,
+ },env));
+ if(deps.crmLeadTasks)router.use("/owner",createP4R64CiLeadTasksRouter({
+  service:deps.crmLeadTasks,resolveVerifiedActor:resolve,
  },env));
  router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
   service:deps.acceptance,resolveVerifiedActor:resolve,
