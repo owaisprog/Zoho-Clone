@@ -12,6 +12,7 @@ import type {P4R62CiCrmWorkspaceController,P4R62CiCrmView}
 import type {P4R60LeadFilter} from "../lib/p4-r60-ci-crm-lead-page-client";
 import type {P4R57NewLead} from "../lib/p4-r57-ci-crm-lead-client";
 import type {P4R58Status} from "../lib/p4-r58-ci-crm-lead-stage-client";
+import type {P4R61LeadNote} from "../lib/p4-r61-ci-lead-notes-client";
 export type P4R62CiCrmPanelProps=Readonly<{
  view:P4R62CiCrmView;
  onOrg:(org:string)=>void;onRefresh:()=>void;
@@ -19,6 +20,8 @@ export type P4R62CiCrmPanelProps=Readonly<{
  onSelect:(id:string)=>void;onFilter:(filter:P4R60LeadFilter)=>void;
  onStage:(stage:P4R58Status)=>void;
  onSearch:(value:string)=>void;onMore:()=>void;onAddNote:(value:string)=>void;
+ notePage?:Readonly<{items:readonly P4R61LeadNote[];nextCursor:string|null}>;
+ onMoreNotes?:()=>void;
 }>;
 const button="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50";
 export function P4R62CiCrmWorkspacePanel(p:P4R62CiCrmPanelProps){
@@ -27,6 +30,7 @@ export function P4R62CiCrmWorkspacePanel(p:P4R62CiCrmPanelProps){
  const [note,setNote]=useState("");
  useEffect(()=>{setQuery(v.search);setNote("");},[v.orgId]);
  const selected=v.leads.find(x=>x.leadId===v.selectedLeadId);
+ const displayedNotes=p.notePage?.items??v.notes;
  const submit=(event:FormEvent<HTMLFormElement>)=>{
   event.preventDefault();
   if(!ready||!selected)return;
@@ -92,7 +96,7 @@ export function P4R62CiCrmWorkspacePanel(p:P4R62CiCrmPanelProps){
        </form>
        <ul aria-label="Persisted immutable lead notes"
         className="mt-4 divide-y divide-slate-200">
-        {v.notes.map(item=>(
+        {displayedNotes.map(item=>(
          <li key={item.noteId} className="space-y-1 py-3">
           <p className="text-sm font-medium">{item.noteText}</p>
           <p className="text-xs text-slate-600">{item.actorUserId}</p>
@@ -101,10 +105,13 @@ export function P4R62CiCrmWorkspacePanel(p:P4R62CiCrmPanelProps){
          </li>
         ))}
        </ul>
-       {v.notes.length===0&&<p className="text-sm text-slate-500">
+       {displayedNotes.length===0&&<p className="text-sm text-slate-500">
         No follow-up notes recorded for this fictional lead.</p>}
+       {p.onMoreNotes&&<button type="button" className={button}
+        disabled={!ready||!p.notePage?.nextCursor}
+        onClick={p.onMoreNotes}>Load more notes</button>}
        <p className="mt-3 text-xs text-slate-500">
-        Notes cannot be edited or deleted; lists above 20 fail closed.
+        Notes cannot be edited or deleted. More notes are available in signed pages.
        </p>
       </>
      ):<p className="mt-2 text-sm text-slate-500">
