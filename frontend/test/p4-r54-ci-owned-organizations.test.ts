@@ -15,12 +15,12 @@ const client=(fn:typeof fetch)=>new P4R54CiOwnedOrganizationsClient(
  "http://127.0.0.1:5554/",async()=>"abc.def.ghi",fn,ENV);
 const err=(status:number,code:string)=>(e:unknown)=>
  e instanceof P4R54CiOrganizationError&&e.status===status&&e.code===code;
-test("R54 strict owner org list is stable, frozen and limited to 20",()=>{
+test("R54 strict owner org list is stable, frozen and limited to 200",()=>{
  const orgs=parseP4R54OwnedOrganizations([A,B]);
  assert.deepEqual(orgs,[A,B]);assert.ok(Object.isFrozen(orgs));
  for(const data of [[B,A],[A,A],[{...A,token_hash:"x"}],
   [{...A,ownerRole:"MEMBER"}],[{...A,name:"secret customer"}],
-  Array.from({length:21},()=>A)]){
+  Array.from({length:201},()=>A)]){
   assert.equal(parseP4R54OwnedOrganizations(data),null);
  }
 });
