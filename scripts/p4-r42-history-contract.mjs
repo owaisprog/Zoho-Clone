@@ -16,7 +16,7 @@ for(const [source,parts] of [
  [route,['"/:orgId/role-history"',"resolveVerifiedActor(req)"]],
  [client,["async history(","parseP4R42HistoryPage","this.call("]],
  [parser,["Object.keys(x).sort()","Number.isSafeInteger","Object.freeze"]],
- [smoke,["fresh owner and tenant isolation PASS","read-only","role_events"]],
+ [smoke,["fresh owner and tenant isolation PASS","/_p4_r33_ci","role_events"]],
  ]){
  for(const part of parts)if(!source.includes(part))
   throw Error("P4_R42_HISTORY_SOURCE_CONTRACT_DRIFT");
