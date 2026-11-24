@@ -79,7 +79,7 @@ async function main(){
   assert.ok(rls.rows.every(r=>r.relrowsecurity&&r.relforcerowsecurity));
   phase="owner-read-and-tenant";
   const initial=await request(app).get(route()).set(aliceAuth);
-  assert.equal(initial.status,200);
+  assert.equal(initial.status,200,"R40_OWNER_READ_"+initial.status+"_"+String(initial.body?.error?.code??"UNKNOWN"));
   assert.equal(initial.headers["cache-control"],"no-store, private");
   assert.deepEqual(initial.body.data,[{userId:BOB,role:"SALES_REP",revision:0}]);
   const other=await request(app).get(route(O2)).set(aliceAuth);
