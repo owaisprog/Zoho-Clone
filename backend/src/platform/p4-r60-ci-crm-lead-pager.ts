@@ -10,7 +10,7 @@ type Cursor=Readonly<{org:string;filter:Filter;search:string;
  time:string;id:string;exp:number}>;
 export type P4R60Page=Readonly<{items:readonly P4R57Lead[];
  nextCursor:string|null}>;
-const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{12}$/;
+const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const USER=/^user_demo_[a-z]{2,16}$/;
 const TIME=/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{6}Z$/;
 const FILTERS=new Set(["all","NEW","CONTACTED","QUALIFIED","LOST"]);
