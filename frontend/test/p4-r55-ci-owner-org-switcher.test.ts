@@ -23,7 +23,7 @@ const member=(name:string)=>({userId:name,email:null,
 const deps=()=>({
  summary:{summary:async(org:string)=>metrics(org===A?1:2)},
  members:{page:async(org:string)=>({
-  items:[member(org===A?"user_demo_alice":"user_demo_bob")],nextCursor:null,
+  items:[member(org===A?"user_demo_carla":"user_demo_bob")],nextCursor:null,
  })},
  invitations:{page:async()=>({items:[],nextCursor:null})},
  activity:{page:async()=>({items:[],nextCursor:null})},
@@ -38,7 +38,7 @@ test("R55 initial discovery picks owner organization and renders only scoped rec
  let state=await m.discover();
  assert.equal(state.phase,"ready");assert.equal(state.selectedId,A);
  assert.equal(state.workspace.counts?.activeMembers,1);
- assert.deepEqual(state.workspace.members.map(x=>x.userId),["user_demo_alice"]);
+ assert.deepEqual(state.workspace.members.map(x=>x.userId),["user_demo_carla"]);
  state=await m.select(B);
  assert.equal(state.phase,"ready");assert.equal(state.selectedId,B);
  assert.equal(state.workspace.counts?.activeMembers,2);
@@ -82,19 +82,19 @@ test("R55 pending write blocks tenant switch and never executes wrong-org action
  let resolve:(value:unknown)=>void=()=>{};
  const pending=new Promise<unknown>(r=>resolve=r);
  let called="";
- const app=deps();
+ const app:any=deps();
  app.roles.revoke=async(org:string,user:string)=>{
   called=org+":"+user;await pending;return {revoked:true};
  };
  const m=new P4R55CiOwnerOrgSwitcher({list:async()=>ORGS},
   new P4R53CiOwnerWorkspaceController(app as never));
  await m.discover(A);
- const writing=m.revokeMember("user_demo_alice");
+ const writing=m.revokeMember("user_demo_carla");
  assert.equal(m.snapshot().phase,"loading");
  assert.equal((await m.select(B)).phase,"loading");
  resolve(null);
  assert.equal((await writing).selectedId,A);
- assert.equal(called,A+":user_demo_alice");
+ assert.equal(called,A+":user_demo_carla");
 });
 test("R55 SSR shows actual owner organization selector and full owner UI",async()=>{
  const m=model();
