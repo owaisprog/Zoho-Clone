@@ -607,6 +607,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r67-followup-task-pages-smoke.ts
 
+      - name: Install R68 owner-only cross-lead due queue in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/045_p4_r68_ci_crm_due_work_queue.sql
+
+      - name: Verify R68 signed 25 due tasks, audited completion and real React work queue
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r68-due-queue-fullstack-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
