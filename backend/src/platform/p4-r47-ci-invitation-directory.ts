@@ -24,13 +24,13 @@ function safe(row:Record<string,unknown>):P4R29Invite{
   !Number.isFinite(row.issued_at.getTime())||
   !Number.isFinite(row.expires_at.getTime())||
   row.expires_at.getTime()<=row.issued_at.getTime()||
-  !Number.isSafeInteger(row.version)||row.version<1)
+  !Number.isSafeInteger(row.version)||(row.version as number)<1)
   return fail(503,"UNAVAILABLE");
  return Object.freeze({id:row.id,organizationId:row.org_id,
   recipientEmail:row.recipient_email,role:"MEMBER",
   status:row.status as P4R29Invite["status"],
   issuedAt:row.issued_at.toISOString(),expiresAt:row.expires_at.toISOString(),
-  version:row.version});
+  version:row.version as number});
 }
 export class P4R47CiInvitationDirectory{
  constructor(private readonly pool:pg.Pool,
