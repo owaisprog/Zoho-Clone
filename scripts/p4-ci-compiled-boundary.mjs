@@ -47,6 +47,8 @@ export function inspectP4R19CompiledGraph(
  }
  walk(resolve(OUT,"app.js"));
  walk(resolve(OUT,"server.js"));
+ const vercel=resolve(OUT,"index.js");
+ if(exists(vercel))walk(vercel);
  return Object.freeze({status:"P4_PRODUCTION_BUILD_BOUNDARY_PASS",modules:visited.size});
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
