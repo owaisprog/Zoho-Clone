@@ -147,6 +147,9 @@ jobs:
       - name: Validate P4 formal release evidence without approving production
         run: node scripts/p4-release-gate-evidence.mjs
 
+      - name: Reconcile R90 original acceptance inventory and historical CI references
+        run: node scripts/p4-r90-acceptance-review.mjs
+
       - name: Validate original P1.09 inventory and P4 partial evidence links without claiming acceptance
         run: node scripts/p4-acceptance-traceability.mjs
 
