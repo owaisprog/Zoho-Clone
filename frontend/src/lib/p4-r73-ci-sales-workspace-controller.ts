@@ -1,6 +1,6 @@
 /** R73 workspace controller: a verified selected organization is required before displaying any module. */
 import type {P4R73CiSalesWorkspaceClient,P4R73SalesOrganization,SalesOverview} from "./p4-r73-ci-sales-workspace-client";
-export const SALES_TABS=["Overview","Leads","Accounts","Contacts","Deals"] as const;
+export const SALES_TABS=["Overview","Leads","Accounts","Contacts","Deals","Tasks","Sharing","Search"] as const;
 export type SalesTab=typeof SALES_TABS[number];
 export type WorkspaceView=Readonly<{phase:"idle"|"loading"|"ready"|"denied";organizations:readonly P4R73SalesOrganization[];orgId:string|null;overview:SalesOverview|null;tab:SalesTab;message:string}>;
 const EMPTY:WorkspaceView=Object.freeze({phase:"idle",organizations:[],orgId:null,overview:null,tab:"Overview",message:"Select a sales workspace"});
