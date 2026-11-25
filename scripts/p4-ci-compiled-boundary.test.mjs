@@ -47,3 +47,7 @@ test("compiled server importing CI helper is blocked",()=>{
   'import "./platform/p4-r15-ci-audit-test-router.js";'),
   /P4_PRODUCTION_BUILD_BOUNDARY_DENIED/);
 });
+
+test("compiled Vercel index cannot import CI modules",()=>{
+ assert.throws(()=>fake("","",{"index.js":'import "./platform/p4-r84-ci-runtime.js";'}),/P4_PRODUCTION_BUILD_BOUNDARY_DENIED/);
+});
