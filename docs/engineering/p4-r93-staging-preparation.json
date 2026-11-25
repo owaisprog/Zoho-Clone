@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "scope": "PREPARATION_ONLY",
+  "data": "SYNTHETIC_ONLY",
+  "provision": false,
+  "deploy": false,
+  "migrate": false,
+  "merge": false,
+  "host": null,
+  "region": null,
+  "monthlyCostCap": null,
+  "environmentApproved": false,
+  "services": [
+    "web",
+    "api",
+    "worker",
+    "postgres",
+    "redis",
+    "identity",
+    "storage",
+    "scanner"
+  ],
+  "controls": [
+    "private-ingress",
+    "separate-identities",
+    "restricted-database",
+    "outbound-deny",
+    "pinned-artifacts",
+    "rollback",
+    "redacted-logs"
+  ],
+  "publicIngress": false,
+  "liveCredentials": false,
+  "externalSideEffects": false,
+  "releaseAuthorized": false
+}
