@@ -1,0 +1,256 @@
+{
+  "version": 1,
+  "reviewDate": "2026-11-25",
+  "phase": "P4",
+  "plannedBatchMilestone": 92,
+  "scope": "OWNER_REVIEW_ONLY",
+  "decision": "NO_GO",
+  "p4ExitApproved": false,
+  "p5ReleaseAuthorized": false,
+  "stagingDeploymentAuthorized": false,
+  "productionAuthorized": false,
+  "originalCases": {
+    "total": 727,
+    "formalExecuted": 0,
+    "p4FeatureLinked": 108,
+    "p4PartialReferences": 43,
+    "p4Unmapped": 65
+  },
+  "checkpoints": [
+    {
+      "batch": 87,
+      "pr": 137,
+      "sha": "19764d3cedae0bb8971616aece9346242ed393e8",
+      "run": 45591715527,
+      "verifiedJobs": 4,
+      "scope": "DISPOSABLE_CI_ENGINEERING",
+      "formalAccepted": false
+    },
+    {
+      "batch": 88,
+      "pr": 138,
+      "sha": "1aa05c5abc8f11347f01c91a864f878d5eb211a0",
+      "run": 45592541073,
+      "verifiedJobs": 4,
+      "scope": "DISPOSABLE_CI_ENGINEERING",
+      "formalAccepted": false
+    },
+    {
+      "batch": 89,
+      "pr": 139,
+      "sha": "1f1c68fcd9e6114aea6fe17dd58efce44c31c93c",
+      "run": 45594030334,
+      "verifiedJobs": 4,
+      "scope": "DISPOSABLE_CI_ENGINEERING",
+      "formalAccepted": false
+    },
+    {
+      "batch": 90,
+      "pr": 140,
+      "sha": "e49cddbeb74bf00113ec4105b49e4fa724f4abcc",
+      "run": 45595414104,
+      "verifiedJobs": 4,
+      "scope": "DISPOSABLE_CI_ENGINEERING",
+      "formalAccepted": false
+    },
+    {
+      "batch": 91,
+      "pr": 141,
+      "sha": "f279ec17c68d3b5c81aaccd4a2784abcda463ce9",
+      "run": 45595950889,
+      "verifiedJobs": 4,
+      "scope": "DISPOSABLE_CI_ENGINEERING",
+      "formalAccepted": false
+    }
+  ],
+  "gateReview": [
+    {
+      "id": "P4-IDENTITY",
+      "status": "OPEN",
+      "engineeringEvidence": "R81 provider boundary, R82 mapping, R89 browser fixture",
+      "remaining": "Separate staging Auth0 tenant, exact issuer/audience, MFA, signed login and logout/revocation acceptance",
+      "ownerPackage": "identity",
+      "accepted": false
+    },
+    {
+      "id": "P4-TENANT-RLS",
+      "status": "OPEN",
+      "engineeringEvidence": "R82 UUID schema, R84 restricted API, R88 revocation, R91 restore",
+      "remaining": "Reviewed complete migration set and separate restricted staging runtime, two-tenant RLS proof",
+      "ownerPackage": "database",
+      "accepted": false
+    },
+    {
+      "id": "P4-WRITES",
+      "status": "OPEN",
+      "engineeringEvidence": "R10 synthetic role/team change and later isolated write candidates",
+      "remaining": "Explicit R10-C1–C5 policy approval, owner-transfer design, reviewed writer grants and real endpoint acceptance",
+      "ownerPackage": "writes",
+      "accepted": false
+    },
+    {
+      "id": "P4-STORAGE",
+      "status": "OPEN",
+      "engineeringEvidence": "R85 fictional quarantine/scan, R88 grant epoch, R89 browser",
+      "remaining": "Private provider and scanner selection, retention and secure signed grants, real approved staging file lifecycle",
+      "ownerPackage": "storage",
+      "accepted": false
+    },
+    {
+      "id": "P4-AUDIT",
+      "status": "OPEN",
+      "engineeringEvidence": "R84 immutable fixture audit, R88–R91 security and recovery",
+      "remaining": "Production audit writer, coverage of all mutations, retention and reviewed redaction/immutability",
+      "ownerPackage": "operations",
+      "accepted": false
+    },
+    {
+      "id": "P4-STAGING",
+      "status": "OPEN",
+      "engineeringEvidence": "R83/R91 disposable restores, R89 browser",
+      "remaining": "Approved isolated staging, private canary, P2/P3 signoff, real rollback, recovery objectives",
+      "ownerPackage": "staging-topology",
+      "accepted": false
+    },
+    {
+      "id": "P4-ORIGINAL-ACCEPTANCE",
+      "status": "OPEN",
+      "engineeringEvidence": "R90 reviewed frozen original inventory",
+      "remaining": "Execute prioritized original cases in their authorized release environments with exact evidence and owner review; later feature cases cannot be run before implementation",
+      "ownerPackage": "formal-acceptance",
+      "accepted": false
+    },
+    {
+      "id": "P4-RISK-DECISIONS",
+      "status": "OPEN",
+      "engineeringEvidence": "R90 traceability, ADR 0007 and related design approvals",
+      "remaining": "Review all 14 original risks and 12 decisions; record explicit dispositions without overwriting history",
+      "ownerPackage": "formal-acceptance",
+      "accepted": false
+    },
+    {
+      "id": "P4-OWNER-EXIT",
+      "status": "OPEN",
+      "engineeringEvidence": "Batches through R91 verified in draft PRs",
+      "remaining": "Independent evidence review and explicit owner exit approval only after required gates are satisfied",
+      "ownerPackage": "formal-acceptance",
+      "accepted": false
+    },
+    {
+      "id": "P4-PRODUCTION-RELEASE",
+      "status": "OPEN",
+      "engineeringEvidence": "No production changes",
+      "remaining": "Separate production authorization, data/legal/provider/operational reviews; not implied by P4 design approval",
+      "ownerPackage": "production",
+      "accepted": false
+    }
+  ],
+  "ownerPackages": [
+    {
+      "id": "staging-topology",
+      "state": "OPEN",
+      "action": "Choose isolated staging host, region and monthly cost cap; authorize preparation first, resource creation and deployment separately."
+    },
+    {
+      "id": "identity",
+      "state": "OPEN",
+      "action": "Approve staging Auth0 tenant/client/API, issuer/audience, test identities, MFA, session/CSRF and revocation policy."
+    },
+    {
+      "id": "database",
+      "state": "OPEN",
+      "action": "Approve separate synthetic staging database, reviewed migration set, restricted logins, no CI bootstrap credentials, backup and reconciliation procedure."
+    },
+    {
+      "id": "writes",
+      "state": "OPEN",
+      "action": "Review R10-C1–C5; explicitly decide owner/admin delegation, last-owner transfer and audit/write permissions; approval is design-only unless separately authorized."
+    },
+    {
+      "id": "storage",
+      "state": "OPEN",
+      "action": "Select private object storage and malware scanner, region, encryption, limits, retention, deletion and signed-grant policy."
+    },
+    {
+      "id": "operations",
+      "state": "OPEN",
+      "action": "Approve private ingress, GitHub environment, secrets, artifact pinning, alerting/audit retention and recovery objectives."
+    },
+    {
+      "id": "formal-acceptance",
+      "state": "OPEN",
+      "action": "Approve original-case execution schedule, reviewer and evidence rules, review all risks/decisions, obtain P2/P3/P4 signoff when eligible."
+    },
+    {
+      "id": "production",
+      "state": "OPEN",
+      "action": "Keep separate; no production credentials, customer data, main merge, or external release authorization."
+    }
+  ],
+  "p5": [
+    {
+      "id": "FT-008",
+      "feature": "Lead CRUD and search",
+      "engineeringEvidence": "R72, R77",
+      "remaining": "Lead edit/source/owner changes, assigned-team scope and production migration",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-009",
+      "feature": "Contact and account CRUD",
+      "engineeringEvidence": "R69–R70",
+      "remaining": "Approved fields, complete editable lifecycle, tenant API contracts",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-010",
+      "feature": "Duplicate candidate warnings",
+      "engineeringEvidence": "R69–R70",
+      "remaining": "Candidate review and approved matching algorithm; no silent merges",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-011",
+      "feature": "Deal and pipeline management",
+      "engineeringEvidence": "R71, R74, R78",
+      "remaining": "Configurable pipeline, shared-edit rules, optional agent relation",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-012",
+      "feature": "Activities and assigned tasks",
+      "engineeringEvidence": "R75, R78–R79",
+      "remaining": "Broader parent assignment, revoked-assignee recovery and complete CRUD",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-013",
+      "feature": "Scoped sales pipeline reports",
+      "engineeringEvidence": "R74, R79–R80",
+      "remaining": "Production reconciliation, broader sharing and reporting semantics",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-016",
+      "feature": "Accessible and responsive CRM UI",
+      "engineeringEvidence": "R73, R77, R80, R89",
+      "remaining": "Live Next.js routes and full CRM browser/keyboard/accessibility tests",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    },
+    {
+      "id": "FT-017",
+      "feature": "Idempotent UX and concurrency",
+      "engineeringEvidence": "R72, R78",
+      "remaining": "Full operation coverage, error/replay semantics and formal acceptance",
+      "status": "PARTIAL_ENGINEERING_EVIDENCE",
+      "releaseAuthorized": false
+    }
+  ]
+}
