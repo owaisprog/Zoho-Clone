@@ -1,0 +1,56 @@
+import assert from "node:assert/strict";
+import {createHash,generateKeyPairSync,sign} from "node:crypto";
+import express from "express";
+import pg from "pg";
+import {createServer} from "node:http";
+import type {AddressInfo} from "node:net";
+import {CI_ISSUER,CI_AUDIENCE,type P4R33CiJwk} from "../backend/src/platform/p4-r33-ci-jwt-verifier.js";
+import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
+import {P4R84CiRuntime} from "../backend/src/platform/p4-r84-ci-runtime.js";
+import {P4R87CiOutbox,P4R87CiQueue} from "../backend/src/platform/p4-r87-ci-queue.js";
+import {createP4R86CiInboxRouter,P4R86CiNotificationWorker} from "../backend/src/platform/p4-r86-ci-notifications.js";
+import {createP4R85CiFilesRouter} from "../backend/src/platform/p4-r85-ci-files.js";
+import {createP4R84CiPlatformRouter} from "../backend/src/platform/p4-r84-ci-platform.js";
+const a="84000000-0000-4000-8000-000000000001",b="84000000-0000-4000-8000-000000000002",owner="84000000-0000-4000-8000-000000000003",rep="84000000-0000-4000-8000-000000000004",outsider="84000000-0000-4000-8000-000000000005";
+const conn={host:"127.0.0.1",port:5432,database:"zoho_clone_synthetic_ci",password:"fake_ci_not_for_real_accounts"};
+async function main(){
+ assertP4V1CiPrismaEnvironment(process.env);
+ const admin=new pg.Pool({...conn,user:"demo_ci"}),db=new P4R84CiRuntime();
+ const outbox=new P4R87CiOutbox();let queue:P4R87CiQueue|undefined;
+ const scanner=new pg.Pool({...conn,user:"p4_r85_ci_scanner"});
+ const pair=generateKeyPairSync("rsa",{modulusLength:2048});
+ const jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-r87",alg:"RS256",use:"sig"} as P4R33CiJwk;
+ const jwt=(sub:string)=>{const now=Math.floor(Date.now()/1000),enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");const msg=enc({typ:"JWT",alg:"RS256",kid:jwk.kid})+"."+enc({iss:CI_ISSUER,aud:CI_AUDIENCE,sub,iat:now-5,exp:now+300,email_verified:true,roles:["OWNER"]});return msg+"."+sign("RSA-SHA256",Buffer.from(msg),pair.privateKey).toString("base64url");};
+ const app=express();app.use(express.json({limit:"1kb"}));app.use("/inbox",createP4R86CiInboxRouter(db,[jwk]));app.use("/files",createP4R85CiFilesRouter(db,[jwk]));app.use("/platform",createP4R84CiPlatformRouter(db,[jwk]));const server=createServer(app);await new Promise<void>(r=>server.listen(0,"127.0.0.1",r));
+ const base="http://127.0.0.1:"+(server.address() as AddressInfo).port;
+ const get=async(org:string,path:string,sub:string,status=200)=>{const r=await fetch(base+"/platform/"+org+"/"+path,{headers:{Authorization:"Bearer "+jwt(sub),"x-role":"OWNER"}});assert.equal(r.status,status);assert.equal(r.headers.get("cache-control"),"no-store, private");return (await r.json()).data;};
+ const parent="87000000-0000-4000-8000-000000000001";
+ const call=async(org:string,path:string,sub:string,method:string,body:unknown,status=200)=>{const r=await fetch(base+"/files/"+org+"/"+path,{method,headers:{Authorization:"Bearer "+jwt(sub),"Content-Type":"application/json"},...(body===undefined?{}:{body:JSON.stringify(body)})});assert.equal(r.status,status);assert.equal(r.headers.get("cache-control"),"no-store, private");return r.headers.get("content-type")?.startsWith("text/plain")?await r.text():(await r.json()).data;};
+ const actor="auth0|r84-rep",other="auth0|r84-outsider",root="auth0|r84-owner";
+ const inbox=async(org:string,sub:string,id?:string,status=200)=>{const r=await fetch(base+"/inbox/"+org+"/notices"+(id?"/"+id+"/read":""),{method:id?"POST":"GET",headers:{Authorization:"Bearer "+jwt(sub),"Content-Type":"application/json"},...(id?{body:"{}"}:{})});assert.equal(r.status,status);return (await r.json()).data;};
+ const scan=async(id:string)=>(await scanner.query("SELECT p4_r85_ci.scan_fixture($1,$2,0) AS state",[a,id])).rows[0].state;
+ const waitStatus=async(id:string,status:string)=>{const stop=Date.now()+12000;while(Date.now()<stop){const row=(await admin.query("SELECT status FROM p4_r86_ci.outbox WHERE file_id=$1",[id])).rows[0];if(row?.status===status)return;await new Promise(r=>setTimeout(r,100));}throw Error("R87_STATUS_TIMEOUT");};
+ try{
+  await admin.query("INSERT INTO p4_r85_ci.attachment_parents VALUES($1,$2,$3,true)",[a,parent,rep]);
+  const path="parents/"+parent+"/files";
+  const file=await call(a,path,actor,"POST",{content:"Demo attachment queue"});await scan(file.id);
+  const pending=await outbox.due();assert.equal(pending.length,1);assert.equal(pending[0]?.organizationId,a);
+  assert.equal((await inbox(a,actor)).items.some((n:{fileId:string})=>n.fileId===file.id),false);
+  queue=new P4R87CiQueue(outbox);await queue.ready();await Promise.all([queue.dispatch(),queue.dispatch()]);
+  await waitStatus(file.id,"delivered");
+  assert.equal((await inbox(a,actor)).items.filter((n:{fileId:string})=>n.fileId===file.id).length,1);
+  assert.equal(await outbox.deliver(pending[0]!),"empty");
+  assert.equal(await outbox.deliver({...pending[0]!,organizationId:b}),"empty");
+  const revoke=await call(a,path,actor,"POST",{content:"Demo attachment revoked queue"});await scan(revoke.id);
+  await admin.query("UPDATE p4_r82_ci.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  await queue.dispatch();await waitStatus(revoke.id,"cancelled");
+  await admin.query("UPDATE p4_r82_ci.memberships SET active=true WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  const recover=await call(a,path,actor,"POST",{content:"Demo attachment redis recovery"});await scan(recover.id);
+  await queue.close();queue=undefined;assert.equal((await outbox.due()).length,1);
+  queue=new P4R87CiQueue(outbox);await queue.ready();await queue.dispatch();await waitStatus(recover.id,"delivered");
+  assert.equal((await inbox(a,actor)).items.filter((n:{fileId:string})=>n.fileId===recover.id).length,1);
+  await assert.rejects(db.run("READ ONLY",c=>c.query("SELECT * FROM p4_r87_ci.due_jobs()")));
+  console.log("R87 real Redis/BullMQ queue, duplicate wakeups, stale/foreign job denial, cancellation and interrupted dispatcher recovery PASS; NO_GO");
+ }finally{await queue?.close();await new Promise<void>(r=>server.close(()=>r()));await Promise.all([db.close(),admin.end(),scanner.end(),outbox.close()]);}
+}
+main().catch(e=>{console.error("R87 smoke failed",e instanceof Error?e.name:"unknown");process.exitCode=1;});

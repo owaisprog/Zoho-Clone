@@ -26,7 +26,8 @@
     "helmet": "^8.1.0",
     "@prisma/adapter-pg": "7.9.1",
     "@prisma/client": "7.9.1",
-    "pg": "8.16.3"
+    "pg": "8.16.3",
+    "bullmq": "5.81.6"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

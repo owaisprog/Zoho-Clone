@@ -177,6 +177,15 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
     env:
       PGHOST: 127.0.0.1
       PGPORT: '5432'
@@ -771,6 +780,16 @@ jobs:
           CI: 'true'
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r86-notifications-smoke.ts
+
+      - name: Install R87 exact outbox job wakeup functions
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/062_p4_r87_ci_queue.sql
+
+      - name: Verify R87 real Redis and BullMQ wakeups against durable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+          P4_R87_REDIS_CI: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r87-queue-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
