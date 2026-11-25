@@ -45,10 +45,11 @@ async function main(){
   const context=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:800}});
   await context.route("**/*",route=>{const u=new URL(route.request().url());return u.origin===base?route.continue():route.abort();});
   await context.addInitScript((fixture)=>{(window as unknown as {__r89:unknown}).__r89=fixture;},{a,b,parent,rep:jwt("auth0|r89-rep"),owner:jwt("auth0|r89-owner"),outside:jwt("auth0|r89-outside")});
-  const page=await context.newPage();page.setDefaultTimeout(10000);let errors=0;page.on("pageerror",()=>{errors++;});
-  stage="initial-workspace";await page.goto(base);await page.getByText("Workspace authorized",{exact:true}).waitFor();
+  const page=await context.newPage();page.setDefaultTimeout(10000);let errors=0;page.on("pageerror",e=>{errors++;console.error("R89 page error type="+e.name+" category="+(/Illegal invocation/.test(e.message)?"FETCH_CONTEXT":/BROWSER_FIXTURE_REQUIRED/.test(e.message)?"FIXTURE":/process is not defined/.test(e.message)?"BUNDLE_ENV":/WORKSPACE_UNAVAILABLE/.test(e.message)?"WORKSPACE_GUARD":/NOTICE_REQUEST_FAILED/.test(e.message)?"NOTICE_GUARD":"OTHER"));});
+  page.on("response",r=>{const path=new URL(r.url()).pathname;const kind=path.startsWith("/platform/")?"platform":path.startsWith("/files/")?"files":path.startsWith("/inbox/")?"inbox":path==="/r89.js"?"bundle":path==="/"?"document":"other";console.log("R89 response "+kind+" status="+r.status());});
+  stage="initial-navigation";await page.goto(base);await page.getByText("Workspace authorized",{exact:true}).waitFor();
   const files=page.getByRole("region",{name:"Private files"}),inbox=page.getByRole("region",{name:"Private notifications"});
-  await files.getByText("Authorized files",{exact:true}).waitFor();await inbox.getByText("Authorized notifications",{exact:true}).waitFor();
+  stage="initial-files";await files.getByText("Authorized files",{exact:true}).waitFor();stage="initial-inbox";await inbox.getByText("Authorized notifications",{exact:true}).waitFor();
   stage="upload";await files.getByLabel("Fictional attachment text").fill("Demo attachment browser");await files.getByRole("button",{name:"Upload fictional attachment"}).click();
   await files.getByText("quarantined",{exact:true}).waitFor();assert.equal(await files.getByRole("button",{name:"Download",exact:true}).count(),0);
   const result=await admin.query("SELECT id::text FROM p4_r85_ci.files WHERE organization_id=$1 AND parent_id=$2",[a,parent]);assert.equal(result.rowCount,1);const file=result.rows[0].id;
