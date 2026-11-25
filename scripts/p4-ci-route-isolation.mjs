@@ -53,6 +53,8 @@ export function inspectProductionGraph(read=readFileSync,exists=existsSync,canon
  }
  visit(resolve(sourceRoot,"app.ts"));
  visit(resolve(sourceRoot,"server.ts"));
+ const vercel=resolve(sourceRoot,"index.ts");
+ if(exists(vercel))visit(vercel);
  return Object.freeze({checked:visited.size,status:"P4_CI_ROUTE_ISOLATION_PASS"});
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
