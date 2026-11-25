@@ -1,0 +1,2 @@
+# R80 — Manager workspace and CRM gap review
+Five slices: current manager organization directory; fresh scoped navigation; integrated Work/Deal reports/Workload panels with selected record activity; signed PostgreSQL manager workflow and AC-064 validation; consolidated original R1 CRM acceptance evidence and prioritized gaps in docs/qa/r80-crm-acceptance-gap-review.md. All candidates synthetic only. Original 0/727 and ten open gates unchanged; not a P4 exit. No merge/deploy/Neon migration.
