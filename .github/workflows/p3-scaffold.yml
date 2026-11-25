@@ -670,6 +670,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r74-team-report-smoke.ts
 
+      - name: Install R75 sales tasks in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/052_p4_r75_ci_sales_tasks.sql
+
+      - name: Verify R75 signed sales tasks and activities
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r75-sales-tasks-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'

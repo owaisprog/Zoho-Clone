@@ -1,0 +1,2 @@
+# R75 — Sales tasks
+Five slices: same-tenant Lead/Account/Deal task relations; self-assigned explicit sales representative policy; create/reschedule/complete with immutable revision activity; signed typed client and React form; disposable signed PostgreSQL evidence. Narrow own-record self-assignment only; no manager reassignment, free-text notes, live route or formal release sign-off. No deployment or Neon mutation. P4 NO_GO.
