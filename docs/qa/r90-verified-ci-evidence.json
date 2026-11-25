@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "baseline": "docs/qa/test-inventory.csv",
+  "reviewedAt": "2026-11-25",
+  "decision": "NO_GO",
+  "formalExecuted": 0,
+  "ownerAccepted": false,
+  "groups": [
+    {
+      "batch": 82,
+      "pr": 132,
+      "sha": "768393604d1f8e3cbc0b607b436094a19bb646b8",
+      "run": 45583072859,
+      "script": "scripts/p4-r82-runtime-migration-smoke.ts",
+      "cases": [
+        [
+          "DOM-T001",
+          "Distinct UUID tenant fixtures; not the full original tenant inventory."
+        ],
+        [
+          "DOM-T012",
+          "Cross-tenant team membership FK denial; live team write API absent."
+        ],
+        [
+          "DOM-T013",
+          "Verified subject plus active membership lookup; no real Auth0 login."
+        ]
+      ],
+      "verifiedJobs": 4,
+      "command": "node_modules/.bin/tsx scripts/p4-r82-runtime-migration-smoke.ts",
+      "scope": "DISPOSABLE_CI_PARTIAL",
+      "fixtureVersion": "R82",
+      "formalExecuted": false,
+      "ownerAccepted": false,
+      "runUrl": "https://github.com/owaisprog/Zoho-Clone/actions/runs/45583072859"
+    },
+    {
+      "batch": 83,
+      "pr": 133,
+      "sha": "6e79c2601729e082e00fd71b3a48c00ed0ae82da",
+      "run": 45583549547,
+      "script": "scripts/p4-r83-db-restore-smoke.ts",
+      "cases": [
+        [
+          "NF-AC-018",
+          "Disposable schema restore; managed backup schedule and RPO unverified."
+        ],
+        [
+          "NF-AC-019",
+          "Database permission recovery; full application and provider recovery absent."
+        ],
+        [
+          "NF-AC-020",
+          "Actual one-time restore and checksum; scheduled drill not established."
+        ]
+      ],
+      "verifiedJobs": 4,
+      "command": "node_modules/.bin/tsx scripts/p4-r83-db-restore-smoke.ts",
+      "scope": "DISPOSABLE_CI_PARTIAL",
+      "fixtureVersion": "R83",
+      "formalExecuted": false,
+      "ownerAccepted": false,
+      "runUrl": "https://github.com/owaisprog/Zoho-Clone/actions/runs/45583549547"
+    },
+    {
+      "batch": 84,
+      "pr": 134,
+      "sha": "f6cd0c5c52d5ca8086b122e66f87c838e3cae5c2",
+      "run": 45588900249,
+      "script": "scripts/p4-r84-platform-smoke.ts",
+      "cases": [
+        [
+          "AC-108",
+          "Explicit CRM entitlement revocation; actual plan expiry not exercised."
+        ],
+        [
+          "DOM-T010",
+          "Foreign tenant audit denied; not full original route."
+        ],
+        [
+          "API-T004-POS",
+          "Owner organization metadata projection; candidate route differs from approved API."
+        ],
+        [
+          "API-T006-POS",
+          "Owner member list projection; original directory contract incomplete."
+        ],
+        [
+          "API-T012-POS",
+          "Owner audit list with seeded events; full production audit absent."
+        ]
+      ],
+      "verifiedJobs": 4,
+      "command": "node_modules/.bin/tsx scripts/p4-r84-platform-smoke.ts",
+      "scope": "DISPOSABLE_CI_PARTIAL",
+      "fixtureVersion": "R84",
+      "formalExecuted": false,
+      "ownerAccepted": false,
+      "runUrl": "https://github.com/owaisprog/Zoho-Clone/actions/runs/45588900249"
+    },
+    {
+      "batch": 87,
+      "pr": 137,
+      "sha": "19764d3cedae0bb8971616aece9346242ed393e8",
+      "run": 45591715527,
+      "script": "scripts/p4-r87-queue-smoke.ts",
+      "cases": [
+        [
+          "DOM-T039",
+          "Worker restricted to due and exact-event functions; full worker policy unverified."
+        ],
+        [
+          "API-X029",
+          "Restricted worker and queue job envelope; original all-tenant scenario incomplete."
+        ]
+      ],
+      "verifiedJobs": 4,
+      "command": "node_modules/.bin/tsx scripts/p4-r87-queue-smoke.ts",
+      "scope": "DISPOSABLE_CI_PARTIAL",
+      "fixtureVersion": "R87",
+      "formalExecuted": false,
+      "ownerAccepted": false,
+      "runUrl": "https://github.com/owaisprog/Zoho-Clone/actions/runs/45591715527"
+    },
+    {
+      "batch": 88,
+      "pr": 138,
+      "sha": "1aa05c5abc8f11347f01c91a864f878d5eb211a0",
+      "run": 45592541073,
+      "script": "scripts/p4-r88-security-smoke.ts",
+      "cases": [
+        [
+          "AC-105",
+          "Revocation analog for fictional attachment; not an expired export result link."
+        ],
+        [
+          "PERM-T022",
+          "Attachment grant invalidation after access changes; not queued export authorization."
+        ]
+      ],
+      "verifiedJobs": 4,
+      "command": "node_modules/.bin/tsx scripts/p4-r88-security-smoke.ts",
+      "scope": "DISPOSABLE_CI_PARTIAL",
+      "fixtureVersion": "R88",
+      "formalExecuted": false,
+      "ownerAccepted": false,
+      "runUrl": "https://github.com/owaisprog/Zoho-Clone/actions/runs/45592541073"
+    },
+    {
+      "batch": 89,
+      "pr": 139,
+      "sha": "1f1c68fcd9e6114aea6fe17dd58efce44c31c93c",
+      "run": 45594030334,
+      "script": "scripts/p4-r89-browser-smoke.ts",
+      "cases": [
+        [
+          "PERM-T048",
+          "Refreshed revoked membership clears file/inbox UI; no original leads/live provider."
+        ],
+        [
+          "PERM-T002",
+          "Foreign organization navigation denied; live workspace switcher not mounted."
+        ],
+        [
+          "AC-053",
+          "Membership revoked in fixture DB; actual owner revoke API absent."
+        ],
+        [
+          "NF-AC-021",
+          "Two-tenant browser file/inbox/navigation denial; full read/write/search/export matrix absent."
+        ]
+      ],
+      "verifiedJobs": 4,
+      "command": "node_modules/.bin/tsx scripts/p4-r89-browser-smoke.ts",
+      "scope": "DISPOSABLE_CI_PARTIAL",
+      "fixtureVersion": "R89",
+      "formalExecuted": false,
+      "ownerAccepted": false,
+      "runUrl": "https://github.com/owaisprog/Zoho-Clone/actions/runs/45594030334"
+    }
+  ]
+}
