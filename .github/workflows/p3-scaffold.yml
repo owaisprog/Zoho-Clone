@@ -814,6 +814,13 @@ jobs:
           P4_R89_BROWSER_CI: 'true'
         run: node_modules/.bin/tsx scripts/p4-r89-browser-smoke.ts
 
+      - name: Rehearse R91 integrated recovery with revoked access and pending outbox
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+          P4_R91_CI_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: node_modules/.bin/tsx scripts/p4-r91-integrated-recovery-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
