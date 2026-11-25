@@ -800,6 +800,17 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r88-security-smoke.ts
 
+      - name: Install pinned Chromium for R89 disposable browser verification
+        run: node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Verify R89 actual browser workspace and queue lifecycle
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+          P4_R87_REDIS_CI: 'true'
+          P4_R89_BROWSER_CI: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r89-browser-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
