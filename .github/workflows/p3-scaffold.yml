@@ -688,6 +688,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r76-sharing-smoke.ts
 
+      - name: Install R77 CRM search in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/054_p4_r77_ci_sales_search.sql
+
+      - name: Verify R77 integrated CRM search and acceptance scenarios
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r77-integrated-crm-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'

@@ -1,0 +1,2 @@
+# R77 — CRM search and integrated workspace
+Five slices: own-record type/name/status search; signed paginated API and strict client; workspace tabs Search, Tasks, Sharing and verified record pickers; end-to-end synthetic workflow conversion, task completion and sharing; mapped AC-061/062/063 assertions. Search excludes shared records (available via the separate team directory); task reassignment, real browser E2E, live Auth0/Next route and manager mutations remain open. Original acceptance register remains unchanged and P4 NO_GO. No merge/deploy/Neon write.
