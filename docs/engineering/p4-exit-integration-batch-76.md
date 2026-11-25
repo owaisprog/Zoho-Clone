@@ -1,0 +1,2 @@
+# R76 — explicit CRM record sharing
+Own-record sales representative can share/revoke Leads, Accounts, Contacts and Deals to current teams with revision checks. Shared directory only reveals minimal label/status/owner; manager read limited to managed teams. Existing Deal reporting uses the same assignment rows. Immutable history and signed PostgreSQL smoke. Team membership provisioning remains a fixture; no teammate record edits or full field detail, no manager assignment override, no production route. P4 NO_GO.
