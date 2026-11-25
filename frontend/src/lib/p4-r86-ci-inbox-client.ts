@@ -14,7 +14,7 @@ export class P4R86CiInboxClient{
  private async request(org:string,path:string,post=false):Promise<unknown>{
   this.guard();if(!id(org))throw new NoticeError(400);
   const token=await this.token();if(!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(token)||token.length>10000)throw new NoticeError(401);
-  let r:Response;try{r=await this.transport(new URL("/inbox/"+org+path,this.base),{method:post?"POST":"GET",headers:{Authorization:"Bearer "+token,Accept:"application/json",...(post?{"Content-Type":"application/json"}:{})},...(post?{body:"{}"}:{}),redirect:"error",credentials:"omit",cache:"no-store",signal:AbortSignal.timeout(3000)});}catch{throw new NoticeError(503);}
+  let r:Response;const transport=this.transport;try{r=await transport(new URL("/inbox/"+org+path,this.base),{method:post?"POST":"GET",headers:{Authorization:"Bearer "+token,Accept:"application/json",...(post?{"Content-Type":"application/json"}:{})},...(post?{body:"{}"}:{}),redirect:"error",credentials:"omit",cache:"no-store",signal:AbortSignal.timeout(3000)});}catch{throw new NoticeError(503);}
   if(r.headers.get("cache-control")!=="no-store, private"||r.headers.get("x-content-type-options")!=="nosniff")throw new NoticeError(503);
   if(!r.ok)throw new NoticeError([400,401,403,409,503].includes(r.status)?r.status:503);
   const v:unknown=await r.json();if(!obj(v,"data,scope")||v.scope!=="disposable-ci-only")throw new NoticeError(503);return v.data;
