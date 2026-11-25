@@ -74,6 +74,8 @@ import {P4R74CiTeamReports} from "./p4-r74-ci-team-reports.js";
 import {createP4R74CiTeamReportsRouter} from "./p4-r74-ci-team-reports-router.js";
 import {P4R75CiSalesTasks} from "./p4-r75-ci-sales-tasks.js";
 import {createP4R75CiSalesTasksRouter} from "./p4-r75-ci-sales-tasks-router.js";
+import {P4R76CiSharing} from "./p4-r76-ci-sharing.js";
+import {createP4R76CiSharingRouter} from "./p4-r76-ci-sharing-router.js";
 const deny=()=>{throw new P4R28Denied(401,"IDENTITY_REQUIRED");};
 export class P4R33CiActorMapper{
  constructor(private readonly pool:pg.Pool,
@@ -136,6 +138,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  salesWorkspace?:P4R73CiSalesWorkspace;
  salesTeamReports?:P4R74CiTeamReports;
  salesTasks?:P4R75CiSalesTasks;
+ salesSharing?:P4R76CiSharing;
 },env:NodeJS.ProcessEnv=process.env):Router{
  assertP4V1CiPrismaEnvironment(env);
  if(env.NODE_ENV==="production"||!deps?.mapper||!deps.issuer||
@@ -210,6 +213,7 @@ export function createP4R33CiVerifiedWorkflowRouter(deps:{
  if(deps.salesWorkspace)router.use("/sales",createP4R73CiSalesWorkspaceRouter({service:deps.salesWorkspace,resolveVerifiedActor:resolve},env));
  if(deps.salesTeamReports)router.use("/sales",createP4R74CiTeamReportsRouter(deps.salesTeamReports,resolve,env));
  if(deps.salesTasks)router.use("/sales",createP4R75CiSalesTasksRouter(deps.salesTasks,resolve,env));
+ if(deps.salesSharing)router.use("/sales",createP4R76CiSharingRouter(deps.salesSharing,resolve,env));
  router.use("/recipient",createP4R30CiInvitationAcceptanceRouter({
   service:deps.acceptance,resolveVerifiedActor:resolve,
  }));

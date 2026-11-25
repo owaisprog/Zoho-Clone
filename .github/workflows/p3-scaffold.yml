@@ -679,6 +679,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r75-sales-tasks-smoke.ts
 
+      - name: Install R76 explicit CRM record sharing in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/053_p4_r76_ci_record_sharing.sql
+
+      - name: Verify R76 signed sharing and report reconciliation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r76-sharing-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
