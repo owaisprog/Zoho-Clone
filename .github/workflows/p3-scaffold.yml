@@ -715,6 +715,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r79-activity-workload-smoke.ts
 
+      - name: Install R80 manager directory in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/057_p4_r80_ci_manager_directory.sql
+
+      - name: Verify R80 integrated manager CRM and acceptance gap
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r80-manager-workspace-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'

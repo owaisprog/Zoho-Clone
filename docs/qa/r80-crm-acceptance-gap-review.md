@@ -1,0 +1,24 @@
+# CRM acceptance evidence consolidation — R80 (2026-11-25)
+
+Scope: R1 CRM engineering rehearsal, not an assertion of P4 exit. P1.09 original inventory remains 0/727 formally executed; all 10 release gates OPEN. Each linked run is synthetic CI evidence and not an owner-accepted original acceptance case. Test commands are `node_modules/.bin/tsx scripts/<listed script>` following candidate SQL installation in disposable PostgreSQL in `.github/workflows/p3-scaffold.yml`. The run logs retain execution timestamps and exact heads. Fixture scope is the corresponding R-number and fictional identities.
+
+| Original case / requirement | Candidate evidence (prior exact-head CI) | Remaining gap |
+| --- | --- | --- |
+| AC-061 / FR-012 | [R77, #45577052417](https://github.com/owaisprog/Zoho-Clone/actions/runs/45577052417), `p4-r77-integrated-crm-smoke.ts`, e8d4eb957d144204e8975ce45e3aa34992875b82: unknown field rejected, no reflected marker/no row | Full log review and lead edit/source/assignment absent |
+| AC-062 / FR-013 | R77 same run/script/head: 25 own records, private/foreign exclusions | Assigned-team search and real browser behavior |
+| AC-063 / FR-014 | R77 same run/script/head: denied stage transition after sales role removal, unchanged row | Full original stage-grant policy and live audit |
+| AC-064 / FR-015 | R80 manager workspace smoke: blank account rejection and unchanged count; exact-head result to be recorded in PR #130 when available | Formal sign-off, production length/metadata rules |
+| AC-065 / FR-016 | [R70, #45504672925](https://github.com/owaisprog/Zoho-Clone/actions/runs/45504672925), `p4-r70-contacts-fullstack-smoke.ts`, d590df59ba14e0a9a69ba05195c85778a846e390: cross-org account link rejected | Live authorization and broader contact fields |
+| AC-066 / FR-017 | R70 same run/script/head: duplicate contact rejected without merge; R69 account exact duplicate conflict [#45504252500](https://github.com/owaisprog/Zoho-Clone/actions/runs/45504252500), `p4-r69-accounts-fullstack-smoke.ts`, 3deddfe7215609a042eb026ac4be8eb5e5795e64 | Configurable candidate review and tenant-safe matching |
+| AC-067 / FR-018 | [R71, #45505168723](https://github.com/owaisprog/Zoho-Clone/actions/runs/45505168723), `p4-r71-deals-fullstack-smoke.ts`, 3e224096eab5e0db536dc722224a097ec719c0e7: foreign Account and Contact rejected | Agent reference, configurable pipeline/owner assignment |
+| AC-068 / FR-019 | [R78, #45578594979](https://github.com/owaisprog/Zoho-Clone/actions/runs/45578594979), `p4-r78-manager-work-smoke.ts`, 9f51808b767571866bc82f388f8feeaea15f6b75: manager and owner stale revision conflict | Two permitted reps editing shared Deal is not implemented; initial failed typecheck was fixed |
+| AC-069 / FR-020 | R78 same run/script/head: revoked target assignment rejected and no extra task; assignee completes after reassignment | Team task assignment to Lead/Account, revoked assignee recovery, full manager task CRUD |
+| AC-070 / FR-021 | [R74, #45512373804](https://github.com/owaisprog/Zoho-Clone/actions/runs/45512373804), `p4-r74-team-report-smoke.ts`, b4916788b22b1990c79c45e92eb2b62afcf41113: owner/date filtered counts | Task filters beyond due buckets; age/date semantics and reconciliation in staging |
+| AC-071 / FR-022 | R74 same run/script/head; [R79, #45579009092](https://github.com/owaisprog/Zoho-Clone/actions/runs/45579009092), `p4-r79-activity-workload-smoke.ts`, e3980ed97f1ba09f7ecd380d52e55f63b37907fc: forbidden team denial and workload count drops after share revoke | End-to-end browser plus live Auth0, full shared parent scope |
+
+Additional scope: lead conversion, explicit sharing, team task assignment, event timelines, and both representative and manager workspaces are development candidates. They are not mounted in normal Next.js/Express routes. R80 manager discovery and navigation depend on current manager role, entitlement, and at least one active managed team. No shared record mutation is implied beyond the R78 Deal stage path. No actual customer records, credentials, production database migrations, merge or deployment.
+
+## Priority to close next
+1. Close the real platform prerequisites before promoting CRM: approve isolated staging topology and live provider subject/membership contract, least-privilege roles and migration plan, private storage/scanning and retention, rollback/restore. P4 release decision remains NO_GO.
+2. Finish CRM gaps: lead edit/source/owner, explicit shared-team edit scopes, task recovery and broader parent assignment, configurable pipeline and duplicate review, approved field policy.
+3. Execute original P1.09 cases against an approved isolated environment; capture exact command, commit/run, fixture version, execution time, result/defects, and obtain owner sign-off. Do not change the frozen inventory until authorized formal execution.
