@@ -23,6 +23,15 @@ jobs:
           cache: 'npm'
 
       # P3.03: check in the Node 22 npm workspace lockfile and install exactly.
+      - name: Resolve pinned BullMQ and Playwright dependency candidates (temporary)
+        run: |
+          set -euo pipefail
+          cp package-lock.json /tmp/r87-original-lock.json
+          npm install -w backend --package-lock-only --ignore-scripts --no-audit --no-fund --save-exact bullmq@5.81.6
+          npm install -w frontend --package-lock-only --ignore-scripts --no-audit --no-fund --save-dev --save-exact playwright@1.65.1
+          node --input-type=module -e 'import fs from "node:fs";const a=JSON.parse(fs.readFileSync("/tmp/r87-original-lock.json")),b=JSON.parse(fs.readFileSync("package-lock.json"));for(const k of Object.keys(b.packages))if(JSON.stringify(a.packages[k])!==JSON.stringify(b.packages[k]))console.log("R87_LOCK_ENTRY "+JSON.stringify([k,b.packages[k]]));for(const k of Object.keys(a.packages))if(!(k in b.packages))console.log("R87_LOCK_REMOVE "+JSON.stringify(k));console.log("R87_LOCK_COMPLETE "+Object.keys(b.packages).length);'
+          git restore package-lock.json backend/package.json frontend/package.json
+
       - name: Install locked workspace dependencies
         run: npm ci --no-audit --no-fund
 
