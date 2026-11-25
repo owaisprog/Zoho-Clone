@@ -791,6 +791,15 @@ jobs:
           P4_R87_REDIS_CI: 'true'
         run: node_modules/.bin/tsx scripts/p4-r87-queue-smoke.ts
 
+      - name: Install R88 authorization epoch revocation safeguards
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/063_p4_r88_ci_grant_epochs.sql
+
+      - name: Verify R88 persistent grant revocation and tenant isolation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r88-security-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'

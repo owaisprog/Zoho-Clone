@@ -9,7 +9,7 @@ import {resolve,dirname,relative,sep,extname} from "node:path";
 import {fileURLToPath} from "node:url";
 const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),"..");
 const OUT=resolve(ROOT,"backend/dist");
-const BLOCK=/(?:^|\/)(?:p4-(?:v1|r\d+)-ci-[^/]+|p4-ci-[^/]+)(?:\.js)?$/;
+const BLOCK=/(?:^|\/)(?:p4-(?:v1|r\d+)-ci-[^/]+|p4-r81-provider-tenant|p4-ci-[^/]+)(?:\.js)?$/;
 const STATICS=/(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s*|\brequire\s*\(\s*)["']([^"']+)["']/g;
 const COMPUTED=/\b(?:import|require)\s*\(\s*(?!(?:"[^"]*"|'[^']*')\s*\))/;
 const deny=()=>{throw new Error("P4_PRODUCTION_BUILD_BOUNDARY_DENIED");};
