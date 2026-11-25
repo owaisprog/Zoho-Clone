@@ -1,6 +1,6 @@
 /** Server-only synthetic health bridge; never sends credentials or follows redirects. */
 export type StagingHealth = { status: "disabled" | "unavailable" | "alive"; ready: false };
-export function stagingApiOrigin(env: NodeJS.ProcessEnv): URL | null {
+export function stagingApiOrigin(env: Readonly<Record<string, string | undefined>>): URL | null {
   if (env.VERCEL !== "1" || env.VERCEL_ENV !== "preview" ||
       env.P4_VERCEL_SYNTHETIC_PREVIEW !== "true") return null;
   const raw = env.P4_STAGING_API_ORIGIN;
@@ -12,7 +12,7 @@ export function stagingApiOrigin(env: NodeJS.ProcessEnv): URL | null {
     return u;
   } catch { return null; }
 }
-export async function getStagingHealth(env: NodeJS.ProcessEnv = process.env,
+export async function getStagingHealth(env: Readonly<Record<string, string | undefined>> = process.env,
   transport: typeof fetch = fetch): Promise<StagingHealth> {
   const base = stagingApiOrigin(env);
   if (!base) return {status:"disabled",ready:false};
