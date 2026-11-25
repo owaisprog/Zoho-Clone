@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "phase": "P4",
+  "scope": "PREPARATION_ONLY",
+  "decision": "NO_GO",
+  "stagingProvisioned": false,
+  "deploymentPermitted": false,
+  "originalAcceptance": {
+    "planned": 727,
+    "formalExecuted": 0,
+    "ownerAccepted": false
+  },
+  "requiredApprovals": [
+    {
+      "id": "staging-topology",
+      "state": "OPEN",
+      "ownerAction": "Approve hosting, region, cost cap and isolated GitHub environment"
+    },
+    {
+      "id": "identity",
+      "state": "OPEN",
+      "ownerAction": "Approve separate Auth0 tenant, API audience, web client, MFA, session/revocation and test identities"
+    },
+    {
+      "id": "database",
+      "state": "OPEN",
+      "ownerAction": "Approve isolated database and roles, schema review, migration and backup/restore procedure"
+    },
+    {
+      "id": "storage",
+      "state": "OPEN",
+      "ownerAction": "Approve private storage, scanner, encryption, retention and restricted credentials"
+    },
+    {
+      "id": "operations",
+      "state": "OPEN",
+      "ownerAction": "Approve secrets, private ingress, artifact digests, monitoring, recovery objectives and rollback owner"
+    },
+    {
+      "id": "formal-acceptance",
+      "state": "OPEN",
+      "ownerAction": "Approve original acceptance execution and evidence/sign-off procedure"
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "sdk-boundary",
+      "evidence": "backend/test/p4-r81-provider-tenant.test.ts",
+      "classification": "CI_ONLY"
+    },
+    {
+      "id": "uuid-runtime",
+      "evidence": "scripts/p4-r82-runtime-migration-smoke.ts",
+      "classification": "CI_ONLY"
+    },
+    {
+      "id": "database-restore",
+      "evidence": "scripts/p4-r83-db-restore-smoke.ts",
+      "classification": "CI_ONLY"
+    },
+    {
+      "id": "release-invariants",
+      "evidence": "scripts/p4-release-gate-evidence.mjs",
+      "classification": "CI_ONLY"
+    }
+  ],
+  "sequence": [
+    "APPROVE_ISOLATED_ENVIRONMENT",
+    "PIN_ARTIFACT_AND_SCHEMA",
+    "BACKUP_AND_VALIDATE_RESTORE",
+    "REVIEW_EXPAND_ONLY_MIGRATION",
+    "PRIVATE_CANARY",
+    "VERIFY_IDENTITY_AND_TENANT_ISOLATION",
+    "RUN_FORMAL_ACCEPTANCE",
+    "OWNER_REVIEW"
+  ],
+  "stopConditions": [
+    "UNAPPROVED_ENVIRONMENT",
+    "MISSING_BACKUP",
+    "INVALID_ARTIFACT_DIGEST",
+    "AUTHORIZATION_FAILURE",
+    "TENANT_ISOLATION_FAILURE",
+    "RESTORE_FAILURE",
+    "UNRESOLVED_ACCEPTANCE_FAILURE"
+  ],
+  "forbidden": [
+    "DEPLOY",
+    "MIGRATE_NEON",
+    "ENABLE_LIVE_AUTH0",
+    "MERGE_MAIN",
+    "APPROVE_P4_EXIT"
+  ]
+}
