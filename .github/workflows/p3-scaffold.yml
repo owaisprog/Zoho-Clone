@@ -763,6 +763,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r85-files-smoke.ts
 
+      - name: Install R86 transactional notification outbox
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/061_p4_r86_ci_notifications.sql
+
+      - name: Verify R86 independent notification worker and recipient inbox
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r86-notifications-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
