@@ -724,6 +724,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r80-manager-workspace-smoke.ts
 
+      - name: Install R82 isolated UUID identity and tenant migration candidate
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/058_p4_r82_ci_uuid_foundation.sql
+
+      - name: Verify R82 real restricted login and provider membership lookup
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r82-runtime-migration-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
@@ -772,3 +781,5 @@ jobs:
         run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-v1-ci.prisma
       - name: Validate owner-approved R7 business role CI-only Prisma schema
         run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-r7-ci.prisma
+      - name: Validate R82 UUID identity and tenant relational model
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-r82-ci.prisma

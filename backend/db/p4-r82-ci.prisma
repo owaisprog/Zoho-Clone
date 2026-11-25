@@ -1,0 +1,84 @@
+// R82 review-only Prisma mapping, disposable CI candidate 058 is authoritative for
+// UUIDv4 domains, RLS, grants and SQL constraints. Never db push/migrate this schema.
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/p4-r82-ci"
+  moduleFormat = "esm"
+  importFileExtension = "js"
+}
+datasource db {
+  provider = "postgresql"
+  schemas = ["p4_r82_ci"]
+}
+model User {
+  id String @id @db.Uuid
+  active Boolean @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  identities IdentitySubject[]
+  organizations Organization[]
+  memberships Membership[]
+  @@map("users")
+  @@schema("p4_r82_ci")
+}
+model IdentitySubject {
+  issuer String @db.Text
+  externalSubject String @map("external_subject") @db.Text
+  userId String @map("user_id") @db.Uuid
+  verified Boolean @default(false)
+  active Boolean @default(true)
+  user User @relation(fields:[userId], references:[id], onDelete:Restrict)
+  @@id([issuer,externalSubject])
+  @@index([userId], map:"r82_subject_user")
+  @@map("identity_subjects")
+  @@schema("p4_r82_ci")
+}
+model Organization {
+  id String @id @db.Uuid
+  slug String @unique @db.Text
+  displayName String @map("display_name") @db.Text
+  active Boolean @default(true)
+  createdBy String @map("created_by") @db.Uuid
+  creator User @relation(fields:[createdBy], references:[id], onDelete:Restrict)
+  memberships Membership[]
+  teams Team[]
+  @@map("organizations")
+  @@schema("p4_r82_ci")
+}
+model Membership {
+  organizationId String @map("organization_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  role String @db.Text
+  active Boolean @default(true)
+  revision Int @default(0)
+  organization Organization @relation(fields:[organizationId], references:[id], onDelete:Restrict)
+  user User @relation(fields:[userId], references:[id], onDelete:Restrict)
+  managedTeams Team[]
+  teamMemberships TeamMembership[]
+  @@id([organizationId,userId])
+  @@map("memberships")
+  @@schema("p4_r82_ci")
+}
+model Team {
+  organizationId String @map("organization_id") @db.Uuid
+  id String @db.Uuid
+  name String @db.Text
+  managerUserId String @map("manager_user_id") @db.Uuid
+  active Boolean @default(true)
+  organization Organization @relation(fields:[organizationId], references:[id], onDelete:Restrict)
+  manager Membership @relation(fields:[organizationId,managerUserId], references:[organizationId,userId], onDelete:Restrict)
+  members TeamMembership[]
+  @@id([organizationId,id])
+  @@map("teams")
+  @@schema("p4_r82_ci")
+}
+model TeamMembership {
+  organizationId String @map("organization_id") @db.Uuid
+  teamId String @map("team_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  active Boolean @default(true)
+  team Team @relation(fields:[organizationId,teamId], references:[organizationId,id], onDelete:Restrict)
+  member Membership @relation(fields:[organizationId,userId], references:[organizationId,userId], onDelete:Restrict)
+  @@id([organizationId,teamId,userId])
+  @@map("team_memberships")
+  @@schema("p4_r82_ci")
+}
