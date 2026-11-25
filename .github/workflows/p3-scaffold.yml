@@ -706,6 +706,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r78-manager-work-smoke.ts
 
+      - name: Install R79 CRM activity and workload in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/056_p4_r79_ci_activity_workload.sql
+
+      - name: Verify R79 activity timeline and workload reconciliation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r79-activity-workload-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
