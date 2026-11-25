@@ -745,6 +745,15 @@ jobs:
           P4_R83_CI_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
         run: node_modules/.bin/tsx scripts/p4-r83-db-restore-smoke.ts
 
+      - name: Install R84 UUID platform permissions and API candidate
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/059_p4_r84_ci_platform.sql
+
+      - name: Verify R84 signed UUID platform API and permission boundaries
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r84-platform-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
