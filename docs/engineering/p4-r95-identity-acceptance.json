@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "scope": "OFFLINE_PREPARATION_ONLY",
+  "liveAuth0": false,
+  "deploy": false,
+  "formalExecution": false,
+  "ownerAccepted": false,
+  "identity": {
+    "issuer": null,
+    "audience": null,
+    "clientId": null,
+    "tenantApproved": false,
+    "mfaApproved": false,
+    "sessionPolicyApproved": false
+  },
+  "checks": [
+    "signed-login",
+    "issuer-audience-client",
+    "mfa-session",
+    "logout-revocation",
+    "two-tenant-membership",
+    "negative-access"
+  ],
+  "evidenceFields": [
+    "caseId",
+    "fixtureVersion",
+    "commit",
+    "run",
+    "timestamp",
+    "command",
+    "result",
+    "defectReference",
+    "ownerSignoff"
+  ]
+}
