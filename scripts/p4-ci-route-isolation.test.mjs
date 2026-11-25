@@ -81,5 +81,5 @@ test("rejects static CommonJS CI module import",()=>{
 });
 
 test("R88 rejects unmounted SDK preparation and new privileged CI modules",()=>{
- for(const path of ["p4-r81-provider-tenant","p4-r84-ci-runtime","p4-r85-ci-files","p4-r86-ci-notifications","p4-r87-ci-queue"]){assert.throws(()=>fakeGraph('import "./platform/'+path+'.js";',"",{"platform/"+path+".ts":"export const candidate=true;"}),/P4_CI_TEST_ROUTER_REACHABLE/);}
+ for(const path of ["p4-r81-provider-tenant","p4-r84-ci-runtime","p4-r85-ci-files","p4-r86-ci-notifications","p4-r87-ci-queue"]){assert.throws(()=>fakeGraph('import "./platform/'+path+'.js";',"",{["platform/"+path+".ts"]:"export const candidate=true;"}),/P4_CI_TEST_ROUTER_REACHABLE/);}
 });
