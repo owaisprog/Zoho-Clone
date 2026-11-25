@@ -14,6 +14,7 @@ export class P4R84CiRuntime{
  async close(){await this.pool.end();}
  async run<T>(mode:"READ ONLY"|"READ WRITE",work:(c:pg.PoolClient)=>Promise<T>):Promise<T>{
   assertP4V1CiPrismaEnvironment(this.env);
+  if(mode!=="READ ONLY"&&mode!=="READ WRITE")return invalid();
   let c:pg.PoolClient|undefined,active=false,discard=false;
   try{
    c=await this.pool.connect();await c.query("BEGIN ISOLATION LEVEL REPEATABLE READ "+mode);active=true;
