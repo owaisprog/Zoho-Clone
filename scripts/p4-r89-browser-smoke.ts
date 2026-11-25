@@ -56,8 +56,8 @@ async function main(){
   stage="scan-and-notification";assert.equal((await scanner.query("SELECT p4_r85_ci.scan_fixture($1,$2,0) AS state",[a,file])).rows[0].state,"scan_clean");
   await queue.dispatch();const until=Date.now()+12000;let delivered=false;while(Date.now()<until){const r=await admin.query("SELECT status FROM p4_r86_ci.outbox WHERE organization_id=$1 AND file_id=$2",[a,file]);if(r.rows[0]?.status==="delivered"){delivered=true;break;}await new Promise(r=>setTimeout(r,100));}assert.equal(delivered,true);
   await files.getByRole("button",{name:"Refresh files"}).click();await files.getByText("scan_clean",{exact:true}).waitFor();
-  await inbox.getByRole("button",{name:"Refresh",exact:true}).click();await inbox.getByText("Demo attachment scan passed · Unread",{exact:true}).waitFor();
-  await inbox.getByRole("button",{name:"Mark read"}).click();await inbox.getByText("Demo attachment scan passed · Read",{exact:true}).waitFor();
+  await inbox.getByRole("button",{name:"Refresh",exact:true}).click();stage="notification-unread";await inbox.getByText("Demo attachment scan passed",{exact:true}).waitFor();await inbox.getByText("Unread",{exact:true}).waitFor();
+  stage="notification-read";await inbox.getByRole("button",{name:"Mark read",exact:true}).click();await inbox.getByText("Read",{exact:true}).waitFor();assert.equal(await inbox.getByText("Unread",{exact:true}).count(),0);
   stage="download";const downloadEvent=page.waitForEvent("download");await files.getByRole("button",{name:"Download",exact:true}).click();const download=await downloadEvent;assert.equal(download.suggestedFilename(),"demo-attachment.txt");const downloaded=await download.path();assert.ok(downloaded);assert.equal(readFileSync(downloaded,"utf8"),"Demo attachment browser");
   await files.getByText("Download verified",{exact:true}).waitFor();
   stage="session-switch";await page.getByLabel("Fixture session").selectOption("owner");await page.getByText("CRM access unavailable",{exact:true}).waitFor();assert.equal(await files.count(),0);assert.equal(await inbox.count(),0);
@@ -69,8 +69,8 @@ async function main(){
   stage="revocation";await admin.query("UPDATE p4_r82_ci.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Refresh workspace"}).click();await page.getByText("Workspace unavailable or access denied",{exact:true}).waitFor();assert.equal(await files.count(),0);assert.equal(await inbox.count(),0);
   await admin.query("UPDATE p4_r82_ci.memberships SET active=true WHERE organization_id=$1 AND user_id=$2",[a,rep]);await page.getByRole("button",{name:"Refresh workspace"}).click();await files.getByText("scan_clean",{exact:true}).waitFor();
-  stage="delete";await files.getByRole("button",{name:"Remove",exact:true}).click();await files.getByText("Authorized files",{exact:true}).waitFor();assert.equal(await files.getByText("scan_clean",{exact:true}).count(),0);
-  await inbox.getByRole("button",{name:"Refresh",exact:true}).click();await inbox.getByText("Authorized notifications",{exact:true}).waitFor();assert.equal(await inbox.getByText("Demo attachment scan passed · Read",{exact:true}).count(),0);
+  stage="delete";await files.getByRole("button",{name:"Remove",exact:true}).click();await files.getByRole("button",{name:"Upload fictional attachment"}).waitFor();assert.equal(await files.getByText("scan_clean",{exact:true}).count(),0);
+  await inbox.getByRole("button",{name:"Refresh",exact:true}).click();await inbox.getByText("Authorized notifications",{exact:true}).waitFor();assert.equal(await inbox.getByText("Demo attachment scan passed",{exact:true}).count(),0);
   assert.equal((await admin.query("SELECT state FROM p4_r85_ci.files WHERE organization_id=$1 AND id=$2",[a,file])).rows[0].state,"soft_deleted");
   stage="mobile-and-storage";await page.setViewportSize({width:390,height:844});await page.getByRole("heading",{name:"Disposable workspace"}).waitFor();
   assert.deepEqual(await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length})),{local:0,session:0});assert.equal(errors,0);
