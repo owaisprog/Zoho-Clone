@@ -21,7 +21,7 @@ function parseRow(v:unknown,k:WorkKind):WorkRow{
  (k==="DEAL"?v.parentId!==null||v.dueDate!==null||!["OPEN",...NEXT].includes(v.status as string):!id(v.parentId)||!date(v.dueDate)||!["OPEN","COMPLETED"].includes(v.status as string)))return invalid();
  return v as WorkRow;
 }
-function parseMembers(v:unknown):readonly string[]{if(!Array.isArray(v)||v.length>100||!v.every(x=>valid(x,USER))||v.some((x,i)=>i>0&&x<=v[i-1]))return invalid();return v;}
+function parseMembers(v:unknown):readonly string[]{if(!Array.isArray(v)||v.length>100||!v.every(x=>valid(x,USER))||v.some((x,i)=>i>0&&x<=v[i-1]!))return invalid();return v;}
 function parsePage(v:unknown,k:WorkKind,after:string|null):WorkPage{
  if(!object(v,"items,nextCursor")||!Array.isArray(v.items)||v.items.length>20)return invalid();
  const items=v.items.map(x=>parseRow(x,k));if(items.some((x,i)=>(i>0&&x.id<=items[i-1]!.id)||(after!==null&&x.id<=after))||(v.nextCursor!==null&&(items.length!==20||v.nextCursor!==items[19]!.id)))return invalid();return {items,nextCursor:v.nextCursor as string|null};
