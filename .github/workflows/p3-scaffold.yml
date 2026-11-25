@@ -697,6 +697,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r77-integrated-crm-smoke.ts
 
+      - name: Install R78 manager work in disposable PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/055_p4_r78_ci_manager_work.sql
+
+      - name: Verify R78 manager stage changes and team task assignment
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r78-manager-work-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
