@@ -754,6 +754,15 @@ jobs:
           GITHUB_ACTIONS: 'true'
         run: node_modules/.bin/tsx scripts/p4-r84-platform-smoke.ts
 
+      - name: Install R85 private fictional attachment lifecycle
+        run: psql -X -v ON_ERROR_STOP=1 -f backend/db/candidates/060_p4_r85_ci_files.sql
+
+      - name: Verify R85 quarantine scanner and one-use private download
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: node_modules/.bin/tsx scripts/p4-r85-files-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
