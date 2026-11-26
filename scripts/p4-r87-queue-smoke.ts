@@ -8,6 +8,7 @@ import {CI_ISSUER,CI_AUDIENCE,type P4R33CiJwk} from "../backend/src/platform/p4-
 import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
 import {P4R84CiRuntime} from "../backend/src/platform/p4-r84-ci-runtime.js";
 import {P4R87CiOutbox,P4R87CiQueue} from "../backend/src/platform/p4-r87-ci-queue.js";
+import {pumpCiOutbox} from "../backend/src/platform/p4-ci-outbox-pump.js";
 import {createP4R86CiInboxRouter,P4R86CiNotificationWorker} from "../backend/src/platform/p4-r86-ci-notifications.js";
 import {createP4R85CiFilesRouter} from "../backend/src/platform/p4-r85-ci-files.js";
 import {createP4R84CiPlatformRouter} from "../backend/src/platform/p4-r84-ci-platform.js";
@@ -49,6 +50,31 @@ async function main(){
   await queue.close();queue=undefined;assert.equal((await outbox.due()).length,1);
   queue=new P4R87CiQueue(outbox);await queue.ready();await queue.dispatch();await waitStatus(recover.id,"delivered");
   assert.equal((await inbox(a,actor)).items.filter((n:{fileId:string})=>n.fileId===recover.id).length,1);
+  // Direct, bounded processing exercises the same restricted SQL outbox
+  // after closing both Redis clients; no queue or external provider is used.
+  await queue.close();queue=undefined;
+  const directEnv={...process.env,P4_DIRECT_OUTBOX_CI:"true"};
+  const direct=await call(a,path,actor,"POST",{content:"Demo attachment direct outbox"});
+  await scan(direct.id);
+  const directJobs=await outbox.due();
+  assert.equal(directJobs.length,1);
+  const pumped=await pumpCiOutbox(outbox,directEnv);
+  assert.equal(pumped.processed,1);assert.equal(pumped.delivered,1);
+  assert.equal((await pumpCiOutbox(outbox,directEnv)).processed,0);
+  assert.equal(await outbox.deliver(directJobs[0]!),"empty");
+  assert.equal((await inbox(a,actor)).items.filter((n:{fileId:string})=>n.fileId===direct.id).length,1);
+  const directRevoked=await call(a,path,actor,"POST",{content:"Demo attachment direct revocation"});
+  await scan(directRevoked.id);
+  await admin.query("UPDATE p4_r82_ci.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  try{
+   const cancelled=await pumpCiOutbox(outbox,directEnv);
+   assert.equal(cancelled.cancelled,1);
+   await waitStatus(directRevoked.id,"cancelled");
+  }finally{
+   await admin.query("UPDATE p4_r82_ci.memberships SET active=true WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  }
+  assert.equal((await inbox(a,actor)).items.some((n:{fileId:string})=>n.fileId===directRevoked.id),false);
+  console.log("P4_DIRECT_OUTBOX_PASS: restricted DB delivery, replay and revoked recipient denial without queue clients; NO_GO");
   await assert.rejects(db.run("READ ONLY",c=>c.query("SELECT * FROM p4_r87_ci.due_jobs()")));
   console.log("R87 real Redis/BullMQ queue, duplicate wakeups, stale/foreign job denial, cancellation and interrupted dispatcher recovery PASS; NO_GO");
  }finally{await queue?.close();await new Promise<void>(r=>server.close(()=>r()));await Promise.all([db.close(),admin.end(),scanner.end(),outbox.close()]);}
