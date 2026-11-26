@@ -840,6 +840,16 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/stage_application_access.sql
           P4_PERMISSION_WORKSPACE_CI=true node_modules/.bin/tsx scripts/p4-permission-workspace-smoke.ts
 
+      - name: Verify P4 final permission audit and isolated restore reconciliation
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+          P4_STAGE_RECOVERY_CI: 'true'
+          P4_STAGE_CI_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/stage_acceptance_audit.sql
+          node_modules/.bin/tsx scripts/p4-stage-acceptance-recovery.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
