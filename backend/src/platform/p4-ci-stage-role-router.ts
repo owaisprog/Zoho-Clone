@@ -1,5 +1,5 @@
 /** Test-only route factory. Never mount in application entrypoints. */
-import express,{Router,type Request} from "express";
+import express,{Router,type Request,type ErrorRequestHandler} from "express";
 import {isCanonicalUuidV4} from "./p4-approved-uuid.js";
 import {parseRoleCommand,type CiStageRoleGrants} from "./p4-ci-stage-role-grants.js";
 import type {StageIdentity} from "./staging-membership-db.js";
@@ -25,5 +25,7 @@ export function createCiStageRoleRouter(db:Pick<CiStageRoleGrants,"list"|"toggle
    res.status(status==="applied"||status==="replay"?200:status==="conflict"?409:status==="denied"?403:503).json({status,applicationAccess:false});
   }catch{res.status(503).json({status:"unavailable",applicationAccess:false});}
  });
+ const error:ErrorRequestHandler=(_err,_req,res,_next)=>{res.status(400).json({status:"denied",applicationAccess:false});};
+ r.use(error);
  return r;
 }
