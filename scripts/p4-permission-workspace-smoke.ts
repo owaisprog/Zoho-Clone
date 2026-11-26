@@ -175,8 +175,15 @@ async function main(){
   await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
   await page.getByLabel("Organization",{exact:true}).selectOption(a);
   console.log("P4_STAGE_APP_ACCESS_PASS: owner denial, scoped lead reads, role/team/entitlement revocation, manager scope and privilege drift");
-  stage="revocation";await admin.query("UPDATE platform_stage.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,owner]);
-  await page.getByRole("button",{name:"Load team grants"}).click();await page.getByText("Team grants unavailable or access denied.",{exact:true}).waitFor();
+  stage="owner-revocation-prepare";
+  await page.locator("#stage-team-target").fill(member);
+  await page.getByRole("button",{name:"Load team grants",exact:true}).click();
+  await page.getByText("Existing unmanaged team grants loaded.",{exact:true}).waitFor();
+  stage="owner-revocation-denial";
+  await admin.query("UPDATE platform_stage.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,owner]);
+  await page.getByRole("button",{name:"Load team grants",exact:true}).click();
+  await page.getByText("Team grants unavailable or access denied.",{exact:true}).waitFor();
+  stage="owner-revocation-directory";
   await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
   assert.equal(await page.getByRole("heading",{name:"Team permissions"}).count(),0);
   assert.equal(await page.locator('#permission-org option[value="'+a+'"]').count(),0);
