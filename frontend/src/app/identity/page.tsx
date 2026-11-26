@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth0 } from "@/lib/auth0";
+import { readStageWebBinding } from "@/lib/staging-membership";
+import { StagingMembershipCheck } from "@/components/staging-membership-check";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +24,8 @@ export default async function IdentityPreview() {
     <main style={{ maxWidth: 720, padding: "56px 24px", margin: "auto" }}>
       <h1>Authenticated session</h1>
       <p>Auth0 verified a login session for this browser.</p>
-      <p><strong>Organization membership and CRM permissions are not active.</strong></p>
+      <p><strong>CRM permissions are not active.</strong></p>
+      {readStageWebBinding() ? <StagingMembershipCheck/> : <p>Organization membership verification is not active.</p>}
       <p>Future tenancy, invitations and record/field access must pass P4 security gates.</p>
       <p><a href="/api/identity/check">Check Express API token verification (identity-only)</a></p>
       <p>If the backend is running and configured, this should return <code>{`{"status":"authenticated","scope":"identity-only","organizationAccess":false}`}</code>.</p>
