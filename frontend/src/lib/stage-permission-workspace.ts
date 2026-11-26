@@ -2,7 +2,9 @@ import {isStageOrgId} from "./staging-membership";
 import {parseSalesGrants,type RoleEditorTransport} from "./stage-role-editor";
 import {parseTeamPage,type TeamEditorTransport} from "./stage-team-editor";
 import {parseDirectoryPage,type OrganizationItem} from "./staging-organization-directory";
+import {parseAppNavigation,parseLeadPage,type AppAccessTransport} from "./stage-app-access";
 export type PermissionWorkspaceTransport={
+ app:AppAccessTransport;
  directory(after:string|null):Promise<{items:OrganizationItem[];nextCursor:string|null}>;
  roles:RoleEditorTransport;teams:TeamEditorTransport;
 };
@@ -33,6 +35,10 @@ export function createPermissionWorkspaceTransport(request:typeof fetch=(url,opt
  }
  function query(after:string|null){if(after===null)return "";if(!isStageOrgId(after))throw Error("DENIED");return "?after="+encodeURIComponent(after);}
  return {
+  app:{
+   async navigation(org){if(!isStageOrgId(org))throw Error("DENIED");const r=await call("/api/permission-workspace/"+org+"/app/navigation");if(r.status!==200)throw Error("DENIED");return parseAppNavigation(r.value,org);},
+   async leads(org,after){if(!isStageOrgId(org))throw Error("DENIED");const r=await call("/api/permission-workspace/"+org+"/app/leads"+query(after));if(r.status!==200)throw Error("DENIED");return parseLeadPage(r.value,after);}
+  },
   async directory(after){const r=await call("/api/permission-workspace/directory"+query(after));const p=parseDirectoryPage(r.value,after);if(r.status!==200||p.status!=="verified")throw Error("DENIED");return {items:p.items,nextCursor:p.nextCursor};},
   roles:{
    async list(org,user){const r=await call(target(org,user,"sales-grants"));if(r.status!==200)throw Error("DENIED");return parseSalesGrants(r.value);},
