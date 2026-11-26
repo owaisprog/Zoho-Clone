@@ -22,6 +22,7 @@ test("healthy probe makes only fixed loopback requests and expects readiness den
  const seen:string[]=[];
  const request:typeof fetch=async(url,init)=>{
   seen.push(String(url));assert.equal(init?.redirect,"error");
+  assert.equal(new Headers(init?.headers).get("Cache-Control"),"no-store");
   const live=String(url).endsWith("/live");
   return Response.json({scope:"synthetic-only",status:live?"alive":"not_ready"},{status:live?200:503});
  };
