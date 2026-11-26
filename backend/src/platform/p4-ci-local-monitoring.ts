@@ -61,7 +61,7 @@ export function createLocalMonitor(env:Env,request:Fetch=fetch){
   for(const check of checks){
    let ok=false;
    try{
-    const res=await request("http://127.0.0.1:4000"+check.path,{redirect:"error",cache:"no-store",signal:AbortSignal.timeout(2000)});
+    const res=await request("http://127.0.0.1:4000"+check.path,{redirect:"error",headers:{"Cache-Control":"no-store"},signal:AbortSignal.timeout(2000)});
     const reader=res.body?.getReader();
     let bytes=0,parts:Uint8Array[]=[];
     if(reader){
