@@ -8,13 +8,15 @@ export function StagingRoleEditor({organizationId,transport}:{organizationId:str
  const [target,setTarget]=useState(""),[rows,setRows]=useState<SalesGrant[]>([]);
  const [busy,setBusy]=useState(false),[message,setMessage]=useState("");
  const [pending,setPending]=useState<RoleChange|null>(null);
+ const [loadedOrg,setLoadedOrg]=useState("");
  async function load(){
   if(!isStageOrgId(organizationId)||!isStageOrgId(target))return;
-  setBusy(true);setRows([]);setPending(null);setMessage("");
+  setBusy(true);setRows([]);setPending(null);setMessage("");setLoadedOrg(organizationId);
   try{setRows(await transport.list(organizationId,target));setMessage("Existing sales grants loaded.");}
   catch{setMessage("Grants unavailable or access denied.");}finally{setBusy(false);}
  }
  async function change(command:RoleChange){
+  if(loadedOrg!==organizationId)return;
   setBusy(true);setPending(command);setMessage("");
   try{
    const result=await transport.toggle(organizationId,target,command);
@@ -35,9 +37,9 @@ export function StagingRoleEditor({organizationId,transport}:{organizationId:str
   <button type="button" disabled={busy||!isStageOrgId(target)} onClick={()=>void load()}>Load grants</button>
   <ul>{rows.map(row=><li key={row.role} className="flex items-center justify-between gap-3 py-2">
    <span>{row.role==="SALES_REP"?"Sales representative":"Sales manager"} · {row.active?"Active":"Inactive"} · revision {row.revision}</span>
-   <button type="button" disabled={busy||pending!==null||row.revision>=1000000000} onClick={()=>void change(buildRoleChange(row,crypto.randomUUID()))}>{row.active?"Deactivate":"Activate"}</button>
+   <button type="button" disabled={busy||loadedOrg!==organizationId||pending!==null||row.revision>=1000000000} onClick={()=>void change(buildRoleChange(row,crypto.randomUUID()))}>{row.active?"Deactivate":"Activate"}</button>
   </li>)}</ul>
-  {pending&&<button type="button" disabled={busy} onClick={()=>void change(pending)}>Retry same request</button>}
+  {pending&&<button type="button" disabled={busy||loadedOrg!==organizationId} onClick={()=>void change(pending)}>Retry same request</button>}
   <p role="status" aria-live="polite">{message}</p>
  </section>;
 }
