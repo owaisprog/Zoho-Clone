@@ -1,0 +1,50 @@
+// Read-only membership slice. SQL migration is authoritative for RLS and grants.
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/p4-stage"
+  moduleFormat = "esm"
+  importFileExtension = "js"
+}
+datasource db {
+  provider = "postgresql"
+  schemas = ["platform_stage"]
+}
+model StageUser {
+  id String @id @db.Uuid
+  active Boolean @default(true)
+  identities StageIdentity[]
+  memberships StageMembership[]
+  @@map("users")
+  @@schema("platform_stage")
+}
+model StageIdentity {
+  issuer String @db.Text
+  subject String @db.Text
+  userId String @map("user_id") @db.Uuid
+  verified Boolean @default(false)
+  active Boolean @default(true)
+  user StageUser @relation(fields:[userId], references:[id], onDelete:Restrict)
+  @@id([issuer,subject])
+  @@map("identity_subjects")
+  @@schema("platform_stage")
+}
+model StageOrganization {
+  id String @id @db.Uuid
+  active Boolean @default(true)
+  memberships StageMembership[]
+  @@map("organizations")
+  @@schema("platform_stage")
+}
+model StageMembership {
+  organizationId String @map("organization_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  role String @db.Text
+  active Boolean @default(true)
+  revision Int @default(0)
+  organization StageOrganization @relation(fields:[organizationId], references:[id], onDelete:Restrict)
+  user StageUser @relation(fields:[userId], references:[id], onDelete:Restrict)
+  @@id([organizationId,userId])
+  @@index([userId,organizationId],map:"stage_membership_user")
+  @@map("memberships")
+  @@schema("platform_stage")
+}
