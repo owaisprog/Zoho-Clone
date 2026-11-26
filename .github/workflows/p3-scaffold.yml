@@ -873,6 +873,9 @@ jobs:
           docker compose -f docker-compose.local-files.yml pull scanner
           P4_LOCAL_FILES_ENABLED=true node_modules/.bin/tsx scripts/p4-local-files-smoke.ts
 
+      - name: Verify authenticated local SeaweedFS and ClamAV lifecycle
+        run: P4_LOCAL_FILES_ENABLED=true P4_LOCAL_SEAWEED_ENABLED=true node_modules/.bin/tsx scripts/p4-local-seaweedfs-smoke.ts
+
   prisma-schema-validation:
     runs-on: ubuntu-latest
     timeout-minutes: 15

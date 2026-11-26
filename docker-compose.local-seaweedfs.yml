@@ -1,0 +1,35 @@
+# Disposable synthetic storage only. Never attach to another project network.
+services:
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.55
+    command: ["mini", "-dir=/data", "-ip=seaweedfs", "-ip.bind=0.0.0.0", "-s3.externalUrl=http://127.0.0.1:18334", "-s3.autoCreateBucket=false"]
+    environment:
+      AWS_ACCESS_KEY_ID: ${P4_LOCAL_SEAWEED_ACCESS:?generate disposable local identity}
+      AWS_SECRET_ACCESS_KEY: ${P4_LOCAL_SEAWEED_SECRET:?generate disposable local secret}
+      S3_BUCKET: zoho-local-quarantine,zoho-local-clean
+    volumes:
+      - local_objects:/data
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - local_storage
+  s3_relay:
+    image: nginx:1.28-alpine
+    depends_on:
+      - seaweedfs
+    ports:
+      - "127.0.0.1:18334:8080"
+    volumes:
+      - ./config/p4-local-s3-relay.conf:/etc/nginx/conf.d/default.conf:ro
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - local_storage
+      - local_relay
+networks:
+  local_storage:
+    internal: true
+  local_relay:
+    driver: bridge
+volumes:
+  local_objects:
