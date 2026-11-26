@@ -6,4 +6,8 @@ async function main(){
   console.log("P4_LOCAL_WORKER_PASS",JSON.stringify(result));
  }finally{clearTimeout(hardStop);}
 }
-main().catch(()=>{console.error("P4_LOCAL_WORKER_FAIL");process.exitCode=1;});
+main().catch((error:unknown)=>{
+ const code=error instanceof Error?error.message:"";
+ const safe=["P4_LOCAL_WORKER_DENIED","P4_LOCAL_WORKER_QUEUE_READY_FAILED","P4_LOCAL_WORKER_WORKER_READY_FAILED","P4_LOCAL_WORKER_ENQUEUE_FAILED","P4_LOCAL_WORKER_COMPLETION_FAILED","P4_LOCAL_WORKER_CLEANUP_FAILED","P4_LOCAL_WORKER_CLOSE_FAILED"];
+ console.error(safe.includes(code)?code:"P4_LOCAL_WORKER_FAIL");process.exitCode=1;
+});
