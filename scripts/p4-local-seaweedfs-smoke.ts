@@ -33,6 +33,8 @@ async function main(){
  let stage="startup";
  try{
   if(docker([...args,"up","-d"],env,undefined,180000).status!==0)throw Error("startup");
+  const mapping=docker([...args,"port","s3_relay","8080"],env);
+  if(mapping.status!==0||mapping.stdout.trim()!=="127.0.0.1:18334")throw Error("startup");
   const store=new LocalSeaweedStore(env);
   stage="readiness";
   const deadline=Date.now()+90000;
@@ -41,6 +43,12 @@ async function main(){
    try{await store.ready();ready=true;break;}catch{await delay(1000);}
   }
   assert.equal(ready,true);
+  for(const path of ["/","/admin","/zoho-local-clean?list-type=2"]){
+   const response=await fetch(endpoint+path,{redirect:"error",signal:AbortSignal.timeout(5000)});
+   assert.equal(response.status,403);await response.body?.cancel();
+  }
+  const bucketMutation=await fetch(endpoint+"/zoho-local-clean",{method:"DELETE",redirect:"error",signal:AbortSignal.timeout(5000)});
+  assert.equal(bucketMutation.status,403);await bucketMutation.body?.cancel();
   const wrong=new LocalSeaweedStore({...env,P4_LOCAL_SEAWEED_SECRET:randomBytes(32).toString("hex")});
   await assert.rejects(wrong.ready());
   files=LocalPrivateFiles.createWithStore(store,scanner,env);
