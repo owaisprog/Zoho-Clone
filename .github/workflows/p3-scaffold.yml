@@ -864,6 +864,8 @@ jobs:
           npm run build -w backend
           DATABASE_URL='postgresql://p3_preview_runtime:fake_p3_preview_only@127.0.0.1:5433/zoho_clone_synthetic' \
             node backend/dist/scripts/p3-prisma-local-smoke.js
+          P4_LOCAL_WORKER_ENABLED=true P4_LOCAL_REDIS_URL=redis://127.0.0.1:6380 \
+            npm run worker:local -w backend
 
   prisma-schema-validation:
     runs-on: ubuntu-latest
