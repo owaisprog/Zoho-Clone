@@ -4,9 +4,52 @@ import { isCanonicalUuidV4 } from "./p4-approved-uuid.js";
 
 export type StageMembership = Readonly<{ actorId: string; organizationId: string; role: "OWNER" | "MEMBER" }>;
 export type StageIdentity = Readonly<{ issuer: string; subject: string }>;
-export type StageMembershipReader = { read(identity: StageIdentity, organizationId: string): Promise<StageMembership | null> };
+export type StageOrganization = Readonly<{ organizationId:string; membershipRole:"OWNER"|"MEMBER" }>;
+export type StageOrganizationPage = Readonly<{items:readonly StageOrganization[];nextCursor:string|null}>;
+export type StageMembershipReader = { read(identity: StageIdentity, organizationId: string): Promise<StageMembership | null>; list?(identity:StageIdentity,after:string|null):Promise<StageOrganizationPage> };
 export class PrismaStageMembershipReader implements StageMembershipReader {
   constructor(private readonly prisma: PrismaClient, private readonly database: "zoho_clone_staging" | "zoho_clone_synthetic_ci") {}
+  private async assertReadScope(tx:Pick<PrismaClient,"$queryRaw">){
+    const scope = await tx.$queryRaw<Array<{ valid: boolean }>>`
+      SELECT current_user = 'p4_stage_runtime' AND session_user = current_user
+        AND current_database() = ${this.database}
+        AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname=current_user AND
+          NOT (rolsuper OR rolbypassrls OR rolcreatedb OR rolcreaterole OR rolreplication OR rolinherit))
+        AND NOT EXISTS(SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.member WHERE r.rolname=current_user)
+        AND NOT has_schema_privilege(current_user,'platform_stage','CREATE')
+        AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+          WHERE n.nspname='platform_stage' AND c.relkind='r' AND c.relrowsecurity AND c.relforcerowsecurity
+            AND c.relname IN ('users','identity_subjects','organizations','memberships')
+            AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)
+            AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES')
+            AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=4 AS valid
+    `;
+    if(scope.length!==1||scope[0]?.valid!==true) throw Error("ROLE_DENIED");
+  }
+  async list(identity:StageIdentity,after:string|null):Promise<StageOrganizationPage>{
+    if((after!==null&&!isCanonicalUuidV4(after))||
+      !/^https:\/\/[a-z0-9-]+(?:\.[a-z0-9-]+)*\.auth0\.com\/$/.test(identity.issuer)||
+      !/^auth0\|[A-Za-z0-9_-]{3,180}$/.test(identity.subject))throw Error("P4_STAGE_DIRECTORY_UNAVAILABLE");
+    try{
+      return await this.prisma.$transaction(async tx=>{
+        await tx.$executeRaw`SET TRANSACTION READ ONLY`;
+        await this.assertReadScope(tx);
+        const rows=await tx.$queryRaw<StageOrganization[]>`
+          SELECT organization_id::text AS "organizationId",membership_role AS "membershipRole"
+          FROM platform_stage.organization_directory(${identity.issuer},${identity.subject},${after}::uuid)
+        `;
+        if(rows.length>21)throw Error("PROJECTION_DENIED");
+        let previous=after;
+        for(const row of rows){
+          if(!isCanonicalUuidV4(row.organizationId)||(previous!==null&&row.organizationId<=previous)||
+             (row.membershipRole!=="OWNER"&&row.membershipRole!=="MEMBER"))throw Error("PROJECTION_DENIED");
+          previous=row.organizationId;
+        }
+        const items=rows.slice(0,20).map(row=>Object.freeze({organizationId:row.organizationId,membershipRole:row.membershipRole}));
+        return Object.freeze({items,nextCursor:rows.length===21?items[19]!.organizationId:null});
+      },{isolationLevel:"RepeatableRead",maxWait:3000,timeout:5000});
+    }catch{throw Error("P4_STAGE_DIRECTORY_UNAVAILABLE");}
+  }
   async read(identity: StageIdentity, organizationId: string): Promise<StageMembership | null> {
     if (!isCanonicalUuidV4(organizationId) ||
       !/^https:\/\/[a-z0-9-]+(?:\.[a-z0-9-]+)*\.auth0\.com\/$/.test(identity.issuer) ||
@@ -14,21 +57,7 @@ export class PrismaStageMembershipReader implements StageMembershipReader {
     try {
       return await this.prisma.$transaction(async tx => {
         await tx.$executeRaw`SET TRANSACTION READ ONLY`;
-        const scope = await tx.$queryRaw<Array<{ valid: boolean }>>`
-          SELECT current_user = 'p4_stage_runtime' AND session_user = current_user
-            AND current_database() = ${this.database}
-            AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname=current_user AND
-              NOT (rolsuper OR rolbypassrls OR rolcreatedb OR rolcreaterole OR rolreplication OR rolinherit))
-            AND NOT EXISTS(SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.member WHERE r.rolname=current_user)
-            AND NOT has_schema_privilege(current_user,'platform_stage','CREATE')
-            AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
-              WHERE n.nspname='platform_stage' AND c.relkind='r' AND c.relrowsecurity AND c.relforcerowsecurity
-                AND c.relname IN ('users','identity_subjects','organizations','memberships')
-                AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)
-                AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES')
-                AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=4 AS valid
-        `;
-        if(scope.length!==1||scope[0]?.valid!==true) throw Error("ROLE_DENIED");
+        await this.assertReadScope(tx);
         const rows=await tx.$queryRaw<Array<StageMembership>>`
           SELECT actor_id::text AS "actorId",organization_id::text AS "organizationId",membership_role AS role
           FROM platform_stage.membership_check(${identity.issuer},${identity.subject},${organizationId}::uuid)
