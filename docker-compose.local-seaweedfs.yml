@@ -1,0 +1,22 @@
+# Disposable synthetic storage only. Never attach to another project network.
+services:
+  seaweedfs:
+    image: chrislusf/seaweedfs:4.55
+    command: ["mini", "-dir=/data"]
+    environment:
+      AWS_ACCESS_KEY_ID: ${P4_LOCAL_SEAWEED_ACCESS:?generate disposable local identity}
+      AWS_SECRET_ACCESS_KEY: ${P4_LOCAL_SEAWEED_SECRET:?generate disposable local secret}
+      S3_BUCKET: zoho-local-quarantine,zoho-local-clean
+    ports:
+      - "127.0.0.1:18334:8333"
+    volumes:
+      - local_objects:/data
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - local_storage
+networks:
+  local_storage:
+    internal: true
+volumes:
+  local_objects:
