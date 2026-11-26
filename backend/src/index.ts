@@ -1,9 +1,10 @@
 import express from "express";
 import helmet from "helmet";
+import { createStageMembershipIntegration } from "./platform/staging-membership-integration.js";
 
 /**
- * Vercel function entrypoint. No listener, CI fixture modules, DB, token
- * verifier or worker. External activation still requires owner approval.
+ * Vercel function entrypoint. No listener, CI fixture modules or worker. The membership adapter is
+ * disabled without explicit staging activation. External activation still requires owner approval.
  */
 export function createVercelApi(env: NodeJS.ProcessEnv = process.env) {
   const app = express();
@@ -32,6 +33,10 @@ export function createVercelApi(env: NodeJS.ProcessEnv = process.env) {
   app.get("/api/v1/auth/check", (_req, res) => {
     res.status(503).json({ error: { code: "AUTH_NOT_CONFIGURED" } });
   });
+  if (enabled && env.P4_STAGE_OWNER_ACTIVATION === "approved") {
+    const membership = createStageMembershipIntegration(env);
+    if (membership) app.use("/api/v1/staging/organizations", membership.router);
+  }
   app.use((_req, res) => {
     res.status(404).json({ error: { code: "NOT_FOUND" } });
   });

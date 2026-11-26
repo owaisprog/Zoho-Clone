@@ -16,6 +16,9 @@ export async function GET() {
   const unavailable = (reason: IdentityDiagnosticReason) =>
     NextResponse.json(identityUnavailableBody(reason), { status: 503, headers });
 
+  // Never forward a Vercel staging session token to the localhost adapter.
+  if (process.env.VERCEL === "1") return unavailable("LOCAL_API_URL_REJECTED");
+
   if (!auth0) {
     return NextResponse.json({ status: "not_configured" }, { status: 503, headers });
   }
