@@ -848,6 +848,7 @@ jobs:
           P4_STAGE_CI_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
         run: |
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/stage_acceptance_audit.sql
+          node scripts/p4-final-acceptance-review.mjs
           node_modules/.bin/tsx scripts/p4-stage-acceptance-recovery.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
