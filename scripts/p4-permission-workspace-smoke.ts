@@ -18,6 +18,8 @@ import {CI_ISSUER,CI_AUDIENCE,verifyP4R33CiToken,type P4R33CiJwk} from "../backe
 import {CiStageRoleGrants} from "../backend/src/platform/p4-ci-stage-role-grants.js";
 import {CiStageTeamGrants} from "../backend/src/platform/p4-ci-stage-team-grants.js";
 import {createCiStageRoleRouter} from "../backend/src/platform/p4-ci-stage-role-router.js";
+import {CiStageAppAccess} from "../backend/src/platform/p4-ci-stage-app-access.js";
+import {createCiStageAppRouter} from "../backend/src/platform/p4-ci-stage-app-router.js";
 import {createCiStageTeamRouter} from "../backend/src/platform/p4-ci-stage-team-router.js";
 const id=(n:number)=>"99100000-0000-4000-8000-"+String(n).padStart(12,"0");
 const a=id(1),b=id(2),owner=id(3),member=id(4),team=id(5);
@@ -34,6 +36,7 @@ async function main(){
  const reader=new PrismaStageMembershipReader(prisma,"zoho_clone_synthetic_ci");
  const roles=new CiStageRoleGrants({...process.env,P4_STAGE_GRANTS_CI:"true"});
  const teams=new CiStageTeamGrants({...process.env,P4_STAGE_TEAMS_CI:"true"});
+ const access=new CiStageAppAccess({...process.env,P4_STAGE_APP_ACCESS_CI:"true"});
  const pair=generateKeyPairSync("rsa",{modulusLength:2048});
  const jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-workspace",alg:"RS256",use:"sig"} as P4R33CiJwk;
  const token=(sub:string)=>{
@@ -67,7 +70,7 @@ async function main(){
   if((keys.length!==0&&(keys.length!==1||keys[0]!=="after"))||(after!==null&&!isCanonicalUuidV4(after))){res.status(403).json({status:"denied",applicationAccess:false});return;}
   try{res.json({scope:"staging-organization-directory",...await reader.list(identity,after),applicationAccess:false});}catch{res.status(503).json({status:"unavailable",applicationAccess:false});}
  });
- app.use(mount,createCiStageRoleRouter(roles,verified),createCiStageTeamRouter(teams,verified));
+ app.use(mount,createCiStageRoleRouter(roles,verified),createCiStageTeamRouter(teams,verified),createCiStageAppRouter(access,verified));
  const server=createServer(app);let browser:Browser|undefined;let stage="setup";
  try{
   await new Promise<void>(r=>server.listen(0,"127.0.0.1",r));base="http://127.0.0.1:"+(server.address() as AddressInfo).port;
@@ -78,6 +81,8 @@ async function main(){
   await admin.query("INSERT INTO platform_stage.sales_grants(organization_id,user_id,role_code) VALUES($1,$2,'SALES_REP')",[a,member]);
   await admin.query("INSERT INTO platform_stage.teams(organization_id,id) VALUES($1,$2)",[a,team]);
   await admin.query("INSERT INTO platform_stage.team_grants(organization_id,user_id,team_id) VALUES($1,$2,$3)",[a,member,team]);
+  await admin.query("INSERT INTO platform_stage.app_entitlements VALUES($1,'platform',true),($1,'crm',true),($2,'platform',true)",[a,b]);
+  await admin.query("INSERT INTO platform_stage.lead_read_fixtures(organization_id,id,owner_id,team_id,label) VALUES($1,$2,$3,NULL,'Demo Own Lead'),($1,$4,$5,$6,'Demo Team Lead'),($1,$7,$5,NULL,'Demo Hidden Lead'),($8,$9,$5,NULL,'Demo Foreign Lead')",[a,id(6),member,id(7),owner,team,id(8),b,id(9)]);
   stage="browser";browser=await chromium.launch({headless:true});
   const ctx=await browser.newContext();await ctx.route("**/*",route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
   await ctx.addCookies([{name:"p4_fixture",value:ownerSession,url:base,httpOnly:true,sameSite:"Strict"}]);
@@ -88,6 +93,9 @@ async function main(){
   await page.getByText("Permission management unavailable for members.",{exact:true}).waitFor();
   assert.equal(await page.getByRole("heading",{name:"Sales role permissions"}).count(),0);
   await page.getByLabel("Organization",{exact:true}).selectOption(a);
+  await page.getByRole("button",{name:"Refresh application access"}).click();
+  await page.getByText("CRM access denied.",{exact:true}).waitFor();
+  assert.equal(await page.getByRole("button",{name:"Load authorized leads"}).count(),0);
   stage="role";await page.locator("#stage-grant-target").fill(member);
   await page.getByRole("button",{name:"Load grants",exact:true}).click();
   await page.getByText("Existing sales grants loaded.",{exact:true}).waitFor();
@@ -99,6 +107,49 @@ async function main(){
   await page.getByRole("button",{name:"Activate",exact:true}).click();
   await page.getByText("Change recorded. Reload grants.",{exact:true}).waitFor();
   assert.equal(Number((await admin.query("SELECT count(*) FROM platform_stage.grant_audit WHERE organization_id=$1",[a])).rows[0].count),2);
+  stage="app-permissions";
+  const ownerIdentity={issuer:CI_ISSUER,subject};
+  const memberIdentity={issuer:CI_ISSUER,subject:memberSubject};
+  await assert.rejects(access.read(ownerIdentity,a,"leads"),{status:403});
+  await assert.rejects(access.read(memberIdentity,b,"leads"),{status:403});
+  await assert.rejects(access.read(memberIdentity,a,"lead",null,id(8)),{status:404});
+  await assert.rejects(access.read(memberIdentity,a,"lead",null,id(9)),{status:404});
+  assert.deepEqual(await access.read(memberIdentity,a,"lead",null,id(7)),{id:id(7),label:"Demo Team Lead"});
+  await ctx.addCookies([{name:"p4_fixture",value:memberSession,url:base,httpOnly:true,sameSite:"Strict"}]);
+  await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
+  await page.getByLabel("Organization",{exact:true}).selectOption(a);
+  await page.getByRole("button",{name:"Refresh application access"}).click();
+  await page.getByText("Synthetic CRM access available.",{exact:true}).waitFor();
+  await page.getByRole("button",{name:"Load authorized leads"}).click();
+  await page.getByText("Authorized leads loaded.",{exact:true}).waitFor();
+  await page.getByText("Demo Own Lead",{exact:true}).waitFor();
+  await page.getByText("Demo Team Lead",{exact:true}).waitFor();
+  assert.equal(await page.getByText("Demo Hidden Lead",{exact:true}).count(),0);
+  assert.equal(await page.getByText("Demo Foreign Lead",{exact:true}).count(),0);
+  assert.equal(await teams.toggle(ownerIdentity,a,member,{teamId:team,expectedActive:true,nextActive:false,expectedRevision:1,requestId:id(10)}),"applied");
+  await page.getByRole("button",{name:"Load authorized leads"}).click();
+  await page.getByText("Authorized leads loaded.",{exact:true}).waitFor();
+  assert.equal(await page.getByText("Demo Team Lead",{exact:true}).count(),0);
+  await assert.rejects(access.read(memberIdentity,a,"lead",null,id(7)),{status:404});
+  assert.equal(await roles.toggle(ownerIdentity,a,member,{role:"SALES_REP",expectedActive:true,nextActive:false,expectedRevision:1,requestId:id(11)}),"applied");
+  await page.getByRole("button",{name:"Load authorized leads"}).click();
+  await page.getByText("Application access unavailable.",{exact:true}).waitFor();
+  assert.equal(await page.getByText("Demo Own Lead",{exact:true}).count(),0);
+  assert.equal(await page.getByRole("button",{name:"Load authorized leads"}).count(),0);
+  await admin.query("INSERT INTO platform_stage.sales_grants(organization_id,user_id,role_code,active) VALUES($1,$2,'SALES_MANAGER',true)",[a,member]);
+  assert.deepEqual(await access.read(memberIdentity,a,"leads"),{items:[],nextCursor:null});
+  assert.equal(await teams.toggle(ownerIdentity,a,member,{teamId:team,expectedActive:false,nextActive:true,expectedRevision:2,requestId:id(12)}),"applied");
+  assert.deepEqual(await access.read(memberIdentity,a,"leads"),{items:[{id:id(7),label:"Demo Team Lead"}],nextCursor:null});
+  await admin.query("UPDATE platform_stage.app_entitlements SET active=false WHERE organization_id=$1 AND app_code='crm'",[a]);
+  await assert.rejects(access.read(memberIdentity,a,"leads"),{status:403});
+  await admin.query("UPDATE platform_stage.app_entitlements SET active=true WHERE organization_id=$1 AND app_code='crm'",[a]);
+  await admin.query("GRANT SELECT(label) ON platform_stage.lead_read_fixtures TO p4_stage_runtime");
+  try{await assert.rejects(access.read(memberIdentity,a,"leads"),{status:503});}
+  finally{await admin.query("REVOKE SELECT(label) ON platform_stage.lead_read_fixtures FROM p4_stage_runtime");}
+  await ctx.addCookies([{name:"p4_fixture",value:ownerSession,url:base,httpOnly:true,sameSite:"Strict"}]);
+  await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
+  await page.getByLabel("Organization",{exact:true}).selectOption(a);
+  console.log("P4_STAGE_APP_ACCESS_PASS: owner denial, scoped lead reads, role/team/entitlement revocation, manager scope and privilege drift");
   stage="revocation";await admin.query("UPDATE platform_stage.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,owner]);
   await page.getByRole("button",{name:"Load team grants"}).click();await page.getByText("Team grants unavailable or access denied.",{exact:true}).waitFor();
   await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
@@ -112,6 +163,6 @@ async function main(){
   assert.deepEqual(await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length,cookie:document.cookie})),{local:0,session:0,cookie:""});assert.equal(errors,0);
   console.log("P4_PERMISSION_WORKSPACE_PASS: real React organization switch, role/team toggles, atomic audit, revoked owner and member denial; NO_GO");
  }catch(e){console.error("P4_PERMISSION_WORKSPACE_FAIL stage="+stage+" type="+(e instanceof Error?e.name:"unknown"));throw Error("P4_PERMISSION_WORKSPACE_FAILED");}
- finally{await browser?.close();await new Promise<void>(r=>server.close(()=>r()));await Promise.all([admin.end(),prisma.$disconnect(),roles.close(),teams.close()]);rmSync(dir,{recursive:true,force:true});}
+ finally{await browser?.close();await new Promise<void>(r=>server.close(()=>r()));await Promise.all([admin.end(),prisma.$disconnect(),roles.close(),teams.close(),access.close()]);rmSync(dir,{recursive:true,force:true});}
 }
 main().catch(()=>{process.exitCode=1;});
