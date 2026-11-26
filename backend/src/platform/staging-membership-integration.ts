@@ -10,5 +10,5 @@ export function createStageMembershipIntegration(env:Readonly<Record<string,stri
   if(!policy)return null;
   const db=createStageDatabaseReader(env);
   if(!db)return null;
-  return {router:createStageMembershipRouter(policy,db.reader),close:db.close};
+  return {router:createStageMembershipRouter(policy,db.reader,env.P4_STAGE_OWNER_ACTIVATION==="approved"&&env.P4_STAGE_ORG_DIRECTORY_ENABLED==="true"),close:db.close};
 }

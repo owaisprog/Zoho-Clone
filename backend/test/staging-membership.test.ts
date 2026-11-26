@@ -34,3 +34,12 @@ test("real SDK middleware denies missing token without querying database",async(
  assert.equal(result.status,401);assert.equal(reads,0);
  assert.equal((await request(app).post("/stage/"+org+"/membership-check")).status,404);
 });
+
+test("directory flag is opt-in and SDK denies unsigned requests before list",async()=>{
+ let lists=0;const reader={read:async()=>null,list:async()=>{lists++;return {items:[],nextCursor:null};}};
+ const disabled=express();disabled.use("/stage",createStageMembershipRouter(readStageIdentityPolicy(env)!,reader));
+ assert.equal((await request(disabled).get("/stage/directory")).status,404);
+ const enabled=express();enabled.use("/stage",createStageMembershipRouter(readStageIdentityPolicy(env)!,reader,true));
+ assert.equal((await request(enabled).get("/stage/directory")).status,401);
+ assert.equal((await request(enabled).post("/stage/directory")).status,404);assert.equal(lists,0);
+});

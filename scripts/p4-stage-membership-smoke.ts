@@ -20,12 +20,21 @@ async function main(){
   await admin.query("INSERT INTO platform_stage.memberships(organization_id,user_id,role) VALUES($1,$2,'OWNER'),($3,$4,'MEMBER')",[orgA,userA,orgB,userB]);
   assert.deepEqual(await reader.read(id,orgA),{actorId:userA,organizationId:orgA,role:"OWNER"});
   assert.equal(await reader.read(id,orgB),null);
+  assert.deepEqual(await reader.list(id,null),{items:[{organizationId:orgA,membershipRole:"OWNER"}],nextCursor:null});
+  assert.deepEqual(await reader.list(id,orgA),{items:[],nextCursor:null});
+  assert.deepEqual(await reader.list({...id,issuer:"https://other.auth0.com/"},null),{items:[],nextCursor:null});
   assert.deepEqual(await reader.read({issuer,subject:"auth0|fixture-user-b"},orgB),{actorId:userB,organizationId:orgB,role:"MEMBER"});
   assert.equal(await reader.read({...id,issuer:"https://other.auth0.com/"},orgA),null);
   await assert.rejects(db.$queryRaw`SELECT * FROM platform_stage.memberships`);
   await assert.rejects(db.$executeRaw`UPDATE platform_stage.memberships SET active=false`);
+  // Exercise bounded keyset pagination over 21 additional fictional organizations.
+  const extra=Array.from({length:21},(_,i)=>"97000001-0000-4000-8000-"+String(i+1).padStart(12,"0"));
+  for(const org of extra){await admin.query("INSERT INTO platform_stage.organizations(id) VALUES($1)",[org]);await admin.query("INSERT INTO platform_stage.memberships(organization_id,user_id,role) VALUES($1,$2,\'MEMBER\')",[org,userA]);}
+  const first=await reader.list(id,null);assert.equal(first.items.length,20);assert.equal(first.nextCursor,extra[18]);
+  const next=await reader.list(id,first.nextCursor);assert.deepEqual(next.items.map(x=>x.organizationId),extra.slice(19));assert.equal(next.nextCursor,null);
   await admin.query("UPDATE platform_stage.identity_subjects SET verified=false WHERE user_id=$1",[userA]);
   assert.equal(await reader.read(id,orgA),null);
+  assert.deepEqual(await reader.list(id,null),{items:[],nextCursor:null});
   await admin.query("UPDATE platform_stage.identity_subjects SET verified=true WHERE user_id=$1",[userA]);
   await admin.query("UPDATE platform_stage.memberships SET active=false,revision=revision+1 WHERE user_id=$1",[userA]);
   assert.equal(await reader.read(id,orgA),null);
@@ -33,6 +42,7 @@ async function main(){
   await admin.query("GRANT SELECT(id) ON platform_stage.users TO p4_stage_runtime");
   try {await assert.rejects(reader.read(id,orgA),/P4_STAGE_MEMBERSHIP_UNAVAILABLE/);}
   finally {await admin.query("REVOKE SELECT(id) ON platform_stage.users FROM p4_stage_runtime");}
+  console.log("P4_STAGE_DIRECTORY_PASS: active memberships, keyset pagination, foreign identity and revocation denial");
   console.log("P4 staging membership: restricted Prisma, tenant separation, revoked identity/membership and privilege drift PASS; NO_GO");
  }finally{await db.$disconnect();await admin.end();}
 }
