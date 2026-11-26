@@ -17,7 +17,8 @@
     "smoke:synthetic-prisma": "node --env-file=.env.p3.runtime.local dist/scripts/p3-prisma-local-smoke.js",
     "smoke:synthetic-neon": "node --env-file=.env.neon.local dist/scripts/p3-prisma-neon-smoke.js",
     "prisma:validate:v1-ci": "prisma validate --schema db/p4-v1-ci.prisma",
-    "prisma:validate:r7-ci": "prisma validate --schema db/p4-r7-ci.prisma"
+    "prisma:validate:r7-ci": "prisma validate --schema db/p4-r7-ci.prisma",
+    "worker:local": "tsx src/scripts/p4-ci-local-worker-smoke.ts"
   },
   "dependencies": {
     "@zoho-clone/demo-contracts": "*",
