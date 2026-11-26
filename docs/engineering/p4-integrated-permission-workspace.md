@@ -1,0 +1,6 @@
+# Integrated organization and permission workspace — disposable CI
+PR #156 exact head 5e0092677431bd6133677a75cb8077972c02e979 passed 4/4, run 45892980024; directory, role and team grant PASS markers confirmed.
+
+Five subphases: unified React organization/role/team workspace; fixed same-origin transport with bounded strict projections; server-held fictional signed session and loopback HTTP integration; real restricted PostgreSQL role/team mutation and fresh owner checks; Chromium acceptance rehearsal including member denial, revoked owner, cross-organization UI state and audit reconciliation. No browser bearer token or persistent browser storage. Session cookies and keys are disposable, not a production authentication design.
+
+The workspace is bundled solely by the CI test harness and is not mounted in Next.js or Vercel entrypoints. It exercises existing restricted CI functions, not a live staging writer. Team creation, owner changes, CRM entitlement, real MFA, external deployment and live migrations remain disabled. No provider, billing or live database change. Formal acceptance and all ten gates remain open; P4 NO_GO. Next batches should strengthen permission-aware application access and map remaining acceptance requirements with real evidence, not activate writes prematurely.
