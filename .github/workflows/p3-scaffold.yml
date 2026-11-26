@@ -824,6 +824,15 @@ jobs:
           P4_R91_CI_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
         run: node_modules/.bin/tsx scripts/p4-r91-integrated-recovery-smoke.ts
 
+      - name: Install and verify staging membership slice in disposable PostgreSQL
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/stage_identity_roles.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/staging/001_identity_membership.sql
+          node_modules/.bin/tsx scripts/p4-stage-membership-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
@@ -874,3 +883,5 @@ jobs:
         run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-r7-ci.prisma
       - name: Validate R82 UUID identity and tenant relational model
         run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-r82-ci.prisma
+      - name: Validate dedicated staging membership Prisma model without connecting
+        run: npx --yes prisma@7.9.1 validate --schema backend/db/p4-stage.prisma
