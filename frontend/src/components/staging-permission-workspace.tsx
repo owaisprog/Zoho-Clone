@@ -1,6 +1,7 @@
 "use client";
 import {useRef,useState} from "react";
 import {StagingRoleEditor} from "./staging-role-editor";
+import {StagingAppAccess} from "./staging-app-access";
 import {StagingTeamEditor} from "./staging-team-editor";
 import type {PermissionWorkspaceTransport} from "@/lib/stage-permission-workspace";
 import type {OrganizationItem} from "@/lib/staging-organization-directory";
@@ -19,7 +20,7 @@ export function StagingPermissionWorkspace({transport}:{transport:PermissionWork
  }
  return <main className="mx-auto max-w-4xl space-y-4 p-6">
   <h1>Organization permission workspace</h1>
-  <p>Fictional data only. CRM access is disabled.</p>
+  <p>Fictional data only. Live CRM access is disabled.</p>
   <button type="button" disabled={busy} onClick={()=>void load(null)}>Refresh organizations</button>
   <label htmlFor="permission-org">Organization</label>
   <select id="permission-org" disabled={busy} value={selected} onChange={e=>setSelected(e.target.value)}>
@@ -28,6 +29,7 @@ export function StagingPermissionWorkspace({transport}:{transport:PermissionWork
   </select>
   {cursor&&<button type="button" disabled={busy} onClick={()=>void load(cursor)}>Next organizations</button>}
   <p role="status">{message}</p>
+  {organization&&<StagingAppAccess key={selected} organizationId={selected} transport={transport.app}/>}
   {organization?.membershipRole==="OWNER"&&<div key={selected}>
    <StagingRoleEditor organizationId={selected} transport={transport.roles}/>
    <StagingTeamEditor organizationId={selected} transport={transport.teams}/>
