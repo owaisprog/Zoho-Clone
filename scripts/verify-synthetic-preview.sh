@@ -20,3 +20,9 @@ if [ "$ready_code" != 503 ]; then echo "Unverified DB/IdP readiness must fail cl
 grep -q '"status":"not_ready"' /tmp/zoho-p3-ready.json
 rm -f /tmp/zoho-p3-live.json /tmp/zoho-p3-ready.json
 echo "PASS: local synthetic liveness 200, dependency readiness 503 (fail closed)"
+
+# Optional real local probe, with all provider sends disabled even if inherited.
+if [ "${P4_LOCAL_MONITOR_ENABLED:-false}" = true ]; then
+  if [ "$port" != 4000 ]; then echo "Local monitor requires port 4000" >&2; exit 2; fi
+  P4_LOCAL_SENTRY_SEND=false node backend/dist/scripts/p4-ci-local-monitor-smoke.js
+fi
