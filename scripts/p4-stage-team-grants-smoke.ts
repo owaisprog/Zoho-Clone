@@ -67,9 +67,32 @@ async function main(){
   await assert.rejects(raw.query("UPDATE platform_stage.team_grants SET managed=false"));
   await assert.rejects(raw.query("SELECT * FROM platform_stage.team_grants"));
   await assert.rejects(runtime.query("SELECT * FROM platform_stage.team_grants"));
+  // Activate again before testing dependency revocations, so denial cannot
+  // pass simply because the grant was already inactive.
+  assert.equal(await db.toggle(identity,a,member,{...command,expectedRevision:2,requestId:id(13)}),"applied");
+  assert.equal(await check(a,team),true);
+  await admin.query("UPDATE platform_stage.teams SET active=false WHERE organization_id=$1 AND id=$2",[a,team]);
+  assert.equal(await check(a,team),false);
+  assert.equal((await send({...command,expectedRevision:2,requestId:id(13)})).status,403);
+  await admin.query("UPDATE platform_stage.teams SET active=true WHERE organization_id=$1 AND id=$2",[a,team]);
+  assert.equal(await check(a,team),true);
+  const extra=Array.from({length:21},(_,i)=>id(100+i));
+  for(const extraTeam of extra){
+   await admin.query("INSERT INTO platform_stage.teams(organization_id,id) VALUES($1,$2)",[a,extraTeam]);
+   await admin.query("INSERT INTO platform_stage.team_grants(organization_id,user_id,team_id) VALUES($1,$2,$3)",[a,member,extraTeam]);
+  }
+  const page=await db.list(identity,a,member);
+  assert.equal(page.items.length,20);assert.equal(page.nextCursor,extra[18]);
+  assert.deepEqual((await db.list(identity,a,member,page.nextCursor)).items.map(x=>x.teamId),extra.slice(19));
+  await admin.query("GRANT SELECT(team_id) ON platform_stage.team_grants TO p4_stage_grant_writer");
+  try{await assert.rejects(db.list(identity,a,member));}
+  finally{await admin.query("REVOKE SELECT(team_id) ON platform_stage.team_grants FROM p4_stage_grant_writer");}
   await admin.query("UPDATE platform_stage.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,member]);
   assert.equal(await check(a,team),false);assert.equal((await send(command)).status,403);
   await admin.query("UPDATE platform_stage.memberships SET active=true WHERE organization_id=$1 AND user_id=$2",[a,member]);
+  assert.equal(await check(a,team),true);
+  await admin.query("UPDATE platform_stage.identity_subjects SET verified=false WHERE user_id=$1",[member]);
+  assert.equal(await check(a,team),false);
   await admin.query("UPDATE platform_stage.memberships SET active=false WHERE organization_id=$1 AND user_id=$2",[a,owner]);
   assert.equal((await send(command)).status,403);
   console.log("P4_STAGE_TEAM_GRANTS_PASS: signed owner, unmanaged existing links, tenant FK, immediate revocation, shared audit and replay");
