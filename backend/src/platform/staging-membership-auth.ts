@@ -26,10 +26,30 @@ export function stageVerifiedClaims(raw:unknown,policy:StageIdentityPolicy,now:n
   return Object.freeze({issuer:policy.issuer,subject:c.sub});
 }
 /** Unmounted until isolated provider configuration and deployment are authorized. */
-export function createStageMembershipRouter(policy:StageIdentityPolicy,reader:StageMembershipReader){
+export function createStageMembershipRouter(policy:StageIdentityPolicy,reader:StageMembershipReader,directoryEnabled=false){
   const router=Router();
   router.use((_req,res,next)=>{res.setHeader("Cache-Control","no-store, private");next();});
   const verify=auth({issuerBaseURL:policy.issuer,audience:policy.audience,tokenSigningAlg:"RS256"});
+  if(directoryEnabled&&reader.list)router.get("/directory",verify,async(req,res)=>{
+    const keys=Object.keys(req.query),after=req.query.after??null;
+    if((keys.length!==0&&(keys.length!==1||keys[0]!=="after"))||
+       (after!==null&&!isCanonicalUuidV4(after))){res.status(403).json({error:{code:"ACCESS_DENIED"}});return;}
+    const identity=stageVerifiedClaims((req as Request&{auth?:{payload?:unknown}}).auth?.payload,policy,Math.floor(Date.now()/1000));
+    if(!identity){res.status(401).json({error:{code:"IDENTITY_REQUIRED"}});return;}
+    try{
+      const page=await reader.list!(identity,after);
+      let prior=after;
+      if(page.items.length>20)throw Error("PROJECTION_DENIED");
+      const items=page.items.map(row=>{
+        if(!isCanonicalUuidV4(row.organizationId)||(prior!==null&&row.organizationId<=prior)||
+          (row.membershipRole!=="OWNER"&&row.membershipRole!=="MEMBER"))throw Error("PROJECTION_DENIED");
+        prior=row.organizationId;
+        return {organizationId:row.organizationId,membershipRole:row.membershipRole};
+      });
+      if(page.nextCursor!==null&&(items.length!==20||page.nextCursor!==prior))throw Error("PROJECTION_DENIED");
+      res.json({scope:"staging-organization-directory",items,nextCursor:page.nextCursor,applicationAccess:false});
+    }catch{res.status(503).json({error:{code:"UNAVAILABLE"}});}
+  });
   router.get("/:orgId/membership-check",verify,async(req,res)=>{
     if(!isCanonicalUuidV4(req.params.orgId)||Object.keys(req.query).length){
       res.status(403).json({error:{code:"ACCESS_DENIED"}});return;
