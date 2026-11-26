@@ -38,7 +38,7 @@ export function createStageMembershipRouter(policy:StageIdentityPolicy,reader:St
     if(!identity){res.status(401).json({error:{code:"IDENTITY_REQUIRED"}});return;}
     try{
       const page=await reader.list!(identity,after);
-      let prior=after;
+      let prior:string|null=after;
       if(page.items.length>20)throw Error("PROJECTION_DENIED");
       const items=page.items.map(row=>{
         if(!isCanonicalUuidV4(row.organizationId)||(prior!==null&&row.organizationId<=prior)||
