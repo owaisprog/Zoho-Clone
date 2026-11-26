@@ -87,3 +87,48 @@ test("R88 rejects unmounted SDK preparation and new privileged CI modules",()=>{
 test("Vercel index entrypoint cannot import CI modules",()=>{
  assert.throws(()=>fakeGraph("","",{"index.ts":'import "./platform/p4-r84-ci-runtime.js";'}),/P4_CI_TEST_ROUTER_REACHABLE/);
 });
+
+test("generated documentation imports are not dependencies, but real imports are traversed",()=>{
+ const files={
+  "generated/p4-stage/client.ts": `/**
+    * Example:
+    * import { PrismaClient } from './generated/prisma/client'
+    * import { forbidden } from '../../platform/p4-r84-ci-runtime.js'
+    */
+   import type { Model } from "./models.js";
+   export const value = "require(nonexistent)";
+   export type Client = Model;
+   `,
+  "generated/p4-stage/models.ts":"export type Model = { id: string };"
+ };
+ assert.equal(fakeGraph("","",{
+  "index.ts":'import "./generated/p4-stage/client.js";',...files,
+ }).checked,5);
+ assert.throws(()=>fakeGraph("","",{
+  "index.ts":'import "./generated/p4-stage/client.js";',
+  ...files,
+  "generated/p4-stage/models.ts":'export type Model = import("../../platform/p4-r84-ci-runtime.js").Test;',
+ }),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("actual unresolved generated dependency fails closed with safe diagnosis",()=>{
+ assert.throws(()=>fakeGraph("","",{
+  "index.ts":'import "./generated/p4-stage/client.js";',
+  "generated/p4-stage/client.ts":'import "./missing.js";',
+ }),e=>e.message==="P4_CI_TEST_ROUTER_REACHABLE"&&e.reason==="UNRESOLVED_SOURCE_IMPORT"&&e.sourceFile.endsWith("generated/p4-stage/client.ts"));
+});
+test("TypeScript import equals, type-only reexports and computed template imports cannot evade isolation",()=>{
+ for(const src of [
+  'import ci = require("./platform/p4-r84-ci-runtime.js");',
+  'export type { Test } from "./platform/p4-r84-ci-runtime.js";',
+  'type Test = import("./platform/p4-r84-ci-runtime.js").Test;',
+  'const path = "./platform/p4-r84-ci-runtime.js"; void import(`${path}`);',
+ ])assert.throws(()=>fakeGraph(src,""),/P4_CI_TEST_ROUTER_REACHABLE/);
+});
+test("canonical path to prohibited CI module is denied even through a safe alias",()=>{
+ const root=resolve("backend/src");
+ const alias=resolve(root,"internal/safe.ts");
+ const blocked=resolve(root,"platform/p4-r84-ci-runtime.ts");
+ const files=new Map([[resolve(root,"app.ts"),'import "./internal/safe.js";'],[resolve(root,"server.ts"),""],[alias,""],[blocked,""]]);
+ assert.throws(()=>inspectProductionGraph(p=>files.get(p),p=>files.has(p),p=>p===alias?blocked:p),
+  /P4_CI_TEST_ROUTER_REACHABLE/);
+});
