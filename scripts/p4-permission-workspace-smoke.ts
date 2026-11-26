@@ -122,30 +122,42 @@ async function main(){
   const grants=await admin.query("SELECT active,revision FROM platform_stage.team_grants WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,member,team]);
   assert.deepEqual(grants.rows,[{active:true,revision:1}]);
   assert.deepEqual(await access.read(memberIdentity,a,"lead",null,id(7)),{id:id(7),label:"Demo Team Lead"});
-  stage="app-member-browser";
-  await ctx.addCookies([{name:"p4_fixture",value:memberSession,url:base,httpOnly:true,sameSite:"Strict"}]);
-  await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
-  await page.getByLabel("Organization",{exact:true}).selectOption(a);
-  await page.getByRole("button",{name:"Refresh application access"}).click();
-  await page.getByText("Synthetic CRM access available.",{exact:true}).waitFor();
-  await page.getByRole("button",{name:"Load authorized leads"}).click();
-  await page.getByText("Authorized leads loaded.",{exact:true}).waitFor();
-  await page.getByText("Demo Own Lead",{exact:true}).waitFor();
-  await page.getByText("Demo Team Lead",{exact:true}).waitFor();
-  assert.equal(await page.getByText("Demo Hidden Lead",{exact:true}).count(),0);
-  assert.equal(await page.getByText("Demo Foreign Lead",{exact:true}).count(),0);
+  stage="app-member-session";
+  // A fresh browser context prevents stale owner UI or session cookies from
+  // influencing the member acceptance path. The prior owner page stays isolated.
+  const memberCtx=await browser.newContext();
+  await memberCtx.route("**/*",route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+  await memberCtx.addCookies([{name:"p4_fixture",value:memberSession,url:base,httpOnly:true,sameSite:"Strict"}]);
+  const memberPage=await memberCtx.newPage();memberPage.setDefaultTimeout(10000);
+  memberPage.on("pageerror",()=>{errors++;});
+  await memberPage.goto(base);
+  stage="app-member-directory";
+  await memberPage.getByRole("button",{name:"Refresh organizations",exact:true}).click();
+  await memberPage.getByText("Active organizations loaded.",{exact:true}).waitFor();
+  await memberPage.locator("#permission-org").selectOption(a);
+  await memberPage.getByText("Permission management unavailable for members.",{exact:true}).waitFor();
+  stage="app-member-navigation";
+  await memberPage.getByRole("button",{name:"Refresh application access",exact:true}).click();
+  await memberPage.getByText("Synthetic CRM access available.",{exact:true}).waitFor();
+  stage="app-member-list";
+  await memberPage.getByRole("button",{name:"Load authorized leads",exact:true}).click();
+  await memberPage.getByText("Authorized leads loaded.",{exact:true}).waitFor();
+  await memberPage.getByText("Demo Own Lead",{exact:true}).waitFor();
+  await memberPage.getByText("Demo Team Lead",{exact:true}).waitFor();
+  assert.equal(await memberPage.getByText("Demo Hidden Lead",{exact:true}).count(),0);
+  assert.equal(await memberPage.getByText("Demo Foreign Lead",{exact:true}).count(),0);
   stage="app-team-revoke";
   assert.equal(await teams.toggle(ownerIdentity,a,member,{teamId:team,expectedActive:true,nextActive:false,expectedRevision:1,requestId:id(10)}),"applied");
-  await page.getByRole("button",{name:"Load authorized leads"}).click();
-  await page.getByText("Authorized leads loaded.",{exact:true}).waitFor();
-  assert.equal(await page.getByText("Demo Team Lead",{exact:true}).count(),0);
+  await memberPage.getByRole("button",{name:"Load authorized leads"}).click();
+  await memberPage.getByText("Authorized leads loaded.",{exact:true}).waitFor();
+  assert.equal(await memberPage.getByText("Demo Team Lead",{exact:true}).count(),0);
   await assert.rejects(access.read(memberIdentity,a,"lead",null,id(7)),{status:404});
   stage="app-role-revoke";
   assert.equal(await roles.toggle(ownerIdentity,a,member,{role:"SALES_REP",expectedActive:true,nextActive:false,expectedRevision:1,requestId:id(11)}),"applied");
-  await page.getByRole("button",{name:"Load authorized leads"}).click();
-  await page.getByText("Application access unavailable.",{exact:true}).waitFor();
-  assert.equal(await page.getByText("Demo Own Lead",{exact:true}).count(),0);
-  assert.equal(await page.getByRole("button",{name:"Load authorized leads"}).count(),0);
+  await memberPage.getByRole("button",{name:"Load authorized leads"}).click();
+  await memberPage.getByText("Application access unavailable.",{exact:true}).waitFor();
+  assert.equal(await memberPage.getByText("Demo Own Lead",{exact:true}).count(),0);
+  assert.equal(await memberPage.getByRole("button",{name:"Load authorized leads"}).count(),0);
   stage="app-manager-scope";
   await admin.query("INSERT INTO platform_stage.sales_grants(organization_id,user_id,role_code,active) VALUES($1,$2,'SALES_MANAGER',true)",[a,member]);
   assert.deepEqual(await access.read(memberIdentity,a,"leads"),{items:[],nextCursor:null});
@@ -159,7 +171,7 @@ async function main(){
   await admin.query("GRANT SELECT(label) ON platform_stage.lead_read_fixtures TO p4_stage_runtime");
   try{await assert.rejects(access.read(memberIdentity,a,"leads"),{status:503});}
   finally{await admin.query("REVOKE SELECT(label) ON platform_stage.lead_read_fixtures FROM p4_stage_runtime");}
-  await ctx.addCookies([{name:"p4_fixture",value:ownerSession,url:base,httpOnly:true,sameSite:"Strict"}]);
+  await memberCtx.close();
   await page.getByRole("button",{name:"Refresh organizations"}).click();await page.getByText("Active organizations loaded.",{exact:true}).waitFor();
   await page.getByLabel("Organization",{exact:true}).selectOption(a);
   console.log("P4_STAGE_APP_ACCESS_PASS: owner denial, scoped lead reads, role/team/entitlement revocation, manager scope and privilege drift");
@@ -175,7 +187,7 @@ async function main(){
   const missingHeader=await page.evaluate(async()=> (await fetch("/api/permission-workspace/directory")).status);assert.equal(missingHeader,403);
   assert.deepEqual(await page.evaluate(()=>({local:localStorage.length,session:sessionStorage.length,cookie:document.cookie})),{local:0,session:0,cookie:""});assert.equal(errors,0);
   console.log("P4_PERMISSION_WORKSPACE_PASS: real React organization switch, role/team toggles, atomic audit, revoked owner and member denial; NO_GO");
- }catch(e){console.error("P4_PERMISSION_WORKSPACE_FAIL stage="+stage+" type="+(e instanceof Error?e.name:"unknown")+" status="+(e&&typeof e==="object"&&"status" in e&&[403,404,503].includes(Number(e.status))?Number(e.status):"none"));throw Error("P4_PERMISSION_WORKSPACE_FAILED");}
+ }catch(e){console.error("P4_PERMISSION_WORKSPACE_FAIL stage="+stage+" type="+(e instanceof Error?e.name:"unknown")+" status="+(e&&typeof e==="object"&&"status" in e&&[403,404,503].includes(Number(e.status))?Number(e.status):"none")+" category="+(e instanceof Error?(/strict mode violation/i.test(e.message)?"STRICT_LOCATOR":/Timeout/i.test(e.message)?"TIMEOUT":/Target closed|closed/i.test(e.message)?"CLOSED":/selectOption/i.test(e.message)?"SELECT":/locator/i.test(e.message)?"LOCATOR":/cookie/i.test(e.message)?"COOKIE":/assert/i.test(e.message)?"ASSERTION":"OTHER"):"OTHER"));throw Error("P4_PERMISSION_WORKSPACE_FAILED");}
  finally{await browser?.close();await new Promise<void>(r=>server.close(()=>r()));await Promise.all([admin.end(),prisma.$disconnect(),roles.close(),teams.close(),access.close()]);rmSync(dir,{recursive:true,force:true});}
 }
 main().catch(()=>{process.exitCode=1;});
