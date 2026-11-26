@@ -55,10 +55,8 @@ CREATE FUNCTION platform_stage.app_read(p_issuer text,p_subject text,p_org uuid,
  SELECT coalesce(jsonb_agg(jsonb_build_object('id',s.id,'label',s.label) ORDER BY s.id),'[]'::jsonb) INTO result FROM
  (SELECT l.id,l.label FROM platform_stage.lead_read_fixtures l
  WHERE l.organization_id=p_org AND l.active AND (p_after IS NULL OR l.id>p_after) AND (p_id IS NULL OR l.id=p_id)
- AND ((rep AND l.owner_id=actor) OR EXISTS(
- SELECT 1 FROM platform_stage.team_grants g JOIN platform_stage.teams t
- ON t.organization_id=g.organization_id AND t.id=g.team_id AND t.active
- WHERE g.organization_id=p_org AND g.user_id=actor AND g.team_id=l.team_id AND g.active))
+ AND ((rep AND l.owner_id=actor) OR (l.team_id IS NOT NULL AND
+ platform_stage.team_membership_check(p_issuer,p_subject,p_org,l.team_id)))
  ORDER BY l.id LIMIT 21) s;
  IF p_resource='lead' THEN RETURN result->0; END IF;
  RETURN result;
