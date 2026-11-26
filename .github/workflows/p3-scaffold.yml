@@ -835,6 +835,8 @@ jobs:
           node_modules/.bin/tsx scripts/p4-stage-membership-smoke.ts
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/stage_role_grants.sql
           node_modules/.bin/tsx scripts/p4-stage-role-grants-smoke.ts
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/stage_team_grants.sql
+          node_modules/.bin/tsx scripts/p4-stage-team-grants-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
