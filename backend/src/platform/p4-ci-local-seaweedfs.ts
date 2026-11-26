@@ -54,6 +54,7 @@ export class LocalSeaweedStore implements LocalObjectStore{
  constructor(private readonly env:Env){readLocalSeaweedConfig(env);}
  private async request(method:"HEAD"|"GET"|"PUT"|"DELETE",area:LocalFileArea,id?:string,bytes=Buffer.alloc(0)){
   const config=readLocalSeaweedConfig(this.env);
+  if(method!=="HEAD"&&!isCanonicalUuidV4(id))return deny();
   const path=localObjectPath(area,id);
   if(bytes.length>4096)return deny();
   const response=await fetch(origin+path,{method,headers:signedHeaders(method,path,bytes,config),
@@ -72,7 +73,7 @@ export class LocalSeaweedStore implements LocalObjectStore{
   }
  }
  async put(area:LocalFileArea,id:string,bytes:Buffer){
-  if(this.closed||!Buffer.isBuffer(bytes)||bytes.length===0||bytes.length>4096)return deny();
+  if(this.closed||!isCanonicalUuidV4(id)||!Buffer.isBuffer(bytes)||bytes.length===0||bytes.length>4096)return deny();
   const key=localObjectPath(area,id);
   if(this.owned.has(key))return deny();
   // Reserve before I/O. Cleanup covers ambiguous PUT results, not arbitrary objects.
@@ -80,7 +81,7 @@ export class LocalSeaweedStore implements LocalObjectStore{
   await this.request("PUT",area,id,Buffer.from(bytes));
  }
  async read(area:LocalFileArea,id:string){
-  if(this.closed||!this.owned.has(localObjectPath(area,id)))return deny();
+  if(this.closed||!isCanonicalUuidV4(id)||!this.owned.has(localObjectPath(area,id)))return deny();
   return this.request("GET",area,id);
  }
  async close(){
