@@ -157,7 +157,7 @@ jobs:
         run: node scripts/p4-acceptance-traceability.mjs
 
       - name: Verify local synthetic process and fail-closed readiness
-        run: bash scripts/verify-synthetic-preview.sh
+        run: P3_SMOKE_PORT=4000 P4_LOCAL_MONITOR_ENABLED=true P4_LOCAL_SENTRY_SEND=false bash scripts/verify-synthetic-preview.sh
 
       - name: Validate disposable Docker Compose configuration
         run: docker compose -f docker-compose.yml config --quiet
