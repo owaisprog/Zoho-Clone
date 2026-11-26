@@ -1,0 +1,15 @@
+# Local, synthetic-only scanner; no host port, network or mounted user files.
+name: zoho-clone-local-files
+services:
+  scanner:
+    image: clamav/clamav:1.4
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    entrypoint: ["clamscan"]
+    command: ["--stdout", "--no-summary", "-"]
