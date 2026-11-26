@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "scope": "DISPOSABLE_CI_ENGINEERING_ONLY",
+  "decision": "NO_GO",
+  "formalAccepted": false,
+  "formalExecuted": 0,
+  "base": {
+    "pr": 158,
+    "sha": "6f8733492e1441c46008015beb8b52ccb2c7e35e",
+    "run": 45910201662,
+    "verifiedJobs": 4
+  },
+  "script": "scripts/p4-stage-acceptance-recovery.ts",
+  "cases": [
+    {
+      "id": "PERM-T008",
+      "coverage": "ENGINEERING_SCENARIO",
+      "limitation": "Owner without sales grant denied by the synthetic lead read function; no live CRM route."
+    },
+    {
+      "id": "PERM-T010",
+      "coverage": "PARTIAL_READ_DENIAL",
+      "limitation": "Foreign lead detail and organization list denied; update path and full contract remain untested."
+    },
+    {
+      "id": "AC-107",
+      "coverage": "ENGINEERING_SCENARIO",
+      "limitation": "Organization suspended while identity retained; next protected read and write denied; no live Auth0 session."
+    },
+    {
+      "id": "AC-108",
+      "coverage": "ENGINEERING_SCENARIO",
+      "limitation": "Platform entitlement disabled during retained identity; read, writer and audit denied; no real subscription lifecycle."
+    },
+    {
+      "id": "AC-058",
+      "coverage": "ENGINEERING_SCENARIO",
+      "limitation": "Role and team change audit metadata, actor/time and replay verified with fictional data; not production audit coverage."
+    },
+    {
+      "id": "PERM-T027",
+      "coverage": "ENGINEERING_SCENARIO",
+      "limitation": "Sales rep denied owner-only audit page; actual production audit endpoint not activated."
+    },
+    {
+      "id": "DOM-T010",
+      "coverage": "ENGINEERING_SCENARIO",
+      "limitation": "Foreign audit scope denied without returning records or count; no external staging."
+    }
+  ],
+  "openGates": 10,
+  "openRisks": 14,
+  "openDecisions": 12
+}
