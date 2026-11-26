@@ -867,6 +867,12 @@ jobs:
           P4_LOCAL_WORKER_ENABLED=true P4_LOCAL_REDIS_URL=redis://127.0.0.1:6380 \
             npm run worker:local -w backend
 
+      - name: Verify private local file quarantine with real ClamAV
+        run: |
+          docker compose -f docker-compose.local-files.yml config --quiet
+          docker compose -f docker-compose.local-files.yml pull scanner
+          P4_LOCAL_FILES_ENABLED=true node_modules/.bin/tsx scripts/p4-local-files-smoke.ts
+
   prisma-schema-validation:
     runs-on: ubuntu-latest
     timeout-minutes: 15
