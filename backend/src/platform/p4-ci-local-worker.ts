@@ -41,20 +41,24 @@ export async function runLocalWorker(env:Env=process.env):Promise<DemoResult>{
  const queue=new Queue<DemoJob,DemoResult,"demo-report">(queueName,{prefix,connection:{...connection,maxRetriesPerRequest:1}});
  let worker:Worker<DemoJob,DemoResult,"demo-report">|undefined;
  let failed=false,ready=false;
+ let stage="QUEUE_READY";
  queue.on("error",()=>{failed=true;});
  try{
   await within(queue.waitUntilReady(),3000);
+  ready=true;
+  stage="WORKER_READY";
   worker=new Worker<DemoJob,DemoResult,"demo-report">(queueName,async job=>{
    localWorkerConfig(env);
    return processDemoJob(job.name,job.id,job.data,runId);
   },{prefix,connection:{...connection,maxRetriesPerRequest:null},concurrency:1,maxStalledCount:0});
   worker.on("error",()=>{failed=true;});
   await within(worker.waitUntilReady(),3000);
-  ready=true;
+  stage="ENQUEUE";
   const data:DemoJob={scope:"synthetic-only",runId,kind:"demo-report"};
   const job=await within(queue.add("demo-report",data,{jobId:runId,attempts:1}),2000);
   const duplicate=await within(queue.add("demo-report",data,{jobId:runId,attempts:1}),2000);
   if(job.id!==runId||duplicate.id!==runId)return deny();
+  stage="COMPLETION";
   const deadline=Date.now()+5000;
   while(Date.now()<deadline&&!failed){
    const saved=await within(queue.getJob(runId),1000);
@@ -62,7 +66,10 @@ export async function runLocalWorker(env:Env=process.env):Promise<DemoResult>{
     const state=await within(saved.getState(),1000);
     if(state==="failed")return deny();
     if(state==="completed"){
-     const result=saved.returnvalue;
+     // State can transition after getJob() loaded the earlier snapshot.
+     // Read the stored result only after observing the terminal state.
+     const completed=await within(queue.getJob(runId),1000);
+     const result=completed?.returnvalue;
      if(!result||result.scope!=="synthetic-only"||result.records!==3||result.total!==60||
         await within(queue.getCompletedCount(),1000)!==1)return deny();
      return Object.freeze({scope:"synthetic-only",records:3,total:60});
@@ -71,11 +78,14 @@ export async function runLocalWorker(env:Env=process.env):Promise<DemoResult>{
    await delay(50);
   }
   return deny();
+ }catch{
+  throw Error("P4_LOCAL_WORKER_"+stage+"_FAILED");
  }finally{
   try{
-   if(worker)await within(worker.close(true),3000);
+   if(worker)await within(worker.close(),3000);
    // Delete only this random, private queue after worker shutdown. Never flush Redis.
    if(ready)await within(queue.obliterate(),3000);
-  }finally{await within(queue.close(),3000);}
+  }catch{throw Error("P4_LOCAL_WORKER_CLEANUP_FAILED");}
+  finally{try{await within(queue.close(),3000);}catch{throw Error("P4_LOCAL_WORKER_CLOSE_FAILED");}}
  }
 }
