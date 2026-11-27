@@ -81,15 +81,15 @@ export class CiP5Leads{
    AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname=current_user AND NOT(rolsuper OR rolbypassrls OR rolcreaterole OR rolcreatedb OR rolreplication OR rolinherit))
    AND NOT EXISTS(SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.member WHERE r.rolname=current_user)
    AND NOT has_schema_privilege(current_user,'p5_ci','CREATE') AND NOT has_schema_privilege(current_user,'platform_stage','CREATE')
-   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants','accounts','account_events','contacts','contact_events','deals','conversions')
+   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants','accounts','account_events','contacts','contact_events','deals','conversions','deal_events')
     AND c.relrowsecurity AND c.relforcerowsecurity AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)
-    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=9
+    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=10
    AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='platform_stage' AND c.relkind='r'
     AND (has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') OR has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))) AS valid`);
    if(r.rows[0]?.valid!==true)return fail(503);
    const value=await run(c);await c.query("COMMIT");return value;
   }catch(e){try{await c.query("ROLLBACK");}catch{discard=true;}if(e instanceof LeadError)throw e;
-   if(e&&typeof e==="object"&&"code" in e){if(e.code==="42501")return fail(403);if(e.code==="P5004")return fail(404);if(e.code==="22023")return fail(400);if(e.code==="23505"||e.code==="40001")return fail(409);}
+   if(e&&typeof e==="object"&&"code" in e){if(e.code==="42501")return fail(403);if(e.code==="P5004")return fail(404);if(e.code==="22023")return fail(400);if(e.code==="23505"||e.code==="23503"||e.code==="40001")return fail(409);}
    return fail(503);
   }finally{c.release(discard);}
  }
