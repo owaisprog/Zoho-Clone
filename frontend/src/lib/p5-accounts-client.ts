@@ -18,7 +18,7 @@ export function parseAccountPage(x:unknown,after:string|null):AccountPage{
  return {items,nextCursor:x.nextCursor as string|null};
 }
 /** Fixed same-origin transport for synthetic CRM resources. No browser identity headers. */
-export function createP5RecordTransport(resource:"accounts"|"contacts"|"leads"|"deals"|"pipelines"|"board"|"activities"|"followups"|"reports"|"emails"|"templates"|"handoffs"|"search"|"saved-views"|"duplicates"|"merge"|"imports"|"lead-scoring"|"assignment-rules",request:typeof fetch=(url,options)=>fetch(url,options)){
+export function createP5RecordTransport(resource:"accounts"|"contacts"|"leads"|"deals"|"pipelines"|"board"|"activities"|"followups"|"reports"|"emails"|"templates"|"handoffs"|"search"|"saved-views"|"duplicates"|"merge"|"imports"|"lead-scoring"|"assignment-rules"|"settings"|"custom-fields",request:typeof fetch=(url,options)=>fetch(url,options)){
  return async (org:string,path:string,body?:object,method:"POST"|"PATCH"="POST")=>{
   if(!isStageOrgId(org))throw new LeadClientError(400);
   const r=await request("/api/p5/"+org+"/crm/"+resource+path,{method:body?method:"GET",headers:{"X-P5-Leads":"1",Accept:"application/json",...(body?{"Content-Type":"application/json"}:{})},...(body?{body:JSON.stringify(body)}:{}),credentials:"same-origin",cache:"no-store",redirect:"error",signal:AbortSignal.timeout(8000)});
