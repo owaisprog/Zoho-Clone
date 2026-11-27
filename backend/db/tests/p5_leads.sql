@@ -78,8 +78,8 @@ CREATE FUNCTION p5_ci.read_leads(p_issuer text,p_subject text,p_org uuid,p_after
  IF current_setting('transaction_read_only')<>'on' OR (p_after IS NOT NULL AND p_id IS NOT NULL) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
  SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
  IF NOT FOUND OR NOT (who.rep OR who.manager) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
- SELECT coalesce(jsonb_agg(p5_ci.project(l) ORDER BY l.id),'[]'::jsonb) INTO result FROM
- (SELECT x.* FROM p5_ci.leads x WHERE x.organization_id=p_org AND (p_after IS NULL OR x.id>p_after) AND (p_id IS NULL OR x.id=p_id)
+ SELECT coalesce(jsonb_agg(p5_ci.project(l.lead_row) ORDER BY l.id),'[]'::jsonb) INTO result FROM
+ (SELECT x AS lead_row,x.id FROM p5_ci.leads x WHERE x.organization_id=p_org AND (p_after IS NULL OR x.id>p_after) AND (p_id IS NULL OR x.id=p_id)
  AND ((who.rep AND x.owner_id=who.actor_id) OR (x.team_id IS NOT NULL AND platform_stage.team_membership_check(p_issuer,p_subject,p_org,x.team_id)))
  ORDER BY x.id LIMIT 21) l;
  IF p_id IS NOT NULL THEN RETURN result->0; END IF;
