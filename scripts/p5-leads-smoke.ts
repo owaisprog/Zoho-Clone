@@ -12,7 +12,8 @@ import request from "supertest";
 import {chromium,type Browser} from "playwright";
 import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
 import {CI_ISSUER,CI_AUDIENCE,verifyP4R33CiToken,type P4R33CiJwk} from "../backend/src/platform/p4-r33-ci-jwt-verifier.js";
-import {CiP5SearchViews} from "../backend/src/platform/p5-ci-search-views.js";
+import {CiP5Duplicates} from "../backend/src/platform/p5-ci-duplicates.js";
+import {createCiP5DuplicatesRouter} from "../backend/src/platform/p5-ci-duplicates-router.js";
 import {createCiP5SearchViewsRouter} from "../backend/src/platform/p5-ci-search-views-router.js";
 import {createCiP5HandoffsRouter} from "../backend/src/platform/p5-ci-handoffs-router.js";
 import {createCiP5MailRouter} from "../backend/src/platform/p5-ci-mail-router.js";
@@ -36,7 +37,7 @@ async function main(){
  const dir=mkdtempSync(join(tmpdir(),"p5-leads-")),bundle=join(dir,"bundle.js");
  const build=spawnSync("node_modules/.bin/esbuild",["scripts/p5-leads-entry.tsx","--bundle","--platform=browser","--format=iife","--jsx=automatic","--tsconfig=frontend/tsconfig.json","--define:process.env.NODE_ENV=\"production\"","--outfile="+bundle],{stdio:"pipe",timeout:30000});
  if(build.status!==0){rmSync(dir,{recursive:true,force:true});throw Error("P5_BUNDLE_FAILED");}
- const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5SearchViews();
+ const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Duplicates();
  const pair=generateKeyPairSync("rsa",{modulusLength:2048}),jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-p5leads",alg:"RS256",use:"sig"} as P4R33CiJwk;
  function token(sub:string){
   const now=Math.floor(Date.now()/1000),enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
@@ -51,7 +52,7 @@ async function main(){
   try{return verifyP4R33CiToken(sessions.get(matches[0]!.slice("p5_fixture=".length)),[jwk],Math.floor(Date.now()/1000));}catch{return null;}
  };
  const app=express();app.disable("x-powered-by");let base="";
- app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search","/duplicates"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
  app.get("/board-fixture.css",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("text/css").send(".p5-kanban{display:flex;gap:12px;overflow-x:auto;align-items:flex-start}.p5-kanban-column{box-sizing:border-box;flex:0 0 250px;min-height:160px;padding:12px;border:1px solid #aaa}.p5-kanban-card{box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #aaa;background:white}.p5-kanban-card h4{margin:0 0 8px}.p5-kanban-card button{display:block;margin:4px 0}");});
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
@@ -59,7 +60,7 @@ async function main(){
   if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(!["POST","PATCH"].includes(req.method)||req.get("origin")!==base))){
    res.status(403).json({status:"denied",applicationAccess:false});return;
   }next();
- },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified));
+ },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified),createCiP5DuplicatesRouter(db,verified));
  const server=createServer(app);let browser:Browser|undefined,stage="setup";
  const path=(org=a)=>"/api/p5/"+org+"/crm/leads";
  const get=(url:string,key:string)=>request(app).get(url).set("x-p5-leads","1").set("Cookie","p5_fixture="+key);
@@ -803,6 +804,53 @@ async function main(){
   assert.equal(await searchPage.getByRole("columnheader").count(),4);
   assert.equal((await get(viewsPath,repCookie)).body.data.items[0].revision,1);
   console.log("P5_SEARCH_PASS: scoped prefix search, composite paging, personal views and browser persistence");
+  stage="duplicate-http";
+  const duplicatesPath="/api/p5/"+a+"/crm/duplicates",mergePath="/api/p5/"+a+"/crm/merge";
+  const sourceContact={...ct,id:id(1860),requestId:id(1861),displayName:"Demo Source Contact",email:"duplicate@example.com"};
+  const targetContact={...sourceContact,id:id(1862),requestId:id(1863),displayName:"Demo Target Contact"};
+  assert.equal((await post(contacts(),repCookie,sourceContact)).status,201);
+  assert.equal((await post(contacts(),repCookie,targetContact)).status,201);
+  await admin.query("UPDATE p5_ci.contacts SET team_id=$1 WHERE organization_id=$2 AND id=ANY($3::uuid[])",[team,a,[sourceContact.id,targetContact.id]]);
+  const linkedDeal={...dealDraft,id:id(1864),requestId:id(1865),contactId:sourceContact.id,title:"Demo Merge Linked Deal"};
+  assert.equal((await post(dealsPath,repCookie,linkedDeal)).status,201);
+  await admin.query("UPDATE p5_ci.deals SET team_id=$1 WHERE organization_id=$2 AND id=$3",[team,a,linkedDeal.id]);
+  const dupQuery="?email=duplicate%40example.com",mergeQuery="?source="+sourceContact.id+"&target="+targetContact.id;
+  assert.equal((await get(duplicatesPath+dupQuery,repCookie)).status,403);
+  assert.equal((await get(duplicatesPath+dupQuery,managerCookie)).body.data.items.length,0);
+  await admin.query("UPDATE platform_stage.team_grants SET active=true WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,manager,team]);
+  assert.equal((await get(duplicatesPath+dupQuery,managerCookie)).body.data.items.length,2);
+  assert.equal((await get(mergePath+mergeQuery,managerCookie)).body.data.dealCount,1);
+  assert.equal((await get(mergePath+mergeQuery,managerCookie)).body.data.eligible,true);
+  const mergeCmd={sourceId:sourceContact.id,targetId:targetContact.id,requestId:id(1866),sourceRevision:0,targetRevision:0};
+  assert.equal((await post(mergePath,repCookie,mergeCmd)).status,403);
+  assert.equal((await post(mergePath,managerCookie,{...mergeCmd,sourceRevision:1})).status,409);
+  const duplicateCtx=await browser.newContext();await duplicateCtx.route("**/*",route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+  await duplicateCtx.addCookies([{name:"p5_fixture",value:managerCookie,url:base,httpOnly:true,sameSite:"Strict"}]);
+  const duplicatePage=await duplicateCtx.newPage();duplicatePage.setDefaultTimeout(10000);duplicatePage.on("pageerror",()=>errors++);
+  stage="duplicate-browser";
+  await duplicatePage.goto(base+"/duplicates");
+  await duplicatePage.getByLabel("Exact contact email",{exact:true}).fill(sourceContact.email);
+  await duplicatePage.getByRole("button",{name:"Find duplicates",exact:true}).click();
+  await duplicatePage.getByText("Matches loaded.",{exact:true}).waitFor();
+  await duplicatePage.getByLabel("Source contact to archive",{exact:true}).selectOption(sourceContact.id);
+  await duplicatePage.getByLabel("Target contact to keep",{exact:true}).selectOption(targetContact.id);
+  await duplicatePage.getByRole("button",{name:"Preview merge",exact:true}).click();
+  await duplicatePage.getByText("Eligible for merge",{exact:true}).waitFor();
+  await duplicatePage.getByRole("button",{name:"Confirm merge",exact:true}).click();
+  await duplicatePage.getByText("Merge complete. Deals relinked: 1.",{exact:true}).waitFor();
+  assert.equal((await get(dealsPath+"/"+linkedDeal.id,repCookie)).body.data.contactId,targetContact.id);
+  assert.equal((await get(contacts()+"/"+sourceContact.id,repCookie)).status,404);
+  assert.equal((await get(searchPath+"?q=Demo%20Source%20Contact&entity=CONTACT",repCookie)).body.data.items.length,0);
+  assert.equal((await get(duplicatesPath+dupQuery,managerCookie)).body.data.items.length,1);
+  const audit=(await admin.query("SELECT request_id::text AS request,deal_ids::text[] AS moved FROM p5_ci.merge_audit WHERE organization_id=$1 AND source_id=$2",[a,sourceContact.id])).rows[0];
+  assert.deepEqual(audit.moved,[linkedDeal.id]);
+  assert.equal((await post(mergePath,managerCookie,{...mergeCmd,requestId:audit.request})).body.data.dealCount,1);
+  await assert.rejects(raw.query("SELECT * FROM p5_ci.merge_audit"));
+  await assert.rejects(admin.query("DELETE FROM p5_ci.merge_audit WHERE organization_id=$1 AND source_id=$2",[a,sourceContact.id]));
+  await admin.query("UPDATE platform_stage.team_grants SET active=false WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,manager,team]);
+  assert.equal((await post(mergePath,managerCookie,{...mergeCmd,requestId:audit.request})).status,404);
+  await duplicateCtx.close();
+  console.log("P5_DUPLICATE_PASS: manager preview, atomic contact merge, preserved deal relation and audit");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Request denied or invalid.",{exact:true}).waitFor();
