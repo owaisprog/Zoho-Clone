@@ -46,11 +46,11 @@ export function P5SalesBoard({organizationId,pipelines,deals,client}:{organizati
  <p>Visible opportunities: {count}</p><p>Total opportunity value: {money(value)}</p>
  {!focus&&<><p>Open opportunity value: {money(open)}</p><p>Won opportunity value: {money(won)}</p></>}</section>
  {focus&&<button disabled={blocked} onClick={()=>void load(null,null,appliedSearch)}>Back to full board</button>}
- <div className="flex gap-3 overflow-x-auto" aria-label="Kanban columns">{board.columns.map(column=><section key={column.key} aria-label={"Stage "+column.key} className="min-w-64 rounded border p-3 space-y-3"
- onDragOver={e=>{if(!blocked&&dragged.current?.nextStages.includes(column.key))e.preventDefault();}}
+ <div className="p5-kanban flex gap-3 overflow-x-auto" aria-label="Kanban columns">{board.columns.map(column=><section key={column.key} aria-label={"Stage "+column.key} className="p5-kanban-column min-w-64 shrink-0 rounded border p-3 space-y-3"
+ onDragOver={e=>{if(!blocked&&dragged.current?.nextStages.includes(column.key)){e.preventDefault();e.dataTransfer.dropEffect="move";}}}
  onDrop={e=>{e.preventDefault();const row=dragged.current;dragged.current=null;if(row)chooseMove(row,column.key);}}>
  <h3>{column.label}</h3><p>{column.count} opportunities · {money(column.valueCents)}</p>
- {column.items.map(row=><article key={row.id} aria-label={row.title} className="rounded border p-3" draggable={!blocked&&row.nextStages.length>0&&row.revision<1000000}
+ {column.items.map(row=><article key={row.id} aria-label={row.title} className="p5-kanban-card rounded border p-3" draggable={!blocked&&row.nextStages.length>0&&row.revision<1000000}
  onDragStart={e=>{if(blocked||!row.nextStages.length||row.revision>=1000000){e.preventDefault();return;}dragged.current=row;e.dataTransfer.effectAllowed="move";e.dataTransfer.setData("text/plain",row.id);}} onDragEnd={()=>{dragged.current=null;}}>
  <h4>{row.title}</h4><p>{money(row.valueCents)} · revision {row.revision}</p>
  {row.nextStages.map(target=><button key={target} disabled={blocked||row.revision>=1000000} onClick={()=>chooseMove(row,target)}>Move {row.title} to {target}</button>)}
