@@ -18,7 +18,7 @@ export function P5AccountWorkspace({organizationId,client}:{organizationId:strin
  function save(id:string|null,command:AccountWrite){return run(async()=>{setDetail(null);setPage(null);setPending({id,command});const row=await client.write(organizationId,id,command);setPending(null);show(row);setName("");setMessage(id?"Account updated.":"Account saved.");});}
  const choices=["SERVICES","RETAIL","TECHNOLOGY","OTHER"] as const;
  return <main className="mx-auto max-w-5xl space-y-5 p-6">
-  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a></nav>
+  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a> · <a href="/board">Sales board</a></nav>
   <h1>Sales CRM — Accounts</h1><p>Fictional company records only. Live CRM remains disabled.</p>
   <form onSubmit={e=>{e.preventDefault();if(!blocked)void save(null,{id:crypto.randomUUID(),requestId:crypto.randomUUID(),name,industry});}}>
    <h2>Create account</h2><label htmlFor="account-name">Account name</label><input id="account-name" value={name} onChange={e=>setName(e.target.value)} required maxLength={80} disabled={blocked}/>
