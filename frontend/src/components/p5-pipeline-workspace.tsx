@@ -14,7 +14,7 @@ export function P5PipelineWorkspace({organizationId,client}:{organizationId:stri
  function patch(i:number,key:"key"|"label",value:string){setStages(old=>old.map((s,n)=>n===i?{...s,[key]:value}:s));}
  function move(i:number,d:number){setStages(old=>{const rows=[...old];const j=i+d;if(j<1||j>=rows.length-2)return old;[rows[i],rows[j]]=[rows[j]!,rows[i]!];return rows;});}
  return <main className="mx-auto max-w-5xl space-y-5 p-6">
- <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a></nav>
+ <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a> · <a href="/board">Sales board</a></nav>
  <h1>Sales CRM — Pipelines</h1><p>Fictional tenant-specific settings. Only explicitly authorized sales managers can save. Open, Won and Lost are fixed keys; intermediate stages are ordered. Stages lock after first deal.</p>
  <button disabled={blocked} onClick={()=>void load(null)}>Load pipelines</button><button disabled={blocked} onClick={()=>choose(null)}>New pipeline</button>
  {page&&<section aria-label="Pipeline results">{page.items.map(row=><div key={row.id}><button disabled={blocked} onClick={()=>choose(row)}>Edit {row.name}</button><span>{row.isDefault?" Default":""} · revision {row.revision}</span><p>{row.stages.map(x=>x.label).join(" → ")}</p></div>)}{page.nextCursor&&<button disabled={blocked} onClick={()=>void load(page.nextCursor)}>Next pipelines</button>}</section>}
