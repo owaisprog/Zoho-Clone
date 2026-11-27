@@ -26,7 +26,7 @@ function parseMatches(v:unknown,e:string){
 }
 
 export class CiP5Duplicates extends CiP5SearchViews{
- async duplicates(x:StageIdentity,org:string,e:unknown){
+ async contactDuplicates(x:StageIdentity,org:string,e:unknown){
  const args=this.scope(x,org);if(!email(e))throw new LeadError(400);
  return this.transaction(false,async c=>{const rows=parseMatches((await c.query("SELECT p5_ci.read_duplicates($1,$2,$3,$4) AS data",[...args,e])).rows[0]?.data,e);return {items:rows.slice(0,20),truncated:rows.length===21};});
  }
