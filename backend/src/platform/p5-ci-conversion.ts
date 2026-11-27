@@ -16,11 +16,11 @@ export function parseReceipt(x:unknown){
  return {accountId:x.accountId,contactId:x.contactId,dealId:x.dealId,leadId:x.leadId,revision:x.revision};
 }
 export const DEAL_STAGES=["OPEN","DISCOVERY","PROPOSAL","NEGOTIATION","WON","LOST"] as const;
-export type DealStage=typeof DEAL_STAGES[number];
-export const isDealStage=(x:unknown):x is DealStage=>typeof x==="string"&&(DEAL_STAGES as readonly string[]).includes(x);
+export type DealStage=string;
+export const isDealStage=(x:unknown):x is DealStage=>typeof x==="string"&&/^[A-Z][A-Z0-9_]{0,23}$/.test(x);
 export function parseDeal(x:unknown){
- if(!exact(x,"accountId,contactId,id,revision,stage,title,valueCents")||!isCanonicalUuidV4(x.id)||!isCanonicalUuidV4(x.accountId)||!isCanonicalUuidV4(x.contactId)||!title(x.title)||!isDealStage(x.stage)||typeof x.revision!=="number"||!Number.isInteger(x.revision)||x.revision<0||x.revision>1000000||typeof x.valueCents!=="number"||!Number.isInteger(x.valueCents)||x.valueCents<0||x.valueCents>1000000000)return fail(503);
- return {id:x.id,accountId:x.accountId,contactId:x.contactId,title:x.title,stage:x.stage,revision:x.revision,valueCents:x.valueCents};
+ if(!exact(x,"accountId,contactId,id,nextStages,pipelineId,revision,stage,title,valueCents")||!isCanonicalUuidV4(x.id)||!isCanonicalUuidV4(x.accountId)||!isCanonicalUuidV4(x.contactId)||!title(x.title)||!isCanonicalUuidV4(x.pipelineId)||!Array.isArray(x.nextStages)||x.nextStages.length>2||!x.nextStages.every(isDealStage)||new Set(x.nextStages).size!==x.nextStages.length||x.nextStages.includes(x.stage)||(x.stage==="WON"||x.stage==="LOST"?x.nextStages.length!==0:!x.nextStages.includes("LOST"))||!isDealStage(x.stage)||typeof x.revision!=="number"||!Number.isInteger(x.revision)||x.revision<0||x.revision>1000000||typeof x.valueCents!=="number"||!Number.isInteger(x.valueCents)||x.valueCents<0||x.valueCents>1000000000)return fail(503);
+ return {id:x.id,accountId:x.accountId,contactId:x.contactId,title:x.title,stage:x.stage,revision:x.revision,valueCents:x.valueCents,pipelineId:x.pipelineId,nextStages:x.nextStages as string[]};
 }
 export class CiP5Conversion extends CiP5Contacts{
  async convert(x:StageIdentity,org:string,id:string,raw:unknown){
