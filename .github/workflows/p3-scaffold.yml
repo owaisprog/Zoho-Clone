@@ -851,6 +851,15 @@ jobs:
           node scripts/p4-final-acceptance-review.mjs
           node_modules/.bin/tsx scripts/p4-stage-acceptance-recovery.ts
 
+      - name: Verify P5 persisted synthetic CRM lead creation and scoped browser reads
+        env:
+          CI: 'true'
+          GITHUB_ACTIONS: 'true'
+          P5_LEADS_CI: 'true'
+        run: |
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/p5_leads.sql
+          node_modules/.bin/tsx scripts/p5-leads-smoke.ts
+
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
         env:
           CI: 'true'
