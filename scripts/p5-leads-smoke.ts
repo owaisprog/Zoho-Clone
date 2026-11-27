@@ -12,7 +12,8 @@ import request from "supertest";
 import {chromium,type Browser} from "playwright";
 import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
 import {CI_ISSUER,CI_AUDIENCE,verifyP4R33CiToken,type P4R33CiJwk} from "../backend/src/platform/p4-r33-ci-jwt-verifier.js";
-import {CiP5Handoffs} from "../backend/src/platform/p5-ci-handoffs.js";
+import {CiP5SearchViews} from "../backend/src/platform/p5-ci-search-views.js";
+import {createCiP5SearchViewsRouter} from "../backend/src/platform/p5-ci-search-views-router.js";
 import {createCiP5HandoffsRouter} from "../backend/src/platform/p5-ci-handoffs-router.js";
 import {createCiP5MailRouter} from "../backend/src/platform/p5-ci-mail-router.js";
 import {createCiP5ForecastRouter} from "../backend/src/platform/p5-ci-forecast-router.js";
@@ -35,7 +36,7 @@ async function main(){
  const dir=mkdtempSync(join(tmpdir(),"p5-leads-")),bundle=join(dir,"bundle.js");
  const build=spawnSync("node_modules/.bin/esbuild",["scripts/p5-leads-entry.tsx","--bundle","--platform=browser","--format=iife","--jsx=automatic","--tsconfig=frontend/tsconfig.json","--define:process.env.NODE_ENV=\"production\"","--outfile="+bundle],{stdio:"pipe",timeout:30000});
  if(build.status!==0){rmSync(dir,{recursive:true,force:true});throw Error("P5_BUNDLE_FAILED");}
- const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Handoffs();
+ const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5SearchViews();
  const pair=generateKeyPairSync("rsa",{modulusLength:2048}),jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-p5leads",alg:"RS256",use:"sig"} as P4R33CiJwk;
  function token(sub:string){
   const now=Math.floor(Date.now()/1000),enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
@@ -50,7 +51,7 @@ async function main(){
   try{return verifyP4R33CiToken(sessions.get(matches[0]!.slice("p5_fixture=".length)),[jwk],Math.floor(Date.now()/1000));}catch{return null;}
  };
  const app=express();app.disable("x-powered-by");let base="";
- app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
  app.get("/board-fixture.css",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("text/css").send(".p5-kanban{display:flex;gap:12px;overflow-x:auto;align-items:flex-start}.p5-kanban-column{box-sizing:border-box;flex:0 0 250px;min-height:160px;padding:12px;border:1px solid #aaa}.p5-kanban-card{box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #aaa;background:white}.p5-kanban-card h4{margin:0 0 8px}.p5-kanban-card button{display:block;margin:4px 0}");});
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
@@ -58,7 +59,7 @@ async function main(){
   if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(!["POST","PATCH"].includes(req.method)||req.get("origin")!==base))){
    res.status(403).json({status:"denied",applicationAccess:false});return;
   }next();
- },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified));
+ },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified));
  const server=createServer(app);let browser:Browser|undefined,stage="setup";
  const path=(org=a)=>"/api/p5/"+org+"/crm/leads";
  const get=(url:string,key:string)=>request(app).get(url).set("x-p5-leads","1").set("Cookie","p5_fixture="+key);
@@ -759,6 +760,49 @@ async function main(){
   await assert.rejects(raw.query("SELECT * FROM p5_ci.customer_handoffs"));
   await admin.query("UPDATE p5_ci.stage_edit_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   console.log("P5_HANDOFF_PASS: transactional won-deal creation, exact replay, scoped checklist, browser persistence");
+  stage="search-http";
+  const searchPath="/api/p5/"+a+"/crm/search",viewsPath="/api/p5/"+a+"/crm/saved-views";
+  const searchQuery="?q=Demo%20Won%20Opportunity&entity=DEAL";
+  const searchResult=await get(searchPath+searchQuery,repCookie);
+  assert.equal(searchResult.status,200);
+  assert.deepEqual(searchResult.body.data.items.map((x:{id:string})=>x.id),[wonDeal.id]);
+  assert.equal((await get(searchPath+searchQuery,otherCookie)).body.data.items.length,0);
+  assert.equal((await get(searchPath+"?q=%25",repCookie)).status,400);
+  assert.equal((await get(searchPath+"?afterKind=DEAL",repCookie)).status,400);
+  assert.equal((await get("/api/p5/"+b+"/crm/search",repCookie)).status,403);
+  const allSearch=await get(searchPath+"?q=Demo",repCookie);
+  assert.equal(allSearch.status,200);assert.equal(allSearch.body.data.items.length,20);
+  const nextSearch=allSearch.body.data.nextCursor;
+  assert.ok(nextSearch);
+  const nextResult=await get(searchPath+"?q=Demo&afterKind="+nextSearch.kind+"&afterId="+nextSearch.id,repCookie);
+  assert.equal(nextResult.status,200);
+  assert.ok(nextResult.body.data.items.every((x:{kind:string;id:string})=>x.kind+":"+x.id>nextSearch.kind+":"+nextSearch.id));
+  const viewId=id(1850),viewDraft={name:"Demo Won Deals",query:"Demo Won Opportunity",entity:"DEAL",columnsMode:"COMPACT",expectedRevision:-1};
+  assert.equal((await post(viewsPath+"/"+viewId,repCookie,viewDraft)).status,200);
+  assert.equal((await post(viewsPath+"/"+viewId,repCookie,viewDraft)).status,200);
+  assert.equal((await post(viewsPath+"/"+viewId,repCookie,{...viewDraft,name:"Demo Changed View"})).status,409);
+  assert.equal((await get(viewsPath,otherCookie)).body.data.items.length,0);
+  assert.equal((await post(viewsPath+"/"+viewId,otherCookie,{...viewDraft,expectedRevision:0})).status,404);
+  await assert.rejects(raw.query("SELECT * FROM p5_ci.saved_views"));
+  const searchPage=await ctx.newPage();searchPage.setDefaultTimeout(10000);searchPage.on("pageerror",()=>errors++);
+  stage="search-browser";
+  await searchPage.goto(base+"/search");
+  await searchPage.getByRole("button",{name:"Load saved views",exact:true}).click();
+  await searchPage.getByText("Views loaded.",{exact:true}).waitFor();
+  await searchPage.getByRole("button",{name:"Apply Demo Won Deals",exact:true}).click();
+  await searchPage.getByText("Search loaded.",{exact:true}).waitFor();
+  await searchPage.getByRole("cell",{name:"Demo Won Opportunity",exact:true}).waitFor();
+  assert.equal(await searchPage.getByRole("columnheader").count(),2);
+  await searchPage.getByLabel("Column preset",{exact:true}).selectOption("DETAIL");
+  await searchPage.getByRole("button",{name:"Update view",exact:true}).click();
+  await searchPage.getByText("View saved.",{exact:true}).waitFor();
+  await searchPage.reload();
+  await searchPage.getByRole("button",{name:"Load saved views",exact:true}).click();
+  await searchPage.getByRole("button",{name:"Apply Demo Won Deals",exact:true}).click();
+  await searchPage.getByText("Search loaded.",{exact:true}).waitFor();
+  assert.equal(await searchPage.getByRole("columnheader").count(),4);
+  assert.equal((await get(viewsPath,repCookie)).body.data.items[0].revision,1);
+  console.log("P5_SEARCH_PASS: scoped prefix search, composite paging, personal views and browser persistence");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Request denied or invalid.",{exact:true}).waitFor();
