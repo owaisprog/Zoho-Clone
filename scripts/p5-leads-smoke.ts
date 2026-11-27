@@ -12,7 +12,8 @@ import request from "supertest";
 import {chromium,type Browser} from "playwright";
 import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
 import {CI_ISSUER,CI_AUDIENCE,verifyP4R33CiToken,type P4R33CiJwk} from "../backend/src/platform/p4-r33-ci-jwt-verifier.js";
-import {CiP5Intake} from "../backend/src/platform/p5-ci-intake.js";
+import {CiP5LeadRules} from "../backend/src/platform/p5-ci-lead-rules.js";
+import {createCiP5LeadRulesRouter} from "../backend/src/platform/p5-ci-lead-rules-router.js";
 import {createCiP5IntakeRouter} from "../backend/src/platform/p5-ci-intake-router.js";
 import {createCiP5DuplicatesRouter} from "../backend/src/platform/p5-ci-duplicates-router.js";
 import {createCiP5SearchViewsRouter} from "../backend/src/platform/p5-ci-search-views-router.js";
@@ -38,7 +39,7 @@ async function main(){
  const dir=mkdtempSync(join(tmpdir(),"p5-leads-")),bundle=join(dir,"bundle.js");
  const build=spawnSync("node_modules/.bin/esbuild",["scripts/p5-leads-entry.tsx","--bundle","--platform=browser","--format=iife","--jsx=automatic","--tsconfig=frontend/tsconfig.json","--define:process.env.NODE_ENV=\"production\"","--outfile="+bundle],{stdio:"pipe",timeout:30000});
  if(build.status!==0){rmSync(dir,{recursive:true,force:true});throw Error("P5_BUNDLE_FAILED");}
- const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Intake();
+ const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5LeadRules();
  const pair=generateKeyPairSync("rsa",{modulusLength:2048}),jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-p5leads",alg:"RS256",use:"sig"} as P4R33CiJwk;
  function token(sub:string){
   const now=Math.floor(Date.now()/1000),enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
@@ -53,7 +54,7 @@ async function main(){
   try{return verifyP4R33CiToken(sessions.get(matches[0]!.slice("p5_fixture=".length)),[jwk],Math.floor(Date.now()/1000));}catch{return null;}
  };
  const app=express();app.disable("x-powered-by");let base="";
- app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search","/duplicates","/imports","/lead-capture"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search","/duplicates","/imports","/lead-capture","/lead-rules"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
  app.get("/board-fixture.css",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("text/css").send(".p5-kanban{display:flex;gap:12px;overflow-x:auto;align-items:flex-start}.p5-kanban-column{box-sizing:border-box;flex:0 0 250px;min-height:160px;padding:12px;border:1px solid #aaa}.p5-kanban-card{box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #aaa;background:white}.p5-kanban-card h4{margin:0 0 8px}.p5-kanban-card button{display:block;margin:4px 0}");});
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
@@ -61,7 +62,7 @@ async function main(){
   if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(!["POST","PATCH"].includes(req.method)||req.get("origin")!==base))){
    res.status(403).json({status:"denied",applicationAccess:false});return;
   }next();
- },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified),createCiP5DuplicatesRouter(db,verified),createCiP5IntakeRouter(db,verified,()=>base));
+ },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified),createCiP5DuplicatesRouter(db,verified),createCiP5IntakeRouter(db,verified,()=>base),createCiP5LeadRulesRouter(db,verified));
  const server=createServer(app);let browser:Browser|undefined,stage="setup";
  const path=(org=a)=>"/api/p5/"+org+"/crm/leads";
  const get=(url:string,key:string)=>request(app).get(url).set("x-p5-leads","1").set("Cookie","p5_fixture="+key);
@@ -906,6 +907,47 @@ async function main(){
   await admin.query("UPDATE p5_ci.webforms SET active=false WHERE organization_id=$1 AND id=$2",[a,formId]);
   assert.equal((await capturePost(capturePath,captureCmd)).status,403);
   console.log("P5_INTAKE_PASS: bounded mapping, isolated rows, job replay, consent/origin token restrictions and browser persistence");
+  stage="lead-rules-http";
+  const rulesLead={id:id(1880),requestId:id(1881),companyName:"Demo Rule Lead",contactEmail:"rules@example.com",source:"WEBSITE"};
+  assert.equal((await post(path(),repCookie,rulesLead)).status,201);
+  const scoringPath="/api/p5/"+a+"/crm/lead-scoring",rulePath="/api/p5/"+a+"/crm/assignment-rules/"+rulesLead.id;
+  const rulesRead=scoringPath+"/"+rulesLead.id;
+  assert.equal((await get(rulesRead,otherCookie)).status,404);
+  assert.equal((await patch(path()+"/"+rulesLead.id,repCookie,{operation:"edit",requestId:id(1882),expectedRevision:0,companyName:rulesLead.companyName,contactEmail:rulesLead.contactEmail,source:"EVENT"})).status,200);
+  let scored=await get(rulesRead,repCookie);
+  assert.equal(scored.status,200);assert.equal(scored.body.data.originalSource,"WEBSITE");assert.equal(scored.body.data.latestSource,"EVENT");assert.equal(scored.body.data.score,10);
+  await admin.query("UPDATE p5_ci.leads SET team_id=$1 WHERE organization_id=$2 AND id=$3",[team,a,rulesLead.id]);
+  await admin.query("UPDATE platform_stage.team_grants SET active=true WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,manager,team]);
+  await admin.query("INSERT INTO platform_stage.team_grants(organization_id,user_id,team_id,active) VALUES($1,$2,$3,true) ON CONFLICT(organization_id,user_id,team_id) DO UPDATE SET active=true",[a,rep,team]);
+  await admin.query("UPDATE platform_stage.team_grants SET active=true WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,other,team]);
+  const weights={website:25,referral:20,event:15,contacted:15,qualified:70,revision:-1};
+  assert.equal((await post(scoringPath,repCookie,weights)).status,403);
+  assert.equal((await post(scoringPath,managerCookie,weights)).status,200);
+  assert.equal((await get(rulesRead,repCookie)).body.data.score,25);
+  assert.equal((await post(scoringPath,managerCookie,weights)).status,200);
+  const ruleCmd={primaryId:other,fallbackId:rep,expectedRevision:-1};
+  assert.equal((await post(rulePath,managerCookie,ruleCmd)).status,200);
+  assert.equal((await get(rulePath,managerCookie)).body.data.suggestedId,other);
+  await admin.query("UPDATE platform_stage.users SET active=false WHERE id=$1",[other]);
+  assert.equal((await get(rulePath,managerCookie)).body.data.suggestedId,null);
+  await admin.query("UPDATE platform_stage.users SET active=true WHERE id=$1",[other]);
+  await admin.query("UPDATE p5_ci.stage_edit_grants SET active=true WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  assert.equal((await patch(path()+"/"+rulesLead.id,repCookie,{operation:"transition",requestId:id(1883),expectedRevision:1,nextStatus:"CONTACTED"})).status,200);
+  const qualifyPath=path()+"/"+rulesLead.id+"/qualify",qualifyCmd={requestId:id(1884),expectedRevision:2,status:"QUALIFIED",reason:"FIT"};
+  assert.equal((await post(qualifyPath,repCookie,{...qualifyCmd,reason:"NOT_FIT"})).status,400);
+  assert.equal((await post(qualifyPath,repCookie,qualifyCmd)).status,200);
+  assert.equal((await post(qualifyPath,repCookie,qualifyCmd)).status,200);
+  scored=await get(rulesRead,repCookie);assert.equal(scored.body.data.score,95);assert.equal(scored.body.data.reason,"FIT");
+  await assert.rejects(raw.query("SELECT * FROM p5_ci.scoring_rules"));
+  await assert.rejects(admin.query("UPDATE p5_ci.lead_source_history SET source='EVENT' WHERE organization_id=$1 AND lead_id=$2 AND revision=0",[a,rulesLead.id]));
+  stage="lead-rules-browser";
+  const rulesPage=await ctx.newPage();rulesPage.setDefaultTimeout(10000);rulesPage.on("pageerror",()=>errors++);
+  await rulesPage.goto(base+"/lead-rules");await rulesPage.getByLabel("Lead ID",{exact:true}).fill(rulesLead.id);
+  await rulesPage.getByRole("button",{name:"Load lead rules",exact:true}).click();await rulesPage.getByText("Lead rules loaded.",{exact:true}).waitFor();
+  await rulesPage.getByText("Original source: WEBSITE",{exact:true}).waitFor();await rulesPage.getByText("Latest source: EVENT",{exact:true}).waitFor();await rulesPage.getByText("Score: 95/100",{exact:true}).waitFor();
+  await admin.query("UPDATE p5_ci.stage_edit_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  await admin.query("UPDATE platform_stage.team_grants SET active=false WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,manager,team]);
+  console.log("P5_RULES_PASS: original source retention, score recomputation, eligibility revocation and qualification reason");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Request denied or invalid.",{exact:true}).waitFor();
