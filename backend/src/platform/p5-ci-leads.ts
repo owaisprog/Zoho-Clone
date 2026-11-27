@@ -6,6 +6,34 @@ export type LeadSource="WEBSITE"|"REFERRAL"|"EVENT";
 export type LeadStatus="NEW"|"CONTACTED"|"QUALIFIED"|"LOST";
 export type Lead={id:string;companyName:string;contactEmail:string;source:LeadSource;status:LeadStatus;revision:number};
 export type CreateLead={id:string;requestId:string;companyName:string;contactEmail:string;source:LeadSource};
+export type LeadFilter={search:string;source:LeadSource|null;status:LeadStatus|null};
+export type ChangeLead={requestId:string;expectedRevision:number}&({operation:"edit";companyName:string;contactEmail:string;source:LeadSource}|{operation:"transition";nextStatus:Exclude<LeadStatus,"NEW">});
+export function parseLeadFilter(x:unknown):LeadFilter{
+ if(!exact(x,"search,source,status")||typeof x.search!=="string"||!(/^[A-Za-z0-9 &.@_-]{0,50}$/).test(x.search)||(x.source!==null&&!source(x.source))||(x.status!==null&&!status(x.status)))return fail(400);
+ return {search:x.search,source:x.source,status:x.status};
+}
+export function parseChangeLead(x:unknown):ChangeLead{
+ if(!x||typeof x!=="object"||Array.isArray(x))return fail(400);
+ const v=x as Record<string,unknown>;
+ if(!isCanonicalUuidV4(v.requestId)||typeof v.expectedRevision!=="number"||!Number.isInteger(v.expectedRevision)||v.expectedRevision<0||v.expectedRevision>=1000000)return fail(400);
+ const base={requestId:v.requestId,expectedRevision:v.expectedRevision};
+ if(v.operation==="edit"&&exact(v,"companyName,contactEmail,expectedRevision,operation,requestId,source")&&company(v.companyName)&&email(v.contactEmail)&&source(v.source))return {...base,operation:"edit",companyName:v.companyName,contactEmail:v.contactEmail,source:v.source};
+ if(v.operation==="transition"&&exact(v,"expectedRevision,nextStatus,operation,requestId")&&(v.nextStatus==="CONTACTED"||v.nextStatus==="QUALIFIED"||v.nextStatus==="LOST"))return {...base,operation:"transition",nextStatus:v.nextStatus};
+ return fail(400);
+}
+export function parseHistory(value:unknown,after:number){
+ if(!Array.isArray(value)||value.length>21)return fail(503);
+ let prior=after;
+ const rows=value.map((v:unknown)=>{
+  if(!exact(v,"action,nextStatus,previousStatus,revision")||typeof v.revision!=="number"||!Number.isInteger(v.revision)||v.revision<=prior||v.revision>1000000)return fail(503);
+  const valid=(v.action==="CREATED"&&v.revision===0&&v.previousStatus===null&&v.nextStatus===null)||
+   (v.action==="EDITED"&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null)||
+   (v.action==="STAGE_CHANGED"&&v.revision>0&&((v.previousStatus==="NEW"&&v.nextStatus==="CONTACTED")||(v.previousStatus==="CONTACTED"&&(v.nextStatus==="QUALIFIED"||v.nextStatus==="LOST"))));
+  if(!valid)return fail(503);
+  prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:v.previousStatus,nextStatus:v.nextStatus};
+ });
+ return {items:rows.slice(0,20),nextCursor:rows.length===21?rows[19]!.revision:null};
+}
 export class LeadError extends Error{constructor(readonly status:400|403|404|409|503){super("P5_LEAD_REQUEST_FAILED");}}
 const fail=(status:400|403|404|409|503):never=>{throw new LeadError(status);};
 const exact=(v:unknown,keys:string):v is Record<string,unknown>=>!!v&&typeof v==="object"&&!Array.isArray(v)&&Object.keys(v).sort().join(",")===keys;
@@ -43,22 +71,22 @@ export class CiP5Leads{
    AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname=current_user AND NOT(rolsuper OR rolbypassrls OR rolcreaterole OR rolcreatedb OR rolreplication OR rolinherit))
    AND NOT EXISTS(SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.member WHERE r.rolname=current_user)
    AND NOT has_schema_privilege(current_user,'p5_ci','CREATE') AND NOT has_schema_privilege(current_user,'platform_stage','CREATE')
-   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events')
+   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants')
     AND c.relrowsecurity AND c.relforcerowsecurity AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)
-    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=2
+    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=3
    AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='platform_stage' AND c.relkind='r'
     AND (has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') OR has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))) AS valid`);
    if(r.rows[0]?.valid!==true)return fail(503);
    const value=await run(c);await c.query("COMMIT");return value;
   }catch(e){try{await c.query("ROLLBACK");}catch{discard=true;}if(e instanceof LeadError)throw e;
-   if(e&&typeof e==="object"&&"code" in e){if(e.code==="42501")return fail(403);if(e.code==="22023")return fail(400);if(e.code==="23505"||e.code==="40001")return fail(409);}
+   if(e&&typeof e==="object"&&"code" in e){if(e.code==="42501")return fail(403);if(e.code==="P5004")return fail(404);if(e.code==="22023")return fail(400);if(e.code==="23505"||e.code==="40001")return fail(409);}
    return fail(503);
   }finally{c.release(discard);}
  }
- async list(x:StageIdentity,org:string,after:string|null=null){
-  const args=this.scope(x,org);if(after!==null&&!isCanonicalUuidV4(after))return fail(400);
+ async list(x:StageIdentity,org:string,after:string|null=null,rawFilter:unknown={search:"",source:null,status:null}){
+  const args=this.scope(x,org),filter=parseLeadFilter(rawFilter);if(after!==null&&!isCanonicalUuidV4(after))return fail(400);
   return this.transaction(false,async c=>{
-   const r=await c.query("SELECT p5_ci.read_leads($1,$2,$3,$4,NULL) AS data",[...args,after]);const data=r.rows[0]?.data;
+   const r=await c.query("SELECT p5_ci.search_leads($1,$2,$3,$4,$5,$6,$7) AS data",[...args,after,filter.search,filter.source,filter.status]);const data=r.rows[0]?.data;
    if(!Array.isArray(data)||data.length>21)return fail(503);
    let previous:string|null=after;const items=data.map(x=>{const row=parseLead(x);if(previous!==null&&row.id<=previous)return fail(503);previous=row.id;return row;});
    return {items:items.slice(0,20),nextCursor:items.length===21?items[19]!.id:null};
@@ -80,6 +108,19 @@ export class CiP5Leads{
    const lead=parseLead(data.lead);if(lead.id!==cmd.id)return fail(503);
    return {outcome:data.outcome,lead};
   });
+ }
+ async change(x:StageIdentity,org:string,id:string,raw:unknown){
+  const args=this.scope(x,org),cmd=parseChangeLead(raw);if(!isCanonicalUuidV4(id))return fail(400);
+  return this.transaction(true,async c=>{
+   const r=await c.query("SELECT p5_ci.change_lead($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) AS data",[...args,id,cmd.requestId,cmd.expectedRevision,cmd.operation,cmd.operation==="edit"?cmd.companyName:null,cmd.operation==="edit"?cmd.contactEmail:null,cmd.operation==="edit"?cmd.source:null,cmd.operation==="transition"?cmd.nextStatus:null]);
+   const data:unknown=r.rows[0]?.data;
+   if(!exact(data,"lead,outcome")||(data.outcome!=="applied"&&data.outcome!=="replay"))return fail(503);
+   const lead=parseLead(data.lead);if(lead.id!==id)return fail(503);return {outcome:data.outcome,lead};
+  });
+ }
+ async history(x:StageIdentity,org:string,id:string,after=-1){
+  const args=this.scope(x,org);if(!isCanonicalUuidV4(id)||!Number.isInteger(after)||after< -1||after>1000000)return fail(400);
+  return this.transaction(false,async c=>parseHistory((await c.query("SELECT p5_ci.lead_history($1,$2,$3,$4,$5) AS data",[...args,id,after])).rows[0]?.data,after));
  }
  async close(){await this.pool.end();}
 }
