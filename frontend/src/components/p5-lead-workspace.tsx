@@ -29,7 +29,7 @@ export function P5LeadWorkspace({organizationId,client}:{organizationId:string;c
  function loadHistory(id:string,after=-1){return run(async()=>{setHistory(null);setHistory(await client.history(organizationId,id,after));setMessage("Lead history loaded.");});}
  function create(draft:LeadDraft){return run(async()=>{clear();setPending(draft);const lead=await client.create(organizationId,draft);setPending(null);setCompany("");setEmail("");showLead(lead);setMessage("Lead saved.");});}
  return <main className="mx-auto max-w-5xl space-y-5 p-6">
-  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a></nav>
+  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a> · <a href="/board">Sales board</a></nav>
   <h1 className="text-2xl font-semibold">Sales CRM — Leads</h1>
   <p>Fictional data only. Use Demo company names and example.com addresses. Live CRM access is disabled.</p>
   <form className="space-y-3 rounded-lg border p-4" onSubmit={e=>{e.preventDefault();if(!pending&&!pendingChange&&!pendingAssignment)void create({id:crypto.randomUUID(),requestId:crypto.randomUUID(),companyName:company,contactEmail:email,source});}}>
