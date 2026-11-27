@@ -1,6 +1,8 @@
 import {createRoot} from "react-dom/client";
 import {P5LeadWorkspace} from "../frontend/src/components/p5-lead-workspace";
 import {createP5LeadClient} from "../frontend/src/lib/p5-leads-client";
+import {P5AccountWorkspace} from "../frontend/src/components/p5-account-workspace";
+import {createP5AccountClient} from "../frontend/src/lib/p5-accounts-client";
 const root=document.getElementById("root"),org=root?.getAttribute("data-org");
 if(!root||!org)throw Error("P5_WORKSPACE_ROOT_MISSING");
-createRoot(root).render(<P5LeadWorkspace organizationId={org} client={createP5LeadClient()}/>);
+createRoot(root).render(location.pathname==="/accounts"?<P5AccountWorkspace organizationId={org} client={createP5AccountClient()}/>:<P5LeadWorkspace organizationId={org} client={createP5LeadClient()}/>);
