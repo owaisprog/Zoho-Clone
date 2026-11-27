@@ -27,12 +27,22 @@ export function parseHistory(value:unknown,after:number){
  const rows=value.map((v:unknown)=>{
   if(!exact(v,"action,nextStatus,previousStatus,revision")||typeof v.revision!=="number"||!Number.isInteger(v.revision)||v.revision<=prior||v.revision>1000000)return fail(503);
   const valid=(v.action==="CREATED"&&v.revision===0&&v.previousStatus===null&&v.nextStatus===null)||
-   (v.action==="EDITED"&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null)||
+   ((v.action==="EDITED"||v.action==="ASSIGNED")&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null)||
    (v.action==="STAGE_CHANGED"&&v.revision>0&&((v.previousStatus==="NEW"&&v.nextStatus==="CONTACTED")||(v.previousStatus==="CONTACTED"&&(v.nextStatus==="QUALIFIED"||v.nextStatus==="LOST"))));
   if(!valid)return fail(503);
   prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:v.previousStatus,nextStatus:v.nextStatus};
  });
  return {items:rows.slice(0,20),nextCursor:rows.length===21?rows[19]!.revision:null};
+}
+export function parseAssignment(x:unknown){
+ if(!exact(x,"expectedRevision,ownerId,requestId")||!isCanonicalUuidV4(x.ownerId)||!isCanonicalUuidV4(x.requestId)||typeof x.expectedRevision!=="number"||!Number.isInteger(x.expectedRevision)||x.expectedRevision<0||x.expectedRevision>=1000000)return fail(400);
+ return {ownerId:x.ownerId,requestId:x.requestId,expectedRevision:x.expectedRevision};
+}
+export function parseAssignmentOptions(x:unknown,after:string|null){
+ if(!exact(x,"currentOwnerId,eligible,revision")||!isCanonicalUuidV4(x.currentOwnerId)||typeof x.revision!=="number"||!Number.isInteger(x.revision)||x.revision<0||x.revision>1000000||!Array.isArray(x.eligible)||x.eligible.length>21)return fail(503);
+ let prior:string|null=after;
+ const ids=x.eligible.map((v:unknown)=>{if(!isCanonicalUuidV4(v)||(prior!==null&&v<=prior))return fail(503);prior=v;return v;});
+ return {currentOwnerId:x.currentOwnerId,revision:x.revision,items:ids.slice(0,20),nextCursor:ids.length===21?ids[19]!:null};
 }
 export class LeadError extends Error{constructor(readonly status:400|403|404|409|503){super("P5_LEAD_REQUEST_FAILED");}}
 const fail=(status:400|403|404|409|503):never=>{throw new LeadError(status);};
@@ -121,6 +131,30 @@ export class CiP5Leads{
  async history(x:StageIdentity,org:string,id:string,after=-1){
   const args=this.scope(x,org);if(!isCanonicalUuidV4(id)||!Number.isInteger(after)||after< -1||after>1000000)return fail(400);
   return this.transaction(false,async c=>parseHistory((await c.query("SELECT p5_ci.lead_history($1,$2,$3,$4,$5) AS data",[...args,id,after])).rows[0]?.data,after));
+ }
+ async assignmentOptions(x:StageIdentity,org:string,id:string,after:string|null=null){
+  const args=this.scope(x,org);if(!isCanonicalUuidV4(id)||(after!==null&&!isCanonicalUuidV4(after)))return fail(400);
+  return this.transaction(false,async c=>parseAssignmentOptions((await c.query("SELECT p5_ci.assignment_options($1,$2,$3,$4,$5) AS data",[...args,id,after])).rows[0]?.data,after));
+ }
+ async assign(x:StageIdentity,org:string,id:string,raw:unknown){
+  const args=this.scope(x,org),cmd=parseAssignment(raw);if(!isCanonicalUuidV4(id))return fail(400);
+  return this.transaction(true,async c=>{
+   const data:unknown=(await c.query("SELECT p5_ci.assign_lead($1,$2,$3,$4,$5,$6,$7) AS data",[...args,id,cmd.requestId,cmd.expectedRevision,cmd.ownerId])).rows[0]?.data;
+   if(!exact(data,"lead,outcome")||(data.outcome!=="applied"&&data.outcome!=="replay"))return fail(503);
+   const lead=parseLead(data.lead);if(lead.id!==id)return fail(503);return {outcome:data.outcome,lead};
+  });
+ }
+ async duplicates(x:StageIdentity,org:string,raw:unknown){
+  const args=this.scope(x,org);
+  if(!exact(raw,"after,companyName,contactEmail")||!company(raw.companyName)||!email(raw.contactEmail)||(raw.after!==null&&!isCanonicalUuidV4(raw.after)))return fail(400);
+  const after:string|null=raw.after;
+  return this.transaction(false,async c=>{
+   const rows:unknown=(await c.query("SELECT p5_ci.duplicate_candidates($1,$2,$3,$4,$5,$6) AS data",[...args,raw.companyName,raw.contactEmail,after])).rows[0]?.data;
+   if(!Array.isArray(rows)||rows.length>21)return fail(503);
+   let prior:string|null=after;
+   const items=rows.map(x=>{const row=parseLead(x);if(prior!==null&&row.id<=prior)return fail(503);prior=row.id;return row;});
+   return {items:items.slice(0,20),nextCursor:items.length===21?items[19]!.id:null};
+  });
  }
  async close(){await this.pool.end();}
 }
