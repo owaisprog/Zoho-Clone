@@ -4,7 +4,7 @@ export type Lead={id:string;companyName:string;contactEmail:string;source:LeadSo
 export type LeadDraft={id:string;requestId:string;companyName:string;contactEmail:string;source:LeadSource};
 export type LeadFilter={search:string;source:LeadSource|null;status:Lead["status"]|null};
 export type LeadChange={requestId:string;expectedRevision:number}&({operation:"edit";companyName:string;contactEmail:string;source:LeadSource}|{operation:"transition";nextStatus:"CONTACTED"|"QUALIFIED"|"LOST"});
-export type HistoryItem={action:"CREATED"|"EDITED"|"STAGE_CHANGED";revision:number;previousStatus:Lead["status"]|null;nextStatus:Lead["status"]|null};
+export type HistoryItem={action:"CREATED"|"EDITED"|"STAGE_CHANGED"|"ASSIGNED";revision:number;previousStatus:Lead["status"]|null;nextStatus:Lead["status"]|null};
 export type HistoryPage={items:HistoryItem[];nextCursor:number|null};
 export function parseHistoryPage(x:unknown,after:number):HistoryPage{
  if(!exact(x,"items,nextCursor")||!Array.isArray(x.items)||x.items.length>20)return reject();
@@ -12,12 +12,22 @@ export function parseHistoryPage(x:unknown,after:number):HistoryPage{
  const items=x.items.map((v:unknown):HistoryItem=>{
   if(!exact(v,"action,nextStatus,previousStatus,revision")||typeof v.revision!=="number"||!Number.isInteger(v.revision)||v.revision<=prior||v.revision>1000000)return reject();
   if(v.action==="CREATED"&&v.revision===0&&v.previousStatus===null&&v.nextStatus===null){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:null,nextStatus:null};}
-  if(v.action==="EDITED"&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:null,nextStatus:null};}
+  if((v.action==="EDITED"||v.action==="ASSIGNED")&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:null,nextStatus:null};}
   if(v.action==="STAGE_CHANGED"&&v.revision>0&&((v.previousStatus==="NEW"&&v.nextStatus==="CONTACTED")||(v.previousStatus==="CONTACTED"&&(v.nextStatus==="QUALIFIED"||v.nextStatus==="LOST")))){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:v.previousStatus,nextStatus:v.nextStatus};}
   return reject();
  });
  if(x.nextCursor!==null&&(items.length!==20||x.nextCursor!==prior))return reject();
  return {items,nextCursor:x.nextCursor as number|null};
+}
+export type LeadAssignment={ownerId:string;requestId:string;expectedRevision:number};
+export type AssignmentOptions={currentOwnerId:string;revision:number;items:string[];nextCursor:string|null};
+export type DuplicateQuery={companyName:string;contactEmail:string;after:string|null};
+export function parseAssignmentOptions(v:unknown,after:string|null):AssignmentOptions{
+ if(!exact(v,"currentOwnerId,items,nextCursor,revision")||!isStageOrgId(v.currentOwnerId)||!Array.isArray(v.items)||v.items.length>20||typeof v.revision!=="number"||!Number.isInteger(v.revision)||v.revision<0||v.revision>1000000)return reject();
+ let prior=after;
+ const items=v.items.map(x=>{if(!isStageOrgId(x)||(prior!==null&&x<=prior))return reject();prior=x;return x;});
+ if(v.nextCursor!==null&&(!isStageOrgId(v.nextCursor)||items.length!==20||v.nextCursor!==prior))return reject();
+ return {currentOwnerId:v.currentOwnerId,revision:v.revision,items,nextCursor:v.nextCursor as string|null};
 }
 export type LeadPage={items:Lead[];nextCursor:string|null};
 export class LeadClientError extends Error{constructor(readonly status:number){super("Lead request unavailable");}}
@@ -39,7 +49,7 @@ export function parseLeadPage(x:unknown,after:string|null):LeadPage{
  return {items,nextCursor:x.nextCursor as string|null};
 }
 export function createP5LeadClient(request:typeof fetch=(url,options)=>fetch(url,options)){
- async function call(org:string,path:string,body?:LeadDraft|LeadChange,method: "POST"|"PATCH"="POST"){
+ async function call(org:string,path:string,body?:LeadDraft|LeadChange|LeadAssignment|DuplicateQuery,method: "POST"|"PATCH"="POST"){
   if(!isStageOrgId(org))throw new LeadClientError(400);
   const r=await request("/api/p5/"+org+"/crm/leads"+path,{method:body?method:"GET",headers:{"X-P5-Leads":"1",Accept:"application/json",...(body?{"Content-Type":"application/json"}:{})},...(body?{body:JSON.stringify(body)}:{}),credentials:"same-origin",cache:"no-store",redirect:"error",signal:AbortSignal.timeout(8000)});
   if(!r.ok)throw new LeadClientError(r.status);
@@ -58,6 +68,16 @@ export function createP5LeadClient(request:typeof fetch=(url,options)=>fetch(url
    const query=new URLSearchParams();if(after)query.set("after",after);if(filter.search)query.set("search",filter.search);if(filter.source)query.set("source",filter.source);if(filter.status)query.set("status",filter.status);
    const r=await call(org,query.size?"?"+query.toString():"");if(r.status!==200)return reject();return parseLeadPage(r.data,after);},
   async detail(org:string,id:string){if(!isStageOrgId(id))throw new LeadClientError(400);const r=await call(org,"/"+id);const lead=parseLead(r.data);if(r.status!==200||lead.id!==id)return reject();return lead;},
+  async assignmentOptions(org:string,id:string,after:string|null=null){
+   if(!isStageOrgId(id)||(after!==null&&!isStageOrgId(after)))throw new LeadClientError(400);
+   const r=await call(org,"/"+id+"/assignees"+(after?"?after="+encodeURIComponent(after):""));if(r.status!==200)return reject();return parseAssignmentOptions(r.data,after);
+  },
+  async assign(org:string,id:string,cmd:LeadAssignment){
+   if(!isStageOrgId(id)||!isStageOrgId(cmd.ownerId))throw new LeadClientError(400);
+   const r=await call(org,"/"+id+"/assign",cmd);if(r.status!==200||!exact(r.data,"lead,outcome")||(r.data.outcome!=="applied"&&r.data.outcome!=="replay"))return reject();
+   const lead=parseLead(r.data.lead);if(lead.id!==id)return reject();return lead;
+  },
+  async duplicates(org:string,query:DuplicateQuery){const r=await call(org,"/duplicate-review",query);if(r.status!==200)return reject();return parseLeadPage(r.data,query.after);},
   async change(org:string,id:string,cmd:LeadChange){
    if(!isStageOrgId(id))throw new LeadClientError(400);
    const r=await call(org,"/"+id,cmd,"PATCH");if(r.status!==200||!exact(r.data,"lead,outcome")||(r.data.outcome!=="applied"&&r.data.outcome!=="replay"))return reject();

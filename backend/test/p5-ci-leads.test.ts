@@ -1,6 +1,6 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {CiP5Leads,parseCreateLead,parseLead,parseChangeLead,parseLeadFilter,parseHistory} from "../src/platform/p5-ci-leads.js";
+import {CiP5Leads,parseCreateLead,parseLead,parseChangeLead,parseLeadFilter,parseHistory,parseAssignment,parseAssignmentOptions} from "../src/platform/p5-ci-leads.js";
 const id="99300000-0000-4000-8000-000000000001";
 const good={id,requestId:id,companyName:"Demo Company",contactEmail:"sample@example.com",source:"WEBSITE"};
 test("P5 create validates synthetic fields, refuses unknown and sensitive attributes",()=>{
@@ -20,4 +20,13 @@ test("lead edits are revision-bound and stage transitions have a separate comman
  assert.deepEqual(parseLeadFilter({search:"Demo",source:"EVENT",status:"NEW"}),{search:"Demo",source:"EVENT",status:"NEW"});
  assert.throws(()=>parseLeadFilter({search:"%",source:null,status:null}));
  assert.throws(()=>parseHistory([{action:"STAGE_CHANGED",revision:1,previousStatus:"NEW",nextStatus:"LOST"}],-1));
+});
+
+test("assignment commands do not accept team or role changes and options remain bounded",()=>{
+ const cmd={ownerId:id,requestId:id,expectedRevision:4};
+ assert.deepEqual(parseAssignment(cmd),cmd);
+ for(const bad of [{...cmd,teamId:id},{...cmd,role:"OWNER"},{...cmd,expectedRevision:-1},{...cmd,ownerId:"bad"}])assert.throws(()=>parseAssignment(bad));
+ assert.deepEqual(parseAssignmentOptions({currentOwnerId:id,revision:4,eligible:[id]},null),{currentOwnerId:id,revision:4,items:[id],nextCursor:null});
+ assert.throws(()=>parseAssignmentOptions({currentOwnerId:id,revision:4,eligible:[id,id]},null));
+ assert.deepEqual(parseHistory([{action:"ASSIGNED",revision:4,previousStatus:null,nextStatus:null}],3),{items:[{action:"ASSIGNED",revision:4,previousStatus:null,nextStatus:null}],nextCursor:null});
 });
