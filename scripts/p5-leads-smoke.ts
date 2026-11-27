@@ -44,7 +44,7 @@ async function main(){
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
   res.setHeader("Cache-Control","no-store, private");
-  if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(req.method!=="POST"||req.get("origin")!==base))){
+  if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(!["POST","PATCH"].includes(req.method)||req.get("origin")!==base))){
    res.status(403).json({status:"denied",applicationAccess:false});return;
   }next();
  },createCiP5LeadRouter(db,verified));
@@ -52,6 +52,7 @@ async function main(){
  const path=(org=a)=>"/api/p5/"+org+"/crm/leads";
  const get=(url:string,key:string)=>request(app).get(url).set("x-p5-leads","1").set("Cookie","p5_fixture="+key);
  const post=(url:string,key:string,body:unknown)=>request(app).post(url).set("Origin",base).set("x-p5-leads","1").set("Cookie","p5_fixture="+key).send(body);
+ const patch=(url:string,key:string,body:unknown)=>request(app).patch(url).set("Origin",base).set("x-p5-leads","1").set("Cookie","p5_fixture="+key).send(body);
  const draft={id:id(10),requestId:id(11),companyName:"Demo Persisted Lead",contactEmail:"persisted@example.com",source:"WEBSITE"};
  try{
   await new Promise<void>(r=>server.listen(0,"127.0.0.1",r));base="http://127.0.0.1:"+(server.address() as AddressInfo).port;
@@ -109,6 +110,43 @@ async function main(){
   await page.reload();await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Leads loaded.",{exact:true}).waitFor();
   await page.getByRole("button",{name:"View Demo Persisted Lead",exact:true}).click();await page.getByText("Lead details loaded.",{exact:true}).waitFor();
   await page.getByRole("region",{name:"Lead details"}).getByText("persisted@example.com",{exact:true}).waitFor();
+  stage="edit-search-history";
+  await page.getByLabel("Edit company",{exact:true}).fill("Demo Updated Lead");
+  await page.getByLabel("Edit source",{exact:true}).selectOption("EVENT");
+  await page.getByRole("button",{name:"Save changes",exact:true}).click();
+  await page.getByText("Lead updated.",{exact:true}).waitFor();
+  assert.equal((await db.detail(identity(subject),a,draft.id)).revision,1);
+  assert.equal((await db.detail(identity(subject),a,draft.id)).companyName,"Demo Updated Lead");
+  await page.getByLabel("Search leads",{exact:true}).fill("Updated");
+  await page.getByLabel("Filter by source",{exact:true}).selectOption("EVENT");
+  await page.getByRole("button",{name:"Load leads",exact:true}).click();
+  await page.getByText("Leads loaded.",{exact:true}).waitFor();
+  assert.equal(await page.getByRole("row").count(),2);
+  await page.getByRole("button",{name:"View Demo Updated Lead",exact:true}).click();
+  await page.getByText("Lead details loaded.",{exact:true}).waitFor();
+  const move={operation:"transition",requestId:id(300),expectedRevision:1,nextStatus:"CONTACTED"};
+  assert.equal((await patch(path()+"/"+draft.id,repCookie,move)).status,403);
+  assert.equal((await patch(path()+"/"+draft.id,otherCookie,move)).status,404);
+  assert.equal((await patch(path()+"/"+draft.id,ownerCookie,move)).status,403);
+  await admin.query("INSERT INTO p5_ci.stage_edit_grants(organization_id,user_id,active) VALUES($1,$2,true)",[a,rep]);
+  assert.equal((await patch(path()+"/"+draft.id,repCookie,{...move,nextStatus:"QUALIFIED"})).status,409);
+  await page.getByRole("button",{name:"Move to CONTACTED",exact:true}).click();
+  await page.getByText("Lead updated.",{exact:true}).waitFor();
+  await page.getByRole("button",{name:"Load history",exact:true}).click();await page.getByText("Lead history loaded.",{exact:true}).waitFor();
+  await page.getByText("STAGE_CHANGED · revision 2 · NEW to CONTACTED",{exact:true}).waitFor();
+  const edit={operation:"edit",requestId:id(301),expectedRevision:2,companyName:"Demo Final Lead",contactEmail:draft.contactEmail,source:"EVENT"};
+  const result=await patch(path()+"/"+draft.id,repCookie,edit);assert.equal(result.status,200);
+  assert.equal((await patch(path()+"/"+draft.id,repCookie,edit)).body.data.outcome,"replay");
+  assert.equal((await patch(path()+"/"+draft.id,repCookie,{...edit,requestId:id(302)})).status,409);
+  assert.equal((await patch(path()+"/"+draft.id,repCookie,{...edit,cardNumber:"fictional-prohibited"})).status,400);
+  const history=await db.history(identity(subject),a,draft.id);assert.deepEqual(history.items.map(x=>x.action),["CREATED","EDITED","STAGE_CHANGED","EDITED"]);
+  assert.equal((await get(path()+"/"+draft.id+"/history",otherCookie)).status,404);
+  const matches=await db.list(identity(subject),a,null,{search:"Final",source:"EVENT",status:"CONTACTED"});assert.equal(matches.items.length,1);
+  assert.equal((await get(path()+"?search=Foreign",repCookie)).body.data.items.length,0);
+  await admin.query("UPDATE p5_ci.stage_edit_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
+  assert.equal((await patch(path()+"/"+draft.id,repCookie,{...move,requestId:id(303),expectedRevision:3,nextStatus:"QUALIFIED"})).status,403);
+  assert.equal((await db.detail(identity(subject),a,draft.id)).revision,3);
+  console.log("P5_LEAD_EDIT_SEARCH_STAGE_PASS: persisted field/source edit, scoped filtering, explicit stage grant, revision/replay, history and revoked stage grant");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Request denied or invalid.",{exact:true}).waitFor();
