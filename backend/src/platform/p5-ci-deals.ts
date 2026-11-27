@@ -12,11 +12,11 @@ export function parseDealWrite(x:unknown,create:boolean){
  if(!isCanonicalUuidV4(v.requestId))return fail(400);
  const base={requestId:v.requestId};
  if(create){
-  if(!exact(v,"accountId,contactId,id,requestId,title,valueCents")||!isCanonicalUuidV4(v.id)||!isCanonicalUuidV4(v.accountId)||!isCanonicalUuidV4(v.contactId)||!title(v.title)||!value(v.valueCents))return fail(400);
-  return {...base,id:v.id,operation:"create",expectedRevision:null,title:v.title,valueCents:v.valueCents,accountId:v.accountId,contactId:v.contactId,nextStage:null};
+  if(!(exact(v,"accountId,contactId,id,requestId,title,valueCents")||exact(v,"accountId,contactId,id,pipelineId,requestId,title,valueCents"))||(v.pipelineId!==undefined&&!isCanonicalUuidV4(v.pipelineId))||!isCanonicalUuidV4(v.id)||!isCanonicalUuidV4(v.accountId)||!isCanonicalUuidV4(v.contactId)||!title(v.title)||!value(v.valueCents))return fail(400);
+  return {...base,id:v.id,operation:"create",expectedRevision:null,title:v.title,valueCents:v.valueCents,accountId:v.accountId,contactId:v.contactId,nextStage:null,pipelineId:v.pipelineId??null};
  }
  if(typeof v.expectedRevision!=="number"||!Number.isInteger(v.expectedRevision)||v.expectedRevision<0||v.expectedRevision>=1000000)return fail(400);
- const rev={...base,id:null,expectedRevision:v.expectedRevision,accountId:null,contactId:null};
+ const rev={...base,id:null,expectedRevision:v.expectedRevision,accountId:null,contactId:null,pipelineId:null};
  if(v.operation==="edit"&&exact(v,"expectedRevision,operation,requestId,title,valueCents")&&title(v.title)&&value(v.valueCents))return {...rev,operation:"edit",title:v.title,valueCents:v.valueCents,nextStage:null};
  if(v.operation==="transition"&&exact(v,"expectedRevision,nextStage,operation,requestId")&&isDealStage(v.nextStage)&&v.nextStage!=="OPEN")return {...rev,operation:"transition",title:null,valueCents:null,nextStage:v.nextStage};
  return fail(400);
@@ -39,7 +39,7 @@ export class CiP5Deals extends CiP5Conversion{
  async writeDeal(x:StageIdentity,org:string,id:string|null,raw:unknown){
   const args=this.scope(x,org),cmd=parseDealWrite(raw,id===null),target=id??cmd.id;if(!isCanonicalUuidV4(target))return fail(400);
   return this.transaction(true,async c=>{
-   const data:unknown=(await c.query("SELECT p5_ci.write_deal($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) AS data",[...args,target,cmd.requestId,cmd.expectedRevision,cmd.operation,cmd.title,cmd.valueCents,cmd.accountId,cmd.contactId,cmd.nextStage])).rows[0]?.data;
+   const data:unknown=(await c.query("SELECT p5_ci.write_deal($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) AS data",[...args,target,cmd.requestId,cmd.expectedRevision,cmd.operation,cmd.title,cmd.valueCents,cmd.accountId,cmd.contactId,cmd.nextStage,cmd.pipelineId])).rows[0]?.data;
    if(!exact(data,"outcome,record")||(data.outcome!=="replay"&&data.outcome!==(id===null?"created":"applied")))return fail(503);
    const record=parseDeal(data.record);if(record.id!==target)return fail(503);return {outcome:data.outcome,record};
   });

@@ -18,7 +18,7 @@ export function parseAccountPage(x:unknown,after:string|null):AccountPage{
  return {items,nextCursor:x.nextCursor as string|null};
 }
 /** Fixed same-origin transport for synthetic CRM resources. No browser identity headers. */
-export function createP5RecordTransport(resource:"accounts"|"contacts"|"leads"|"deals",request:typeof fetch=(url,options)=>fetch(url,options)){
+export function createP5RecordTransport(resource:"accounts"|"contacts"|"leads"|"deals"|"pipelines",request:typeof fetch=(url,options)=>fetch(url,options)){
  return async (org:string,path:string,body?:object,method:"POST"|"PATCH"="POST")=>{
   if(!isStageOrgId(org))throw new LeadClientError(400);
   const r=await request("/api/p5/"+org+"/crm/"+resource+path,{method:body?method:"GET",headers:{"X-P5-Leads":"1",Accept:"application/json",...(body?{"Content-Type":"application/json"}:{})},...(body?{body:JSON.stringify(body)}:{}),credentials:"same-origin",cache:"no-store",redirect:"error",signal:AbortSignal.timeout(8000)});
@@ -26,7 +26,7 @@ export function createP5RecordTransport(resource:"accounts"|"contacts"|"leads"|"
   if(!r.headers.get("content-type")?.includes("application/json"))return reject();
   const reader=r.body?.getReader();if(!reader)return reject();
   let bytes=0;const parts:Uint8Array[]=[];
-  try{for(;;){const part=await reader.read();if(part.done)break;bytes+=part.value.byteLength;if(bytes>8192){await reader.cancel();return reject();}parts.push(part.value);}}finally{reader.releaseLock();}
+  try{for(;;){const part=await reader.read();if(part.done)break;bytes+=part.value.byteLength;if(bytes>(resource==="pipelines"?32768:8192)){await reader.cancel();return reject();}parts.push(part.value);}}finally{reader.releaseLock();}
   const joined=new Uint8Array(bytes);let offset=0;for(const part of parts){joined.set(part,offset);offset+=part.length;}
   const x:unknown=JSON.parse(new TextDecoder().decode(joined));
   if(!exact(x,"applicationAccess,data,scope")||x.applicationAccess!==false||x.scope!=="p5-synthetic")return reject();

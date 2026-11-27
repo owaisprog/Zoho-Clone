@@ -2,7 +2,7 @@ import {isStageOrgId} from "./staging-membership";
 import {LeadClientError} from "./p5-leads-client";
 import {createP5RecordTransport} from "./p5-accounts-client";
 import {parseDeal,parseDealPage,isDealStage,type DealStage} from "./p5-conversion-client";
-export type DealDraft={id:string;requestId:string;accountId:string;contactId:string;title:string;valueCents:number};
+export type DealDraft={id:string;requestId:string;accountId:string;contactId:string;title:string;valueCents:number;pipelineId?:string};
 export type DealChange={requestId:string;expectedRevision:number}&({operation:"edit";title:string;valueCents:number}|{operation:"transition";nextStage:DealStage});
 export type DealHistory={items:{action:string;revision:number;previousStage:DealStage|null;nextStage:DealStage|null}[];nextCursor:number|null};
 const reject=():never=>{throw new LeadClientError(503);};
