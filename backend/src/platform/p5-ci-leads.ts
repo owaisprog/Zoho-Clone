@@ -60,7 +60,7 @@ export class CiP5Leads{
   return this.transaction(false,async c=>{
    const r=await c.query("SELECT p5_ci.read_leads($1,$2,$3,$4,NULL) AS data",[...args,after]);const data=r.rows[0]?.data;
    if(!Array.isArray(data)||data.length>21)return fail(503);
-   let previous=after;const items=data.map(x=>{const row=parseLead(x);if(previous!==null&&row.id<=previous)return fail(503);previous=row.id;return row;});
+   let previous:string|null=after;const items=data.map(x=>{const row=parseLead(x);if(previous!==null&&row.id<=previous)return fail(503);previous=row.id;return row;});
    return {items:items.slice(0,20),nextCursor:items.length===21?items[19]!.id:null};
   });
  }
