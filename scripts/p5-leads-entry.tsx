@@ -5,6 +5,8 @@ import {P5AccountWorkspace} from "../frontend/src/components/p5-account-workspac
 import {createP5AccountClient} from "../frontend/src/lib/p5-accounts-client";
 import {P5ContactWorkspace} from "../frontend/src/components/p5-contact-workspace";
 import {createP5ContactClient} from "../frontend/src/lib/p5-contacts-client";
+import {P5ConversionWorkspace} from "../frontend/src/components/p5-conversion-workspace";
+import {createP5ConversionClient} from "../frontend/src/lib/p5-conversion-client";
 const root=document.getElementById("root"),org=root?.getAttribute("data-org");
 if(!root||!org)throw Error("P5_WORKSPACE_ROOT_MISSING");
-createRoot(root).render(location.pathname==="/contacts"?<P5ContactWorkspace organizationId={org} client={createP5ContactClient()} accounts={createP5AccountClient()}/>:location.pathname==="/accounts"?<P5AccountWorkspace organizationId={org} client={createP5AccountClient()}/>:<P5LeadWorkspace organizationId={org} client={createP5LeadClient()}/>);
+createRoot(root).render(location.pathname==="/conversion"?<P5ConversionWorkspace organizationId={org} client={createP5ConversionClient()} leads={createP5LeadClient()} accounts={createP5AccountClient()} contacts={createP5ContactClient()}/>:location.pathname==="/contacts"?<P5ContactWorkspace organizationId={org} client={createP5ContactClient()} accounts={createP5AccountClient()}/>:location.pathname==="/accounts"?<P5AccountWorkspace organizationId={org} client={createP5AccountClient()}/>:<P5LeadWorkspace organizationId={org} client={createP5LeadClient()}/>);

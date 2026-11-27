@@ -1,10 +1,10 @@
 import {isStageOrgId} from "./staging-membership";
 export type LeadSource="WEBSITE"|"REFERRAL"|"EVENT";
-export type Lead={id:string;companyName:string;contactEmail:string;source:LeadSource;status:"NEW"|"CONTACTED"|"QUALIFIED"|"LOST";revision:number};
+export type Lead={id:string;companyName:string;contactEmail:string;source:LeadSource;status:"NEW"|"CONTACTED"|"QUALIFIED"|"LOST"|"CONVERTED";revision:number};
 export type LeadDraft={id:string;requestId:string;companyName:string;contactEmail:string;source:LeadSource};
 export type LeadFilter={search:string;source:LeadSource|null;status:Lead["status"]|null};
 export type LeadChange={requestId:string;expectedRevision:number}&({operation:"edit";companyName:string;contactEmail:string;source:LeadSource}|{operation:"transition";nextStatus:"CONTACTED"|"QUALIFIED"|"LOST"});
-export type HistoryItem={action:"CREATED"|"EDITED"|"STAGE_CHANGED"|"ASSIGNED";revision:number;previousStatus:Lead["status"]|null;nextStatus:Lead["status"]|null};
+export type HistoryItem={action:"CREATED"|"EDITED"|"STAGE_CHANGED"|"ASSIGNED"|"CONVERTED";revision:number;previousStatus:Lead["status"]|null;nextStatus:Lead["status"]|null};
 export type HistoryPage={items:HistoryItem[];nextCursor:number|null};
 export function parseHistoryPage(x:unknown,after:number):HistoryPage{
  if(!exact(x,"items,nextCursor")||!Array.isArray(x.items)||x.items.length>20)return reject();
@@ -14,6 +14,7 @@ export function parseHistoryPage(x:unknown,after:number):HistoryPage{
   if(v.action==="CREATED"&&v.revision===0&&v.previousStatus===null&&v.nextStatus===null){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:null,nextStatus:null};}
   if((v.action==="EDITED"||v.action==="ASSIGNED")&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:null,nextStatus:null};}
   if(v.action==="STAGE_CHANGED"&&v.revision>0&&((v.previousStatus==="NEW"&&v.nextStatus==="CONTACTED")||(v.previousStatus==="CONTACTED"&&(v.nextStatus==="QUALIFIED"||v.nextStatus==="LOST")))){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:v.previousStatus,nextStatus:v.nextStatus};}
+  if(v.action==="CONVERTED"&&v.revision>0&&v.previousStatus==="QUALIFIED"&&v.nextStatus==="CONVERTED"){prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:v.previousStatus,nextStatus:v.nextStatus};}
   return reject();
  });
  if(x.nextCursor!==null&&(items.length!==20||x.nextCursor!==prior))return reject();
@@ -38,7 +39,7 @@ export function parseLead(x:unknown):Lead{
  typeof x.companyName!=="string"||!/^Demo [A-Za-z][A-Za-z0-9 &.-]{2,48}$/.test(x.companyName)||
  typeof x.contactEmail!=="string"||!/^[a-z][a-z0-9._-]{1,40}@example[.]com$/.test(x.contactEmail)||
  (x.source!=="WEBSITE"&&x.source!=="REFERRAL"&&x.source!=="EVENT")||
- (x.status!=="NEW"&&x.status!=="CONTACTED"&&x.status!=="QUALIFIED"&&x.status!=="LOST")||
+ (x.status!=="NEW"&&x.status!=="CONTACTED"&&x.status!=="QUALIFIED"&&x.status!=="LOST"&&x.status!=="CONVERTED")||
  typeof x.revision!=="number"||!Number.isInteger(x.revision)||x.revision<0||x.revision>1000000)return reject();
  return {id:x.id,companyName:x.companyName,contactEmail:x.contactEmail,source:x.source,status:x.status,revision:x.revision};
 }

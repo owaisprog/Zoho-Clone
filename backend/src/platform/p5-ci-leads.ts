@@ -3,11 +3,11 @@ import {assertP4V1CiPrismaEnvironment} from "./p4-v1-ci-prisma.js";
 import {isCanonicalUuidV4} from "./p4-approved-uuid.js";
 import type {StageIdentity} from "./staging-membership-db.js";
 export type LeadSource="WEBSITE"|"REFERRAL"|"EVENT";
-export type LeadStatus="NEW"|"CONTACTED"|"QUALIFIED"|"LOST";
+export type LeadStatus="NEW"|"CONTACTED"|"QUALIFIED"|"LOST"|"CONVERTED";
 export type Lead={id:string;companyName:string;contactEmail:string;source:LeadSource;status:LeadStatus;revision:number};
 export type CreateLead={id:string;requestId:string;companyName:string;contactEmail:string;source:LeadSource};
 export type LeadFilter={search:string;source:LeadSource|null;status:LeadStatus|null};
-export type ChangeLead={requestId:string;expectedRevision:number}&({operation:"edit";companyName:string;contactEmail:string;source:LeadSource}|{operation:"transition";nextStatus:Exclude<LeadStatus,"NEW">});
+export type ChangeLead={requestId:string;expectedRevision:number}&({operation:"edit";companyName:string;contactEmail:string;source:LeadSource}|{operation:"transition";nextStatus:Exclude<LeadStatus,"NEW"|"CONVERTED">});
 export function parseLeadFilter(x:unknown):LeadFilter{
  if(!exact(x,"search,source,status")||typeof x.search!=="string"||!(/^[A-Za-z0-9 &.@_-]{0,50}$/).test(x.search)||(x.source!==null&&!source(x.source))||(x.status!==null&&!status(x.status)))return fail(400);
  return {search:x.search,source:x.source,status:x.status};
@@ -29,7 +29,7 @@ export function parseHistory(value:unknown,after:number){
   const valid=(v.action==="CREATED"&&v.revision===0&&v.previousStatus===null&&v.nextStatus===null)||
    ((v.action==="EDITED"||v.action==="ASSIGNED")&&v.revision>0&&v.previousStatus===null&&v.nextStatus===null)||
    (v.action==="STAGE_CHANGED"&&v.revision>0&&((v.previousStatus==="NEW"&&v.nextStatus==="CONTACTED")||(v.previousStatus==="CONTACTED"&&(v.nextStatus==="QUALIFIED"||v.nextStatus==="LOST"))));
-  if(!valid)return fail(503);
+  if(!valid&&!(v.action==="CONVERTED"&&v.revision>0&&v.previousStatus==="QUALIFIED"&&v.nextStatus==="CONVERTED"))return fail(503);
   prior=v.revision;return {action:v.action,revision:v.revision,previousStatus:v.previousStatus,nextStatus:v.nextStatus};
  });
  return {items:rows.slice(0,20),nextCursor:rows.length===21?rows[19]!.revision:null};
@@ -48,7 +48,7 @@ export class LeadError extends Error{constructor(readonly status:400|403|404|409
 const fail=(status:400|403|404|409|503):never=>{throw new LeadError(status);};
 const exact=(v:unknown,keys:string):v is Record<string,unknown>=>!!v&&typeof v==="object"&&!Array.isArray(v)&&Object.keys(v).sort().join(",")===keys;
 const source=(v:unknown):v is LeadSource=>v==="WEBSITE"||v==="REFERRAL"||v==="EVENT";
-const status=(v:unknown):v is LeadStatus=>v==="NEW"||v==="CONTACTED"||v==="QUALIFIED"||v==="LOST";
+const status=(v:unknown):v is LeadStatus=>v==="NEW"||v==="CONTACTED"||v==="QUALIFIED"||v==="LOST"||v==="CONVERTED";
 const company=(v:unknown):v is string=>typeof v==="string"&&/^Demo [A-Za-z][A-Za-z0-9 &.-]{2,48}$/.test(v);
 const email=(v:unknown):v is string=>typeof v==="string"&&/^[a-z][a-z0-9._-]{1,40}@example[.]com$/.test(v);
 export function parseCreateLead(x:unknown):CreateLead{
@@ -81,9 +81,9 @@ export class CiP5Leads{
    AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname=current_user AND NOT(rolsuper OR rolbypassrls OR rolcreaterole OR rolcreatedb OR rolreplication OR rolinherit))
    AND NOT EXISTS(SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.member WHERE r.rolname=current_user)
    AND NOT has_schema_privilege(current_user,'p5_ci','CREATE') AND NOT has_schema_privilege(current_user,'platform_stage','CREATE')
-   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants','accounts','account_events','contacts','contact_events')
+   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants','accounts','account_events','contacts','contact_events','deals','conversions')
     AND c.relrowsecurity AND c.relforcerowsecurity AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)
-    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=7
+    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=9
    AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='platform_stage' AND c.relkind='r'
     AND (has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') OR has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))) AS valid`);
    if(r.rows[0]?.valid!==true)return fail(503);

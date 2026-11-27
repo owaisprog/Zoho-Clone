@@ -29,7 +29,7 @@ export function P5LeadWorkspace({organizationId,client}:{organizationId:string;c
  function loadHistory(id:string,after=-1){return run(async()=>{setHistory(null);setHistory(await client.history(organizationId,id,after));setMessage("Lead history loaded.");});}
  function create(draft:LeadDraft){return run(async()=>{clear();setPending(draft);const lead=await client.create(organizationId,draft);setPending(null);setCompany("");setEmail("");showLead(lead);setMessage("Lead saved.");});}
  return <main className="mx-auto max-w-5xl space-y-5 p-6">
-  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a></nav>
+  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion and deals</a></nav>
   <h1 className="text-2xl font-semibold">Sales CRM — Leads</h1>
   <p>Fictional data only. Use Demo company names and example.com addresses. Live CRM access is disabled.</p>
   <form className="space-y-3 rounded-lg border p-4" onSubmit={e=>{e.preventDefault();if(!pending&&!pendingChange&&!pendingAssignment)void create({id:crypto.randomUUID(),requestId:crypto.randomUUID(),companyName:company,contactEmail:email,source});}}>
@@ -50,7 +50,7 @@ export function P5LeadWorkspace({organizationId,client}:{organizationId:string;c
   <section aria-label="Lead filters" className="space-y-2">
    <label htmlFor="p5-search">Search leads</label><input id="p5-search" value={search} maxLength={50} onChange={e=>setSearch(e.target.value)} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment}/>
    <label htmlFor="p5-filter-source">Filter by source</label><select id="p5-filter-source" value={sourceFilter??""} onChange={e=>setSourceFilter(e.target.value as LeadSource||null)} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment}><option value="">All sources</option><option>WEBSITE</option><option>REFERRAL</option><option>EVENT</option></select>
-   <label htmlFor="p5-filter-status">Filter by status</label><select id="p5-filter-status" value={statusFilter??""} onChange={e=>setStatusFilter(e.target.value as Lead["status"]||null)} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment}><option value="">All statuses</option><option>NEW</option><option>CONTACTED</option><option>QUALIFIED</option><option>LOST</option></select>
+   <label htmlFor="p5-filter-status">Filter by status</label><select id="p5-filter-status" value={statusFilter??""} onChange={e=>setStatusFilter(e.target.value as Lead["status"]||null)} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment}><option value="">All statuses</option><option>NEW</option><option>CONTACTED</option><option>QUALIFIED</option><option>LOST</option><option>CONVERTED</option></select>
    <button type="button" disabled={busy||!!pending||!!pendingChange||!!pendingAssignment} onClick={()=>void load(null)}>Load leads</button>
   </section>
   {pendingAssignment&&<button type="button" disabled={busy} onClick={()=>void assign(pendingAssignment.id,pendingAssignment.command)}>Retry same assignment request</button>}
@@ -63,7 +63,7 @@ export function P5LeadWorkspace({organizationId,client}:{organizationId:string;c
     <label htmlFor="p5-edit-company">Edit company</label><input id="p5-edit-company" value={editCompany} required maxLength={54} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment} onChange={e=>setEditCompany(e.target.value)}/>
     <label htmlFor="p5-edit-email">Edit email</label><input id="p5-edit-email" type="email" value={editEmail} required maxLength={53} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment} onChange={e=>setEditEmail(e.target.value)}/>
     <label htmlFor="p5-edit-source">Edit source</label><select id="p5-edit-source" value={editSource} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment} onChange={e=>setEditSource(e.target.value as LeadSource)}><option>WEBSITE</option><option>REFERRAL</option><option>EVENT</option></select>
-    <button disabled={busy||!!pending||!!pendingChange||!!pendingAssignment||detail.revision>=1000000} type="submit">Save changes</button>
+    <button disabled={busy||!!pending||!!pendingChange||!!pendingAssignment||(detail.revision>=1000000||detail.status==="CONVERTED")} type="submit">Save changes</button>
    </form>
    <p>Stage transitions require a separate server-verified grant.</p>
    {(detail.status==="NEW"?["CONTACTED"] as const:detail.status==="CONTACTED"?["QUALIFIED","LOST"] as const:[]).map(next=><button key={next} disabled={busy||!!pending||!!pendingChange||!!pendingAssignment||detail.revision>=1000000} onClick={()=>void change(detail.id,{operation:"transition",requestId:crypto.randomUUID(),expectedRevision:detail.revision,nextStatus:next})}>Move to {next}</button>)}
