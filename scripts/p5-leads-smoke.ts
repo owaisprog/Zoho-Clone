@@ -824,7 +824,9 @@ async function main(){
   const mergeCmd={sourceId:sourceContact.id,targetId:targetContact.id,requestId:id(1866),sourceRevision:0,targetRevision:0};
   assert.equal((await post(mergePath,repCookie,mergeCmd)).status,403);
   assert.equal((await post(mergePath,managerCookie,{...mergeCmd,sourceRevision:1})).status,409);
-  const duplicatePage=await pipelineCtx.newPage();duplicatePage.setDefaultTimeout(10000);duplicatePage.on("pageerror",()=>errors++);
+  const duplicateCtx=await browser.newContext();await duplicateCtx.route("**/*",route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+  await duplicateCtx.addCookies([{name:"p5_fixture",value:managerCookie,url:base,httpOnly:true,sameSite:"Strict"}]);
+  const duplicatePage=await duplicateCtx.newPage();duplicatePage.setDefaultTimeout(10000);duplicatePage.on("pageerror",()=>errors++);
   stage="duplicate-browser";
   await duplicatePage.goto(base+"/duplicates");
   await duplicatePage.getByLabel("Exact contact email",{exact:true}).fill(sourceContact.email);
@@ -847,6 +849,7 @@ async function main(){
   await assert.rejects(admin.query("DELETE FROM p5_ci.merge_audit WHERE organization_id=$1 AND source_id=$2",[a,sourceContact.id]));
   await admin.query("UPDATE platform_stage.team_grants SET active=false WHERE organization_id=$1 AND user_id=$2 AND team_id=$3",[a,manager,team]);
   assert.equal((await post(mergePath,managerCookie,{...mergeCmd,requestId:audit.request})).status,404);
+  await duplicateCtx.close();
   console.log("P5_DUPLICATE_PASS: manager preview, atomic contact merge, preserved deal relation and audit");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
