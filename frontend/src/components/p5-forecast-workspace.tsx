@@ -1,0 +1,26 @@
+"use client";
+import {useRef,useState} from "react";
+import type {ForecastClient,SalesReport} from "@/lib/p5-forecast-client";
+import type {Pipeline,PipelineClient} from "@/lib/p5-pipelines-client";
+import {LeadClientError} from "@/lib/p5-leads-client";
+const money=(n:number)=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(n/100);
+export function P5ForecastWorkspace({organizationId,client,pipelines}:{organizationId:string;client:ForecastClient;pipelines:PipelineClient}){
+ const [pipeline,setPipeline]=useState(""),[options,setOptions]=useState<Pipeline[]>([]),[from,setFrom]=useState(""),[to,setTo]=useState(""),[report,setReport]=useState<SalesReport|null>(null),[deal,setDeal]=useState(""),[loaded,setLoaded]=useState<string|null>(null),[date,setDate]=useState(""),[bp,setBp]=useState(""),[revision,setRevision]=useState(-1),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
+ const running=useRef(false);
+ async function run(fn:()=>Promise<void>){if(running.current)return;running.current=true;setBusy(true);setMessage("");try{await fn();}catch(e){setReport(null);setLoaded(null);setOptions([]);setPipeline("");setMessage(e instanceof LeadClientError&&e.status===409?"Forecast changed. Reload before editing.":"Report request denied or unavailable.");}finally{running.current=false;setBusy(false);}}
+ const sums=report?report.stages.reduce((a,s)=>({weighted:a.weighted+s.weightedCents,won:a.won+s.wonCents,missing:a.missing+s.missingCount,wins:a.wins+(s.key==="WON"?s.closedCount:0),losses:a.losses+(s.key==="LOST"?s.closedCount:0)}),{weighted:0,won:0,missing:0,wins:0,losses:0}):null;
+ return <main className="mx-auto max-w-6xl space-y-5 p-6"><nav><a href="/">Leads</a> · <a href="/board">Sales board</a> · <a href="/deals">Deals</a> · <a href="/reports">Reports</a></nav><h1>Sales CRM — Forecast and reports</h1><p>Synthetic USD opportunity estimates, not collected revenue. Dates are UTC.</p>
+ <section aria-label="Deal forecast"><h2>Deal forecast</h2><label htmlFor="forecast-deal">Deal ID</label><input id="forecast-deal" value={deal} disabled={busy} onChange={e=>{setDeal(e.target.value);setLoaded(null);setDate("");setBp("");}}/>
+ <button disabled={busy||!deal} onClick={()=>void run(async()=>{const r=await client.forecast(organizationId,deal);setLoaded(deal);setDate(r?.expectedClose??"");setBp(r?String(r.probabilityBp/100):"");setRevision(r?.revision??-1);setMessage("Forecast loaded.");})}>Load forecast</button>
+ <form onSubmit={e=>{e.preventDefault();if(!busy&&loaded===deal)void run(async()=>{const r=await client.save(organizationId,deal,date,Math.round(Number(bp)*100),revision);setRevision(r.revision);setReport(null);setMessage("Forecast saved.");});}}>
+ <label htmlFor="forecast-date">Expected close date</label><input id="forecast-date" type="date" min="2000-01-01" max="2099-12-31" required disabled={busy||loaded!==deal} value={date} onChange={e=>setDate(e.target.value)}/>
+ <label htmlFor="forecast-probability">Probability (%)</label><input id="forecast-probability" type="number" min="0" max="100" step="0.01" required disabled={busy||loaded!==deal} value={bp} onChange={e=>setBp(e.target.value)}/>
+ <button disabled={busy||loaded!==deal||!date||bp===""}>Save forecast</button></form></section>
+ <section aria-label="Pipeline report"><h2>Pipeline report</h2><button disabled={busy} onClick={()=>void run(async()=>{const r=await pipelines.list(organizationId);setOptions(r.items);setPipeline("");setReport(null);setMessage("Pipelines loaded.");})}>Load pipelines</button>
+ <label htmlFor="report-pipeline">Pipeline</label><select id="report-pipeline" disabled={busy} value={pipeline} onChange={e=>{setPipeline(e.target.value);setReport(null);}}><option value="">Choose pipeline</option>{options.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select>
+ <label htmlFor="report-from">From</label><input id="report-from" type="date" value={from} disabled={busy} onChange={e=>{setFrom(e.target.value);setReport(null);}}/>
+ <label htmlFor="report-to">To</label><input id="report-to" type="date" value={to} disabled={busy} onChange={e=>{setTo(e.target.value);setReport(null);}}/>
+ <button disabled={busy||!pipeline||!from||!to} onClick={()=>void run(async()=>{setReport(await client.report(organizationId,pipeline,from,to));setMessage("Report loaded.");})}>Run report</button>
+ {report&&sums&&<><dl><dt>Weighted forecast</dt><dd>{money(sums.weighted)}</dd><dt>Won deal value</dt><dd>{money(sums.won)}</dd><dt>Open deals missing forecast inputs</dt><dd>{sums.missing}</dd><dt>Closed deal win rate</dt><dd>{sums.wins+sums.losses?(100*sums.wins/(sums.wins+sums.losses)).toFixed(1)+"%":"No closed deals"}</dd></dl><table><caption>Current pipeline snapshot and selected-period forecast</caption><thead><tr>{["Stage","All deals","All deal value","Scheduled","Missing inputs","Weighted forecast","Closed in period","Won value"].map(x=><th scope="col" key={x}>{x}</th>)}</tr></thead><tbody>{report.stages.map(s=><tr key={s.key}><th scope="row">{s.label}</th><td>{s.count}</td><td>{money(s.valueCents)}</td><td>{s.scheduledCount}</td><td>{s.missingCount}</td><td>{money(s.weightedCents)}</td><td>{s.closedCount}</td><td>{money(s.wonCents)}</td></tr>)}</tbody></table></>}</section>
+ <p role="status" aria-live="polite">{message}</p></main>;
+}
