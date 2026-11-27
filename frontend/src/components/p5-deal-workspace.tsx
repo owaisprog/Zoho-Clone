@@ -23,7 +23,7 @@ export function P5DealWorkspace({organizationId,client,accounts,contacts,pipelin
  function loadHistory(id:string,after=-1){return run(async()=>{setHistory(null);setHistory(await client.history(organizationId,id,after));setMessage("Deal history loaded.");});}
  const loadPipelines=(after:string|null)=>run(async()=>{setPipelineId("");setPipelineOptions(await pipelines.list(organizationId,after));setMessage("Deal pipelines loaded.");});
  return <main className="mx-auto max-w-5xl space-y-5 p-6">
- <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a></nav>
+ <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion</a> · <a href="/deals">Deals</a> · <a href="/pipelines">Pipelines</a> · <a href="/board">Sales board</a></nav>
  <h1>Sales CRM — Deals</h1><p>Fictional opportunities only. Values are integer USD cents; no payment or processing action.</p>
  <section aria-label="Deal relationships">
  <label htmlFor="deal-account-search">Find deal accounts</label><input id="deal-account-search" value={accountSearch} maxLength={80} disabled={blocked} onChange={e=>setAccountSearch(e.target.value)}/><button disabled={blocked} onClick={()=>void run(async()=>{setAccount("");setContact("");setAccountOptions(await accounts.list(organizationId,null,accountSearch));setContactOptions(null);setMessage("Deal accounts loaded.");})}>Load deal accounts</button>
