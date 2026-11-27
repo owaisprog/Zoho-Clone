@@ -12,7 +12,8 @@ import request from "supertest";
 import {chromium,type Browser} from "playwright";
 import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
 import {CI_ISSUER,CI_AUDIENCE,verifyP4R33CiToken,type P4R33CiJwk} from "../backend/src/platform/p4-r33-ci-jwt-verifier.js";
-import {CiP5Duplicates} from "../backend/src/platform/p5-ci-duplicates.js";
+import {CiP5Intake} from "../backend/src/platform/p5-ci-intake.js";
+import {createCiP5IntakeRouter} from "../backend/src/platform/p5-ci-intake-router.js";
 import {createCiP5DuplicatesRouter} from "../backend/src/platform/p5-ci-duplicates-router.js";
 import {createCiP5SearchViewsRouter} from "../backend/src/platform/p5-ci-search-views-router.js";
 import {createCiP5HandoffsRouter} from "../backend/src/platform/p5-ci-handoffs-router.js";
@@ -37,7 +38,7 @@ async function main(){
  const dir=mkdtempSync(join(tmpdir(),"p5-leads-")),bundle=join(dir,"bundle.js");
  const build=spawnSync("node_modules/.bin/esbuild",["scripts/p5-leads-entry.tsx","--bundle","--platform=browser","--format=iife","--jsx=automatic","--tsconfig=frontend/tsconfig.json","--define:process.env.NODE_ENV=\"production\"","--outfile="+bundle],{stdio:"pipe",timeout:30000});
  if(build.status!==0){rmSync(dir,{recursive:true,force:true});throw Error("P5_BUNDLE_FAILED");}
- const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Duplicates();
+ const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Intake();
  const pair=generateKeyPairSync("rsa",{modulusLength:2048}),jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-p5leads",alg:"RS256",use:"sig"} as P4R33CiJwk;
  function token(sub:string){
   const now=Math.floor(Date.now()/1000),enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
@@ -52,7 +53,7 @@ async function main(){
   try{return verifyP4R33CiToken(sessions.get(matches[0]!.slice("p5_fixture=".length)),[jwk],Math.floor(Date.now()/1000));}catch{return null;}
  };
  const app=express();app.disable("x-powered-by");let base="";
- app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search","/duplicates"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports","/emails","/handoffs","/search","/duplicates","/imports","/lead-capture"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
  app.get("/board-fixture.css",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("text/css").send(".p5-kanban{display:flex;gap:12px;overflow-x:auto;align-items:flex-start}.p5-kanban-column{box-sizing:border-box;flex:0 0 250px;min-height:160px;padding:12px;border:1px solid #aaa}.p5-kanban-card{box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #aaa;background:white}.p5-kanban-card h4{margin:0 0 8px}.p5-kanban-card button{display:block;margin:4px 0}");});
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
@@ -60,7 +61,7 @@ async function main(){
   if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(!["POST","PATCH"].includes(req.method)||req.get("origin")!==base))){
    res.status(403).json({status:"denied",applicationAccess:false});return;
   }next();
- },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified),createCiP5DuplicatesRouter(db,verified));
+ },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified),createCiP5MailRouter(db,verified),createCiP5HandoffsRouter(db,verified),createCiP5SearchViewsRouter(db,verified),createCiP5DuplicatesRouter(db,verified),createCiP5IntakeRouter(db,verified,()=>base));
  const server=createServer(app);let browser:Browser|undefined,stage="setup";
  const path=(org=a)=>"/api/p5/"+org+"/crm/leads";
  const get=(url:string,key:string)=>request(app).get(url).set("x-p5-leads","1").set("Cookie","p5_fixture="+key);
@@ -851,6 +852,60 @@ async function main(){
   assert.equal((await post(mergePath,managerCookie,{...mergeCmd,requestId:audit.request})).status,404);
   await duplicateCtx.close();
   console.log("P5_DUPLICATE_PASS: manager preview, atomic contact merge, preserved deal relation and audit");
+  stage="intake-http";
+  const importPath="/api/p5/"+a+"/crm/imports",importId=id(1870),importCsv="source,companyName,contactEmail\nEVENT,Demo Import Lead,intake@example.com\nEVENT,broken\nWEBSITE,Demo Duplicate Lead,intake@example.com";
+  const importCmd={id:importId,csv:importCsv};
+  assert.equal((await post(importPath+"/leads",managerCookie,importCmd)).status,403);
+  const imported=await post(importPath+"/leads",repCookie,importCmd);
+  assert.equal(imported.status,200);
+  assert.deepEqual(imported.body.data.rows.map((x:{outcome:string})=>x.outcome),["CREATED","INVALID","DUPLICATE"]);
+  assert.deepEqual((await post(importPath+"/leads",repCookie,importCmd)).body.data,imported.body.data);
+  assert.equal((await post(importPath+"/leads",repCookie,{...importCmd,csv:importCsv.replace("Demo Import Lead","Demo Changed Lead")})).status,409);
+  assert.equal((await get(importPath+"/"+importId,otherCookie)).status,404);
+  assert.equal((await get("/api/p5/"+b+"/crm/imports/"+importId,repCookie)).status,403);
+  assert.equal((await get(path()+"/"+imported.body.data.rows[0].leadId,repCookie)).body.data.contactEmail,"intake@example.com");
+  await assert.rejects(raw.query("SELECT * FROM p5_ci.import_rows"));
+  const formToken=randomBytes(32).toString("hex"),formId=id(1871),capturePath="/api/p5/public/lead-capture/"+formToken;
+  await admin.query("INSERT INTO p5_ci.webforms(organization_id,id,actor_id,issuer,subject,token_digest) VALUES($1,$2,$3,$4,$5,encode(sha256(convert_to($6,'UTF8')),'hex'))",[a,formId,rep,CI_ISSUER,subject,formToken]);
+  const captureCmd={requestId:id(1872),companyName:"Demo Captured Lead",contactEmail:"captured@example.com",consent:true,website:""};
+  const capturePost=(url:string,cmd:unknown,origin=base)=>request(app).post(url).set("Origin",origin).set("x-p5-leads","1").send(cmd);
+  assert.equal((await capturePost(capturePath,captureCmd,"https://foreign.example.com")).status,403);
+  assert.equal((await capturePost(capturePath,{...captureCmd,consent:false})).status,400);
+  assert.equal((await capturePost(capturePath,{...captureCmd,website:"spam"})).status,400);
+  assert.equal((await capturePost("/api/p5/public/lead-capture/"+"0".repeat(64),captureCmd)).status,403);
+  assert.equal((await capturePost(capturePath,captureCmd)).status,200);
+  assert.deepEqual((await capturePost(capturePath,captureCmd)).body.data,{outcome:"ACCEPTED"});
+  assert.equal((await capturePost(capturePath,{...captureCmd,companyName:"Demo Altered Lead"})).status,409);
+  assert.equal((await admin.query("SELECT count(*)::int AS n FROM p5_ci.capture_submissions WHERE organization_id=$1 AND form_id=$2",[a,formId])).rows[0].n,1);
+  await assert.rejects(raw.query("SELECT * FROM p5_ci.webforms"));
+  stage="intake-browser";
+  const intakePage=await ctx.newPage();intakePage.setDefaultTimeout(10000);intakePage.on("pageerror",()=>errors++);
+  await intakePage.goto(base+"/imports");
+  await intakePage.getByLabel("CSV content",{exact:true}).fill("companyName,contactEmail,source\nDemo Browser Import,browserintake@example.com,REFERRAL\nbroken");
+  await intakePage.getByRole("button",{name:"Preview import",exact:true}).click();
+  await intakePage.getByText("Invalid row",{exact:true}).waitFor();
+  await intakePage.getByRole("button",{name:"Commit import",exact:true}).click();
+  await intakePage.getByText("Import recorded.",{exact:true}).waitFor();
+  const browserJob=await intakePage.getByLabel("Import job ID",{exact:true}).inputValue();
+  await intakePage.reload();await intakePage.getByLabel("Import job ID",{exact:true}).fill(browserJob);
+  await intakePage.getByRole("button",{name:"Load import status",exact:true}).click();
+  await intakePage.getByText("Import status loaded.",{exact:true}).waitFor();
+  await intakePage.getByRole("cell",{name:"CREATED",exact:true}).waitFor();
+  await intakePage.getByRole("cell",{name:"INVALID",exact:true}).waitFor();
+  const publicCtx=await browser.newContext();await publicCtx.route("**/*",route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+  const publicPage=await publicCtx.newPage();publicPage.setDefaultTimeout(10000);publicPage.on("pageerror",()=>errors++);
+  await publicPage.goto(base+"/lead-capture");
+  await publicPage.getByLabel("Fixture form token",{exact:true}).fill(formToken);
+  await publicPage.getByLabel("Company name",{exact:true}).fill("Demo Browser Capture");
+  await publicPage.getByLabel("Contact email",{exact:true}).fill("browsercapture@example.com");
+  await publicPage.getByRole("checkbox").check();
+  await publicPage.getByRole("button",{name:"Submit lead",exact:true}).click();
+  await publicPage.getByText("Lead accepted.",{exact:true}).waitFor();
+  await publicCtx.close();
+  assert.equal((await admin.query("SELECT count(*)::int AS n FROM p5_ci.capture_submissions WHERE organization_id=$1 AND form_id=$2",[a,formId])).rows[0].n,2);
+  await admin.query("UPDATE p5_ci.webforms SET active=false WHERE organization_id=$1 AND id=$2",[a,formId]);
+  assert.equal((await capturePost(capturePath,captureCmd)).status,403);
+  console.log("P5_INTAKE_PASS: bounded mapping, isolated rows, job replay, consent/origin token restrictions and browser persistence");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Request denied or invalid.",{exact:true}).waitFor();
