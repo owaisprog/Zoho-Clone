@@ -23,7 +23,7 @@ export class CiP5Mail extends CiP5Forecast{
  const args=this.scope(x,org);if((deal!==null&&!uuid(deal))||(after!==null&&!uuid(after)))throw new LeadError(400);
  return this.transaction(false,async c=>{const data:unknown=(await c.query("SELECT p5_ci.read_mail($1,$2,$3,$4,$5) AS data",[...args,deal,after])).rows[0]?.data;
  if(!Array.isArray(data)||data.length>11)return reject();
- let prior=after;const items=data.map(v=>{const row=deal===null?parseTemplate(v):parseEmail(v,deal);if(prior!==null&&row.id<=prior)return reject();prior=row.id;return row;});
+ let prior:string|null=after;const items=data.map(v=>{const row=deal===null?parseTemplate(v):parseEmail(v,deal);if(prior!==null&&row.id<=prior)return reject();prior=row.id;return row;});
  return {items:items.slice(0,10),nextCursor:items.length===11?items[9]!.id:null};});
  }
  async saveMail(x:StageIdentity,org:string,deal:unknown,id:unknown,raw:unknown){
