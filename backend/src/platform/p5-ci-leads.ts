@@ -69,11 +69,11 @@ export class CiP5Leads{
   assertP4V1CiPrismaEnvironment(this.env);
   if(this.env.P5_LEADS_CI!=="true"||this.env.VERCEL!==undefined||this.env.VERCEL_ENV!==undefined)return fail(503);
  }
- private scope(x:StageIdentity,org:string){
+ protected scope(x:StageIdentity,org:string){
   if(!x||!/^https:\/\/[a-z0-9-]+(?:\.[a-z0-9-]+)*\.auth0\.com\/$/.test(x.issuer)||!/^auth0\|[A-Za-z0-9_-]{3,180}$/.test(x.subject)||!isCanonicalUuidV4(org))return fail(403);
   return [x.issuer,x.subject,org];
  }
- private async transaction<T>(write:boolean,run:(c:pg.PoolClient)=>Promise<T>):Promise<T>{
+ protected async transaction<T>(write:boolean,run:(c:pg.PoolClient)=>Promise<T>):Promise<T>{
   this.guard();const c=await this.pool.connect();let discard=false;
   try{
    await c.query(write?"BEGIN ISOLATION LEVEL SERIALIZABLE":"BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
@@ -81,9 +81,9 @@ export class CiP5Leads{
    AND EXISTS(SELECT 1 FROM pg_roles WHERE rolname=current_user AND NOT(rolsuper OR rolbypassrls OR rolcreaterole OR rolcreatedb OR rolreplication OR rolinherit))
    AND NOT EXISTS(SELECT 1 FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.member WHERE r.rolname=current_user)
    AND NOT has_schema_privilege(current_user,'p5_ci','CREATE') AND NOT has_schema_privilege(current_user,'platform_stage','CREATE')
-   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants')
+   AND (SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='p5_ci' AND c.relkind='r' AND c.relname IN ('leads','lead_events','stage_edit_grants','accounts','account_events')
     AND c.relrowsecurity AND c.relforcerowsecurity AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=current_user)
-    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=3
+    AND NOT has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))=5
    AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='platform_stage' AND c.relkind='r'
     AND (has_any_column_privilege(current_user,c.oid,'SELECT,INSERT,UPDATE,REFERENCES') OR has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER'))) AS valid`);
    if(r.rows[0]?.valid!==true)return fail(503);
