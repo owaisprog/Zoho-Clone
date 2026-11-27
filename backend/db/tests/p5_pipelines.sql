@@ -181,7 +181,7 @@ CREATE FUNCTION p5_ci.write_deal(p_issuer text,p_subject text,p_org uuid,p_id uu
  UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
  ELSE
  prior:=d.stage;
- IF NOT (p_next=ANY(p5_ci.next_deal_stages(p_org,d.pipeline_id,prior))) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF NOT coalesce(p_next=ANY(p5_ci.next_deal_stages(p_org,d.pipeline_id,prior)),false) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
  UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
  END IF; END IF;
  INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
