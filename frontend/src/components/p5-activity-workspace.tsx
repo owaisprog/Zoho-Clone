@@ -12,7 +12,7 @@ export function P5ActivityWorkspace({organizationId,client,deals}:{organizationI
  async function load(id:string,after:string|null=null){await deals.detail(organizationId,id);const result=await client.list(organizationId,id,after);setItems(result.items);setCursor(result.nextCursor);setMessage("Activities loaded.");}
  function save(p:NonNullable<typeof pending>){return run(async()=>{setPending(p);await client.write(organizationId,p.deal,p.id,p.command);setPending(null);setTitle("");await load(p.deal);setMessage("Activity saved.");});}
  const blocked=busy||pending!==null;
- return <main className="mx-auto max-w-5xl space-y-5 p-6"><nav><a href="/">Leads</a> · <a href="/deals">Deals</a> · <a href="/board">Sales board</a> · <a href="/activities">Activities</a></nav><h1>Sales CRM — Activities</h1><p>Synthetic deal notes, tasks and activity log only.</p>
+ return <main className="mx-auto max-w-5xl space-y-5 p-6"><nav><a href="/">Leads</a> · <a href="/deals">Deals</a> · <a href="/board">Sales board</a> · <a href="/activities">Activities</a> · <a href="/followups">Follow-ups</a></nav><h1>Sales CRM — Activities</h1><p>Synthetic deal notes, tasks and activity log only.</p>
  <label htmlFor="activity-deal">Deal ID</label><input id="activity-deal" value={deal} disabled={blocked} onChange={e=>{setDeal(e.target.value);setItems([]);setCursor(null);}}/>
  <button disabled={blocked||!deal} onClick={()=>void run(()=>load(deal))}>Load activities</button>
  <form onSubmit={e=>{e.preventDefault();if(!blocked)void save({deal,id:crypto.randomUUID(),command:{kind,title}});}}>
