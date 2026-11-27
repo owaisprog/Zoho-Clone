@@ -120,7 +120,113 @@ CREATE OR REPLACE FUNCTION p5_ci.query_deals(p_issuer text,p_subject text,p_org 
  DECLARE who record; result jsonb;
  BEGIN
  IF current_setting('transaction_read_only')<>'on' THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
- IF p_search IS NULL OR p_search !~ '^[A-Za-z0-9 &.-]{0,80}$' OR (p_stage IS NOT NULL AND p_stage !~ '^[A-Z][A-Z0-9_]{0,23}) OR (p_id IS NOT NULL AND p_after IS NOT NULL) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF p_search IS NULL OR p_search !~ '^[A-Za-z0-9 &.-]{0,80}$' OR (p_stage IS NOT NULL AND p_stage !~ '^[A-Z][A-Z0-9_]{0,23} OR (p_id IS NOT NULL AND p_after IS NOT NULL) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
+ IF NOT FOUND OR NOT(who.rep OR who.manager) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ SELECT coalesce(jsonb_agg(p5_ci.deal_projection(d.row_value) ORDER BY d.id),'[]'::jsonb) INTO result FROM
+ (SELECT x AS row_value,x.id FROM p5_ci.deals x WHERE x.organization_id=p_org AND (p_after IS NULL OR x.id>p_after) AND (p_id IS NULL OR x.id=p_id)
+ AND (p_search='' OR strpos(lower(x.title),lower(p_search))>0) AND (p_stage IS NULL OR x.stage=p_stage)
+ AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) ORDER BY x.id LIMIT 21) d;
+ IF p_id IS NOT NULL THEN RETURN result->0; END IF; RETURN result;
+ END $$;
+) OR (p_id IS NOT NULL AND p_after IS NOT NULL) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
+ IF NOT FOUND OR NOT(who.rep OR who.manager) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ SELECT coalesce(jsonb_agg(p5_ci.deal_projection(d.row_value) ORDER BY d.id),'[]'::jsonb) INTO result FROM
+ (SELECT x AS row_value,x.id FROM p5_ci.deals x WHERE x.organization_id=p_org AND (p_after IS NULL OR x.id>p_after) AND (p_id IS NULL OR x.id=p_id)
+ AND (p_search='' OR strpos(lower(x.title),lower(p_search))>0) AND (p_stage IS NULL OR x.stage=p_stage)
+ AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) ORDER BY x.id LIMIT 21) d;
+ IF p_id IS NOT NULL THEN RETURN result->0; END IF; RETURN result;
+ END $$;
+
+DROP FUNCTION p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text);
+CREATE FUNCTION p5_ci.write_deal(p_issuer text,p_subject text,p_org uuid,p_id uuid,p_request uuid,p_expected integer,
+ p_operation text,p_title text,p_value integer,p_account uuid,p_contact uuid,p_next text,p_pipeline uuid)
+ RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$
+ DECLARE who record; d p5_ci.deals%ROWTYPE; ev p5_ci.deal_events%ROWTYPE; fingerprint text; action_code text; prior text; ident uuid;
+ BEGIN
+ IF current_setting('transaction_isolation')<>'serializable' THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
+ IF NOT FOUND OR NOT(who.rep OR who.manager) OR (p_operation='create' AND NOT who.rep) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ FOREACH ident IN ARRAY ARRAY[p_id,p_request] LOOP
+ IF ident IS NULL OR substring(ident::text from 15 for 1)<>'4' OR substring(ident::text from 20 for 1) NOT IN ('8','9','a','b') THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ END LOOP;
+ IF (p_operation<>'create' AND p_pipeline IS NOT NULL) OR p_operation IS NULL OR p_operation NOT IN ('create','edit','transition') OR (p_operation='create' AND p_expected IS NOT NULL)
+ OR (p_operation<>'create' AND (p_expected IS NULL OR p_expected<0 OR p_expected>=1000000)) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF p_operation IN ('create','edit') THEN
+ IF p_title IS NULL OR p_title !~ '^Demo [A-Za-z][A-Za-z0-9 &.-]{2,74}$' OR p_value IS NULL OR p_value<0 OR p_value>1000000000 OR p_next IS NOT NULL
+ OR (p_operation='create' AND (p_account IS NULL OR p_contact IS NULL)) OR (p_operation='edit' AND (p_account IS NOT NULL OR p_contact IS NOT NULL)) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF p_operation='create' AND NOT p5_ci.deal_links_visible(p_issuer,p_subject,p_org,p_account,p_contact) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ ELSE
+ IF p_title IS NOT NULL OR p_value IS NOT NULL OR p_account IS NOT NULL OR p_contact IS NOT NULL OR p_next IS NULL OR p_next !~ '^[A-Z][A-Z0-9_]{0,23} RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next,p_pipeline)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents,pipeline_id) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value,p_pipeline) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT coalesce(p_next=ANY(p5_ci.next_deal_stages(p_org,d.pipeline_id,prior)),false) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+ THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT (p_next='LOST' OR (prior='OPEN' AND p_next='DISCOVERY') OR (prior='DISCOVERY' AND p_next='PROPOSAL') OR (prior='PROPOSAL' AND p_next='NEGOTIATION') OR (prior='NEGOTIATION' AND p_next='WON')) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+
+GRANT CREATE ON SCHEMA p5_ci TO p5_ci_definer;
+ALTER FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) OWNER TO p5_ci_definer;
+REVOKE CREATE ON SCHEMA p5_ci FROM p5_ci_definer;
+REVOKE ALL ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines),p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines) TO p5_ci_definer;
+GRANT EXECUTE ON FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) TO p5_ci_runtime;
+COMMIT;
+) OR (p_id IS NOT NULL AND p_after IS NOT NULL) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
  SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
  IF NOT FOUND OR NOT(who.rep OR who.manager) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
  SELECT coalesce(jsonb_agg(p5_ci.deal_projection(d.row_value) ORDER BY d.id),'[]'::jsonb) INTO result FROM
@@ -159,6 +265,248 @@ CREATE FUNCTION p5_ci.write_deal(p_issuer text,p_subject text,p_org uuid,p_id uu
  IF p_operation='create' AND NOT p5_ci.deal_links_visible(p_issuer,p_subject,p_org,p_account,p_contact) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
  ELSE
  IF p_title IS NOT NULL OR p_value IS NOT NULL OR p_account IS NOT NULL OR p_contact IS NOT NULL OR p_next IS NULL OR p_next !~ '^[A-Z][A-Z0-9_]{0,23} THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next,p_pipeline)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents,pipeline_id) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value,p_pipeline) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT coalesce(p_next=ANY(p5_ci.next_deal_stages(p_org,d.pipeline_id,prior)),false) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+ THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT (p_next='LOST' OR (prior='OPEN' AND p_next='DISCOVERY') OR (prior='DISCOVERY' AND p_next='PROPOSAL') OR (prior='PROPOSAL' AND p_next='NEGOTIATION') OR (prior='NEGOTIATION' AND p_next='WON')) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+
+GRANT CREATE ON SCHEMA p5_ci TO p5_ci_definer;
+ALTER FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) OWNER TO p5_ci_definer;
+REVOKE CREATE ON SCHEMA p5_ci FROM p5_ci_definer;
+REVOKE ALL ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines),p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines) TO p5_ci_definer;
+GRANT EXECUTE ON FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) TO p5_ci_runtime;
+COMMIT;
+ THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next,p_pipeline)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents,pipeline_id) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value,p_pipeline) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT coalesce(p_next=ANY(p5_ci.next_deal_stages(p_org,d.pipeline_id,prior)),false) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+ THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT (p_next='LOST' OR (prior='OPEN' AND p_next='DISCOVERY') OR (prior='DISCOVERY' AND p_next='PROPOSAL') OR (prior='PROPOSAL' AND p_next='NEGOTIATION') OR (prior='NEGOTIATION' AND p_next='WON')) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+
+GRANT CREATE ON SCHEMA p5_ci TO p5_ci_definer;
+ALTER FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) OWNER TO p5_ci_definer;
+REVOKE CREATE ON SCHEMA p5_ci FROM p5_ci_definer;
+REVOKE ALL ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines),p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines) TO p5_ci_definer;
+GRANT EXECUTE ON FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) TO p5_ci_runtime;
+COMMIT;
+) OR (p_id IS NOT NULL AND p_after IS NOT NULL) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
+ IF NOT FOUND OR NOT(who.rep OR who.manager) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ SELECT coalesce(jsonb_agg(p5_ci.deal_projection(d.row_value) ORDER BY d.id),'[]'::jsonb) INTO result FROM
+ (SELECT x AS row_value,x.id FROM p5_ci.deals x WHERE x.organization_id=p_org AND (p_after IS NULL OR x.id>p_after) AND (p_id IS NULL OR x.id=p_id)
+ AND (p_search='' OR strpos(lower(x.title),lower(p_search))>0) AND (p_stage IS NULL OR x.stage=p_stage)
+ AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) ORDER BY x.id LIMIT 21) d;
+ IF p_id IS NOT NULL THEN RETURN result->0; END IF; RETURN result;
+ END $$;
+) OR (p_id IS NOT NULL AND p_after IS NOT NULL) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
+ IF NOT FOUND OR NOT(who.rep OR who.manager) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ SELECT coalesce(jsonb_agg(p5_ci.deal_projection(d.row_value) ORDER BY d.id),'[]'::jsonb) INTO result FROM
+ (SELECT x AS row_value,x.id FROM p5_ci.deals x WHERE x.organization_id=p_org AND (p_after IS NULL OR x.id>p_after) AND (p_id IS NULL OR x.id=p_id)
+ AND (p_search='' OR strpos(lower(x.title),lower(p_search))>0) AND (p_stage IS NULL OR x.stage=p_stage)
+ AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) ORDER BY x.id LIMIT 21) d;
+ IF p_id IS NOT NULL THEN RETURN result->0; END IF; RETURN result;
+ END $$;
+
+DROP FUNCTION p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text);
+CREATE FUNCTION p5_ci.write_deal(p_issuer text,p_subject text,p_org uuid,p_id uuid,p_request uuid,p_expected integer,
+ p_operation text,p_title text,p_value integer,p_account uuid,p_contact uuid,p_next text,p_pipeline uuid)
+ RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$
+ DECLARE who record; d p5_ci.deals%ROWTYPE; ev p5_ci.deal_events%ROWTYPE; fingerprint text; action_code text; prior text; ident uuid;
+ BEGIN
+ IF current_setting('transaction_isolation')<>'serializable' THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ SELECT * INTO who FROM p5_ci.actor(p_issuer,p_subject,p_org);
+ IF NOT FOUND OR NOT(who.rep OR who.manager) OR (p_operation='create' AND NOT who.rep) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ FOREACH ident IN ARRAY ARRAY[p_id,p_request] LOOP
+ IF ident IS NULL OR substring(ident::text from 15 for 1)<>'4' OR substring(ident::text from 20 for 1) NOT IN ('8','9','a','b') THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ END LOOP;
+ IF (p_operation<>'create' AND p_pipeline IS NOT NULL) OR p_operation IS NULL OR p_operation NOT IN ('create','edit','transition') OR (p_operation='create' AND p_expected IS NOT NULL)
+ OR (p_operation<>'create' AND (p_expected IS NULL OR p_expected<0 OR p_expected>=1000000)) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF p_operation IN ('create','edit') THEN
+ IF p_title IS NULL OR p_title !~ '^Demo [A-Za-z][A-Za-z0-9 &.-]{2,74}$' OR p_value IS NULL OR p_value<0 OR p_value>1000000000 OR p_next IS NOT NULL
+ OR (p_operation='create' AND (p_account IS NULL OR p_contact IS NULL)) OR (p_operation='edit' AND (p_account IS NOT NULL OR p_contact IS NOT NULL)) THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF p_operation='create' AND NOT p5_ci.deal_links_visible(p_issuer,p_subject,p_org,p_account,p_contact) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ ELSE
+ IF p_title IS NOT NULL OR p_value IS NOT NULL OR p_account IS NOT NULL OR p_contact IS NOT NULL OR p_next IS NULL OR p_next !~ '^[A-Z][A-Z0-9_]{0,23} RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next,p_pipeline)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents,pipeline_id) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value,p_pipeline) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT coalesce(p_next=ANY(p5_ci.next_deal_stages(p_org,d.pipeline_id,prior)),false) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+ THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
+ END IF;
+ action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
+ fingerprint:=encode(sha256(convert_to(jsonb_build_array(p_id,p_expected,p_operation,p_title,p_value,p_account,p_contact,p_next)::text,'UTF8')),'hex');
+ SELECT * INTO ev FROM p5_ci.deal_events WHERE organization_id=p_org AND request_id=p_request;
+ IF FOUND THEN
+ IF ev.actor_id<>who.actor_id OR ev.deal_id<>p_id OR ev.action<>action_code OR ev.digest<>fingerprint THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x);
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ RETURN jsonb_build_object('outcome','replay','record',p5_ci.deal_projection(d));
+ END IF;
+ IF p_operation='create' THEN
+ INSERT INTO p5_ci.deals(organization_id,id,owner_id,account_id,contact_id,title,value_cents) VALUES(p_org,p_id,who.actor_id,p_account,p_contact,p_title,p_value) RETURNING * INTO d;
+ ELSE
+ SELECT * INTO d FROM p5_ci.deals x WHERE x.organization_id=p_org AND x.id=p_id AND p5_ci.deal_visible(p_issuer,p_subject,p_org,x) FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='P5004'; END IF;
+ IF d.revision<>p_expected OR d.stage IN ('WON','LOST') THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ IF p_operation='edit' THEN
+ IF (d.title,d.value_cents)=(p_title,p_value) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET title=p_title,value_cents=p_value,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ ELSE
+ prior:=d.stage;
+ IF NOT (p_next='LOST' OR (prior='OPEN' AND p_next='DISCOVERY') OR (prior='DISCOVERY' AND p_next='PROPOSAL') OR (prior='PROPOSAL' AND p_next='NEGOTIATION') OR (prior='NEGOTIATION' AND p_next='WON')) THEN RAISE EXCEPTION 'P5_CONFLICT' USING ERRCODE='23505'; END IF;
+ UPDATE p5_ci.deals SET stage=p_next,revision=revision+1 WHERE organization_id=p_org AND id=p_id RETURNING * INTO d;
+ END IF; END IF;
+ INSERT INTO p5_ci.deal_events(organization_id,request_id,deal_id,actor_id,action,revision,digest,previous_stage,next_stage) VALUES(p_org,p_request,p_id,who.actor_id,action_code,d.revision,fingerprint,prior,p_next);
+ RETURN jsonb_build_object('outcome',CASE WHEN p_operation='create' THEN 'created' ELSE 'applied' END,'record',p5_ci.deal_projection(d));
+ END $$;
+
+GRANT CREATE ON SCHEMA p5_ci TO p5_ci_definer;
+ALTER FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb) OWNER TO p5_ci_definer;
+ALTER FUNCTION p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) OWNER TO p5_ci_definer;
+REVOKE CREATE ON SCHEMA p5_ci FROM p5_ci_definer;
+REVOKE ALL ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines),p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION p5_ci.valid_pipeline_stages(jsonb),p5_ci.pipeline_on_insert(),p5_ci.next_deal_stages(uuid,uuid,text),p5_ci.pipeline_projection(p5_ci.pipelines) TO p5_ci_definer;
+GRANT EXECUTE ON FUNCTION p5_ci.list_pipelines(text,text,uuid,uuid),p5_ci.write_pipeline(text,text,uuid,uuid,uuid,integer,text,jsonb),p5_ci.write_deal(text,text,uuid,uuid,uuid,integer,text,text,integer,uuid,uuid,text,uuid) TO p5_ci_runtime;
+COMMIT;
+ THEN RAISE EXCEPTION 'P5_INVALID' USING ERRCODE='22023'; END IF;
  IF NOT EXISTS(SELECT 1 FROM p5_ci.stage_edit_grants g WHERE g.organization_id=p_org AND g.user_id=who.actor_id AND g.active) THEN RAISE EXCEPTION 'P5_DENIED' USING ERRCODE='42501'; END IF;
  END IF;
  action_code:=CASE p_operation WHEN 'create' THEN 'CREATED' WHEN 'edit' THEN 'EDITED' ELSE 'STAGE_CHANGED' END;
