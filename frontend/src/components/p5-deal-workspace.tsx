@@ -45,9 +45,9 @@ export function P5DealWorkspace({organizationId,client,accounts,contacts,pipelin
  {detail&&<section aria-label="Deal details"><h2>{detail.title}</h2><p>{detail.stage} · revision {detail.revision}</p><p>{money(detail.valueCents)}</p>
  <form onSubmit={e=>{e.preventDefault();if(!blocked)void save(detail.id,{operation:"edit",requestId:crypto.randomUUID(),expectedRevision:detail.revision,title:editTitle,valueCents:Number(editValue)});}}>
  <label htmlFor="deal-edit-title">Edit deal title</label><input id="deal-edit-title" required maxLength={80} value={editTitle} disabled={blocked||detail.nextStages.length===0} onChange={e=>setEditTitle(e.target.value)}/>
- <label htmlFor="deal-edit-value">Edit value in cents</label><input id="deal-edit-value" required type="number" min={0} max={1000000000} step={1} value={editValue} disabled={blocked||next(detail.stage).length===0} onChange={e=>setEditValue(e.target.value)}/>
- <button disabled={blocked||next(detail.stage).length===0||detail.revision>=1000000}>Save deal changes</button></form>
- {next(detail.stage).map(x=><button key={x} disabled={blocked||detail.revision>=1000000} onClick={()=>void save(detail.id,{operation:"transition",requestId:crypto.randomUUID(),expectedRevision:detail.revision,nextStage:x})}>Move deal to {x}</button>)}
+ <label htmlFor="deal-edit-value">Edit value in cents</label><input id="deal-edit-value" required type="number" min={0} max={1000000000} step={1} value={editValue} disabled={blocked||detail.nextStages.length===0} onChange={e=>setEditValue(e.target.value)}/>
+ <button disabled={blocked||detail.nextStages.length===0||detail.revision>=1000000}>Save deal changes</button></form>
+ {detail.nextStages.map(x=><button key={x} disabled={blocked||detail.revision>=1000000} onClick={()=>void save(detail.id,{operation:"transition",requestId:crypto.randomUUID(),expectedRevision:detail.revision,nextStage:x})}>Move deal to {x}</button>)}
  <button disabled={blocked} onClick={()=>void loadHistory(detail.id)}>Load deal history</button>{history&&<ul>{history.items.map(x=><li key={x.revision}>{x.action} · revision {x.revision}{x.previousStage&&" · "+x.previousStage+" to "+x.nextStage}</li>)}</ul>}{history?.nextCursor!==null&&history?.nextCursor!==undefined&&<button disabled={blocked} onClick={()=>void loadHistory(detail.id,history.nextCursor!)}>Next deal history</button>}</section>}
  <p role="status" aria-live="polite">{message}</p></main>;
 }
