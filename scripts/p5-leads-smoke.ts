@@ -45,7 +45,8 @@ async function main(){
   try{return verifyP4R33CiToken(sessions.get(matches[0]!.slice("p5_fixture=".length)),[jwk],Math.floor(Date.now()/1000));}catch{return null;}
  };
  const app=express();app.disable("x-powered-by");let base="";
- app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get("/board-fixture.css",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("text/css").send(".p5-kanban{display:flex;gap:12px;overflow-x:auto;align-items:flex-start}.p5-kanban-column{box-sizing:border-box;flex:0 0 250px;min-height:160px;padding:12px;border:1px solid #aaa}.p5-kanban-card{box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #aaa;background:white}.p5-kanban-card h4{margin:0 0 8px}.p5-kanban-card button{display:block;margin:4px 0}");});
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
   res.setHeader("Cache-Control","no-store, private");
@@ -554,34 +555,42 @@ async function main(){
    await boardPage.getByLabel("Search opportunities",{exact:true}).fill("Board Opportunity");
    await boardPage.getByRole("button",{name:"Load sales board",exact:true}).click();await boardPage.getByText("Sales board loaded.",{exact:true}).waitFor();
   }
-  await boardPage.goto(base+"/board");await loadBoard();
+  stage="board-browser-load";await boardPage.goto(base+"/board");await loadBoard();
+  stage="board-browser-totals";
   await boardPage.getByRole("region",{name:"Opportunity totals"}).getByText("Visible opportunities: 12",{exact:true}).waitFor();
   await boardPage.getByRole("region",{name:"Opportunity totals"}).getByText("Total opportunity value: $120.00",{exact:true}).waitFor();
   assert.equal(await boardPage.getByRole("region",{name:"Stage OPEN"}).getByRole("article").count(),10);
   assert.equal(await boardPage.getByText("Demo Board Opportunity Hidden",{exact:true}).count(),0);
+  stage="board-browser-page";
   await boardPage.getByRole("button",{name:"Next OPEN opportunities",exact:true}).click();await boardPage.getByText("Sales board loaded.",{exact:true}).waitFor();
   assert.equal(await boardPage.getByRole("region",{name:"Stage OPEN"}).getByRole("article").count(),2);
   await boardPage.getByRole("button",{name:"Back to full board",exact:true}).click();await boardPage.getByText("Sales board loaded.",{exact:true}).waitFor();
+  stage="board-browser-button";
   await boardPage.getByRole("button",{name:"Move Demo Board Opportunity 0 to VALIDATION",exact:true}).click();await boardPage.getByText("Deal moved.",{exact:true}).waitFor();
   await boardPage.getByRole("region",{name:"Stage VALIDATION"}).getByRole("article",{name:"Demo Board Opportunity 0",exact:true}).waitFor();
-  await boardPage.getByRole("article",{name:"Demo Board Opportunity 1",exact:true}).dragTo(boardPage.getByRole("region",{name:"Stage VALIDATION"}));
+  stage="board-browser-drag";
+  await boardPage.getByRole("article",{name:"Demo Board Opportunity 1",exact:true}).dragTo(boardPage.getByRole("region",{name:"Stage VALIDATION"}),{sourcePosition:{x:5,y:5},targetPosition:{x:10,y:10}});
   await boardPage.getByText("Deal moved.",{exact:true}).waitFor();
   await boardPage.getByRole("region",{name:"Stage VALIDATION"}).getByRole("article",{name:"Demo Board Opportunity 1",exact:true}).waitFor();
   assert.equal((await db.deal(identity(subject),a,id(1201))).stage,"VALIDATION");
+  stage="board-browser-won";
   await boardPage.getByRole("button",{name:"Move Demo Board Opportunity 1 to WON",exact:true}).click();await boardPage.getByText("Deal moved.",{exact:true}).waitFor();
   await boardPage.getByRole("region",{name:"Stage WON"}).getByRole("article",{name:"Demo Board Opportunity 1",exact:true}).waitFor();
   await boardPage.getByRole("region",{name:"Opportunity totals"}).getByText("Won opportunity value: $10.00",{exact:true}).waitFor();
   assert.equal((await db.dealHistory(identity(subject),a,id(1201))).items.length,3);
+  stage="board-browser-stale";
   assert.equal((await patch(dealsPath+"/"+id(1202),repCookie,{operation:"transition",requestId:id(1310),expectedRevision:0,nextStage:"VALIDATION"})).status,200);
   await boardPage.getByRole("button",{name:"Move Demo Board Opportunity 2 to VALIDATION",exact:true}).click();
   await boardPage.getByText("Board conflict. Reload before moving another deal.",{exact:true}).waitFor();
   assert.equal(await boardPage.getByRole("region",{name:"Opportunity totals"}).count(),0);
+  stage="board-browser-revoked-stage";
   await loadBoard();
   await admin.query("UPDATE p5_ci.stage_edit_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await boardPage.getByRole("button",{name:"Move Demo Board Opportunity 3 to VALIDATION",exact:true}).click();
   await boardPage.getByText("Board request denied or invalid.",{exact:true}).waitFor();
   assert.equal(await boardPage.getByRole("region",{name:"Opportunity totals"}).count(),0);
   assert.equal((await db.deal(identity(subject),a,id(1203))).stage,"OPEN");
+  stage="board-browser-reload";
   await boardPage.reload();await loadBoard();
   await boardPage.getByRole("region",{name:"Stage WON"}).getByRole("article",{name:"Demo Board Opportunity 1",exact:true}).waitFor();
   stage="revoke";
