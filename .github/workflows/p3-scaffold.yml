@@ -870,6 +870,7 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/p5_followups.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/p5_forecast.sql
           psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/p5_mail.sql
+          psql -X -v ON_ERROR_STOP=1 -f backend/db/tests/p5_handoffs.sql
           node_modules/.bin/tsx scripts/p5-leads-smoke.ts
 
       - name: Simulate P4 R36 readiness failures and rollback without staging deployment
