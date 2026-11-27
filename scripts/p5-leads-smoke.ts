@@ -12,7 +12,8 @@ import request from "supertest";
 import {chromium,type Browser} from "playwright";
 import {assertP4V1CiPrismaEnvironment} from "../backend/src/platform/p4-v1-ci-prisma.js";
 import {CI_ISSUER,CI_AUDIENCE,verifyP4R33CiToken,type P4R33CiJwk} from "../backend/src/platform/p4-r33-ci-jwt-verifier.js";
-import {CiP5Followups} from "../backend/src/platform/p5-ci-followups.js";
+import {CiP5Forecast} from "../backend/src/platform/p5-ci-forecast.js";
+import {createCiP5ForecastRouter} from "../backend/src/platform/p5-ci-forecast-router.js";
 import {createCiP5FollowupsRouter} from "../backend/src/platform/p5-ci-followups-router.js";
 import {createCiP5ActivitiesRouter} from "../backend/src/platform/p5-ci-activities-router.js";
 import {createCiP5SalesBoardRouter} from "../backend/src/platform/p5-ci-sales-board-router.js";
@@ -32,7 +33,7 @@ async function main(){
  const dir=mkdtempSync(join(tmpdir(),"p5-leads-")),bundle=join(dir,"bundle.js");
  const build=spawnSync("node_modules/.bin/esbuild",["scripts/p5-leads-entry.tsx","--bundle","--platform=browser","--format=iife","--jsx=automatic","--tsconfig=frontend/tsconfig.json","--define:process.env.NODE_ENV=\"production\"","--outfile="+bundle],{stdio:"pipe",timeout:30000});
  if(build.status!==0){rmSync(dir,{recursive:true,force:true});throw Error("P5_BUNDLE_FAILED");}
- const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Followups();
+ const admin=new pg.Pool({...conn,user:"demo_ci"}),raw=new pg.Pool({...conn,user:"p5_ci_runtime"}),db=new CiP5Forecast();
  const pair=generateKeyPairSync("rsa",{modulusLength:2048}),jwk={...pair.publicKey.export({format:"jwk"}),kid:"r33-ci-key-p5leads",alg:"RS256",use:"sig"} as P4R33CiJwk;
  function token(sub:string){
   const now=Math.floor(Date.now()/1000),enc=(v:unknown)=>Buffer.from(JSON.stringify(v)).toString("base64url");
@@ -47,7 +48,7 @@ async function main(){
   try{return verifyP4R33CiToken(sessions.get(matches[0]!.slice("p5_fixture=".length)),[jwk],Math.floor(Date.now()/1000));}catch{return null;}
  };
  const app=express();app.disable("x-powered-by");let base="";
- app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
+ app.get(["/","/accounts","/contacts","/conversion","/deals","/pipelines","/board","/activities","/followups","/reports"],(_q,r)=>{r.setHeader("Content-Security-Policy","default-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");r.setHeader("Cache-Control","no-store");r.type("html").send('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>P5 lead fixture</title><link rel="stylesheet" href="/board-fixture.css"></head><body><div id="root" data-org="'+a+'"></div><script defer src="/workspace.js"></script></body></html>');});
  app.get("/board-fixture.css",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("text/css").send(".p5-kanban{display:flex;gap:12px;overflow-x:auto;align-items:flex-start}.p5-kanban-column{box-sizing:border-box;flex:0 0 250px;min-height:160px;padding:12px;border:1px solid #aaa}.p5-kanban-card{box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #aaa;background:white}.p5-kanban-card h4{margin:0 0 8px}.p5-kanban-card button{display:block;margin:4px 0}");});
  app.get("/workspace.js",(_q,r)=>{r.setHeader("Cache-Control","no-store");r.type("application/javascript").send(readFileSync(bundle));});
  app.use("/api/p5",(req,res,next)=>{
@@ -55,7 +56,7 @@ async function main(){
   if(req.get("x-p5-leads")!=="1"||(req.get("sec-fetch-site")&&req.get("sec-fetch-site")!=="same-origin")||(req.method!=="GET"&&(!["POST","PATCH"].includes(req.method)||req.get("origin")!==base))){
    res.status(403).json({status:"denied",applicationAccess:false});return;
   }next();
- },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified));
+ },createCiP5LeadRouter(db,verified),createCiP5AccountRouter(db,verified),createCiP5ContactRouter(db,verified),createCiP5ConversionRouter(db,verified),createCiP5PipelineRouter(db,verified),createCiP5SalesBoardRouter(db,verified),createCiP5ActivitiesRouter(db,verified),createCiP5FollowupsRouter(db,verified),createCiP5ForecastRouter(db,verified));
  const server=createServer(app);let browser:Browser|undefined,stage="setup";
  const path=(org=a)=>"/api/p5/"+org+"/crm/leads";
  const get=(url:string,key:string)=>request(app).get(url).set("x-p5-leads","1").set("Cookie","p5_fixture="+key);
@@ -655,6 +656,39 @@ async function main(){
   assert.equal((await get(followPath,repCookie)).body.data.items[0].completed,true);
   await assert.rejects(raw.query("SELECT * FROM p5_ci.followups"));
   console.log("P5_FOLLOWUPS_PASS: persisted dates, due reminders, revision conflicts, completion and isolation");
+  stage="forecast-http";
+  const reportPath="/api/p5/"+a+"/crm/reports",reportQuery="?pipelineId="+pc.id+"&from=2027-01-01&to=2027-12-31";
+  const forecastDeal=id(1211),forecastPath=reportPath+"/forecast/"+forecastDeal;
+  assert.equal((await get(forecastPath,repCookie)).body.data,null);
+  assert.equal((await post(forecastPath,repCookie,{expectedClose:"2027-02-30",probabilityBp:5000,expectedRevision:-1})).status,400);
+  assert.equal((await post(forecastPath,otherCookie,{expectedClose:"2027-01-31",probabilityBp:5000,expectedRevision:-1})).status,404);
+  assert.equal((await post(reportPath+"/forecast/"+id(1300),otherCookie,{expectedClose:"2027-01-31",probabilityBp:10000,expectedRevision:-1})).status,200);
+  const forecastPage=await ctx.newPage();forecastPage.setDefaultTimeout(10000);forecastPage.on("pageerror",()=>errors++);
+  stage="forecast-browser";
+  await forecastPage.goto(base+"/reports");
+  await forecastPage.getByLabel("Deal ID",{exact:true}).fill(forecastDeal);
+  await forecastPage.getByRole("button",{name:"Load forecast",exact:true}).click();
+  await forecastPage.getByText("Forecast loaded.",{exact:true}).waitFor();
+  await forecastPage.getByLabel("Expected close date",{exact:true}).fill("2027-01-31");
+  await forecastPage.getByLabel("Probability (%)",{exact:true}).fill("50");
+  await forecastPage.getByRole("button",{name:"Save forecast",exact:true}).click();
+  await forecastPage.getByText("Forecast saved.",{exact:true}).waitFor();
+  assert.equal((await post(forecastPath,repCookie,{expectedClose:"2027-01-31",probabilityBp:5000,expectedRevision:-1})).status,200);
+  assert.equal((await post(forecastPath,repCookie,{expectedClose:"2027-02-01",probabilityBp:5000,expectedRevision:-1})).status,409);
+  const forecastReport=(await get(reportPath+reportQuery,repCookie)).body.data;
+  assert.equal(forecastReport.stages.reduce((n:number,x:{weightedCents:number})=>n+x.weightedCents,0),500);
+  assert.equal((await get(reportPath+reportQuery,ownerCookie)).status,403);
+  assert.equal((await get(reportPath+"?pipelineId="+id(1101)+"&from=2027-01-01&to=2027-12-31",repCookie)).status,404);
+  await forecastPage.getByRole("button",{name:"Load pipelines",exact:true}).click();
+  await forecastPage.getByText("Pipelines loaded.",{exact:true}).waitFor();
+  await forecastPage.getByLabel("Pipeline",{exact:true}).selectOption(pc.id);
+  await forecastPage.getByLabel("From",{exact:true}).fill("2027-01-01");
+  await forecastPage.getByLabel("To",{exact:true}).fill("2027-12-31");
+  await forecastPage.getByRole("button",{name:"Run report",exact:true}).click();
+  await forecastPage.getByText("Report loaded.",{exact:true}).waitFor();
+  assert.equal(await forecastPage.locator("dd").first().textContent(),"$5.00");
+  await assert.rejects(raw.query("SELECT * FROM p5_ci.forecast_inputs"));
+  console.log("P5_FORECAST_PASS: persisted estimates, weighted cents, period reporting and hidden record isolation");
   stage="revoke";
   await admin.query("UPDATE platform_stage.sales_grants SET active=false WHERE organization_id=$1 AND user_id=$2",[a,rep]);
   await page.getByRole("button",{name:"Load leads",exact:true}).click();await page.getByText("Request denied or invalid.",{exact:true}).waitFor();
