@@ -21,7 +21,7 @@ export function P5ContactWorkspace({organizationId,client,accounts}:{organizatio
  function save(id:string|null,command:ContactWrite){return run(async()=>{setDetail(null);setPage(null);setPending({id,command});const row=await client.write(organizationId,id,command);setPending(null);show(row);setName("");setEmail("");setAccountId("");setMessage(id?"Contact updated.":"Contact saved.");});}
  function accountOptions(selected:string){return <><option value="">No linked account</option>{selected&&!options?.items.some(x=>x.id===selected)&&<option value={selected}>Previously selected account</option>}{options?.items.map(row=><option key={row.id} value={row.id}>{row.name}</option>)}</>;}
  return <main className="mx-auto max-w-5xl space-y-5 p-6">
-  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a></nav>
+  <nav><a href="/">Leads</a> · <a href="/accounts">Accounts</a> · <a href="/contacts">Contacts</a> · <a href="/conversion">Conversion and deals</a></nav>
   <h1>Sales CRM — Contacts</h1><p>Fictional names and example.com emails only. No live access.</p>
   <section aria-label="Account selector"><label htmlFor="contact-account-search">Find available accounts</label><input id="contact-account-search" value={accountSearch} maxLength={80} disabled={blocked} onChange={e=>setAccountSearch(e.target.value)}/><button disabled={blocked} onClick={()=>void loadAccounts(null)}>Load available accounts</button>{options?.nextCursor&&<button disabled={blocked} onClick={()=>void loadAccounts(options.nextCursor)}>Next available accounts</button>}</section>
   <form onSubmit={e=>{e.preventDefault();if(!blocked)void save(null,{id:crypto.randomUUID(),requestId:crypto.randomUUID(),displayName:name,email,accountId:accountId||null});}}>
